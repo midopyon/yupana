@@ -635,4 +635,3 @@ function drawChart_co2() {
 
 //     }); // end am4core.ready()
 // }
-
