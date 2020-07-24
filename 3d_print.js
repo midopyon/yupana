@@ -4,11 +4,14 @@ var _3dprint_prototyping_weight = null;
 var _3dprint_prototyping_waste = null;
 var _3dprint_iteration = null;
 var _3dprint_time = null;
+var _3dprint_location = null;
+var _3dprint_shipment = null;
 var material = 'PLA'
 var end_of_life_radios = 'recycle_bin'
 var machine_3dprint_radios = 'makerbot'
 var first = true
 var material_3dprint = null
+
 
 const material_PLA = {
     PLA_emb_energy_avg: ((49 + 54) / 2 + (15.4 + 17) / 2),
@@ -86,6 +89,13 @@ function refresh_user_input() {
     _3dprint_prototyping_weight = (_3dprint_weight - _3dprint_support);
     _3dprint_prototyping_waste = (_3dprint_support);
 
+    let e = document.getElementById("where_3d_print");
+     _3dprint_location = e.options[e.selectedIndex].value;
+
+    e = document.getElementById("shipment_3dprint");
+    _3dprint_shipment = e.options[e.selectedIndex].value;
+    console.log("location: " + _3dprint_location);
+    console.log("shipment: " + _3dprint_shipment);
     material_3dprint = document.getElementById("material_3dprint").value
 
     // machine_3dprint = document.getElementById("machine_3dprint_dropdown").value
@@ -110,11 +120,73 @@ function refresh_user_input() {
         }
     }
 
-    if (first === false && _3dprint_iteration !== null && _3dprint_weight !== null && _3dprint_support !== null && _3dprint_time !== null) {
-        start_the_magic()
+    // if (first === false && _3dprint_iteration !== null && _3dprint_weight !== null && _3dprint_support !== null && _3dprint_time !== null) {
+    //     start_the_magic()
+    // }
+
+
+}
+
+function transportation_calculation() {
+  console.log("calling transport calc");
+  console.log('recieved: ' + _3dprint_shipment + " " + _3dprint_location);
+  let transport_energy;
+  let transport_co2;
+  let transport_mode;
+  let transport_base_en = (transportation_energies['truck_14'] * transportation_distances['local_avg']) +
+  (transportation_energies['light_vehicle'] * transportation_distances['local_city_avg']);
+  let transport_base_co2 = (transportation_co2['truck_14'] * transportation_distances['local_avg']) +
+  (transportation_co2['light_vehicle'] * transportation_distances['local_city_avg']);
+
+  if (_3dprint_shipment == "By air") {
+    transport_mode = 'airplane';
+  } else if (_3dprint_shipment == 'By sea') {
+    transport_mode = 'ocean';
+  } else if (_3dprint_shipment == 'By road') {
+    transport_mode = 'truck_32';
+  } else { //idk so defer choice
+    transport_mode = 'idk'
+  }
+
+  if( _3dprint_location == 'International') {
+    if(transport_mode == 'idk') {
+      transport_mode = 'airplane'
     }
+    transport_energy = ((transportation_energies[transport_mode] * transportation_distances['international_avg']) + transport_base_en);
 
+    transport_co2 = ((transportation_co2[transport_mode] * transportation_distances['international_avg']) + transport_base_co2);
 
+  } else if (_3dprint_location == "National") {
+    if(transport_mode == 'idk') {
+      transport_mode = 'truck_32'
+    }
+    transport_energy = ((transportation_energies[transport_mode] * transportation_distances['national_avg']) + transport_base_en);
+
+    transport_co2 = ((transportation_co2[transport_mode] * transportation_distances['national_avg']) + transport_base_co2);
+
+  } else if (_3dprint_location == 'Local') {
+    if(transport_mode == 'idk' || transport_mode == 'truck_32') {
+      transport_mode = 'truck_14';
+    }
+    transport_energy = (transportation_energies[transport_mode] * transportation_distances['local_avg']) +
+    (transportation_energies['light_vehicle'] * transportation_distances['local_city_avg']);
+
+    transport_co2 = (transportation_co2[transport_mode] * transportation_distances['local_avg']) +
+    (transportation_co2['light_vehicle'] * transportation_distances['local_city_avg']);
+  } else { //idk distance so assume the worst
+    if(transport_mode == 'idk') {
+      transport_mode = 'airplane'
+    }
+    transport_energy = ((transportation_energies[transport_mode] * transportation_distances['international_avg']) +
+        transport_base_en);
+    transport_co2 = ((transportation_co2[transport_mode] * transportation_distances['international_avg']) +
+        transport_base_co2);
+  }
+
+  return {
+      energy: _3dprint_weight / 1000 * transport_energy,
+      co2: _3dprint_weight / 1000 * transport_co2
+  }
 }
 
 function lifecycle_calculation_PLA() {
@@ -122,16 +194,7 @@ function lifecycle_calculation_PLA() {
         energy: _3dprint_weight * material_PLA['PLA_emb_energy_avg'],
         co2: _3dprint_weight * material_PLA['PLA_co2_avg']
     }
-    var results_transportation = {
-        energy: _3dprint_weight / 1000 *
-            ((transportation_energies['ocean'] * transportation_distances['international_avg']) +
-                (transportation_energies['truck_14'] * transportation_distances['local_avg']) +
-                (transportation_energies['light_vehicle'] * transportation_distances['local_city_avg'])),
-        co2: _3dprint_weight / 1000 *
-            ((transportation_co2['ocean'] * transportation_distances['international_avg']) +
-                (transportation_co2['truck_14'] * transportation_distances['local_avg']) +
-                (transportation_co2['light_vehicle'] * transportation_distances['local_city_avg']))
-    }
+    var results_transportation = transportation_calculation();
     const temp1 = ((_3dprint_time * percentage_3dprint_time['cad_prep'] * makerBot_power['cad_prep']) +
         (_3dprint_time * percentage_3dprint_time['plate_warm_up'] * makerBot_power['plate_warm_up']) +
         (_3dprint_time * percentage_3dprint_time['nozzle_warm_up'] * makerBot_power['nozzle_warm_up'])) / 1000000
@@ -208,16 +271,7 @@ function lifecycle_calculation_ABS() {
         energy: _3dprint_weight * material_ABS['ABS_emb_energy_avg'],
         co2: _3dprint_weight * material_ABS['ABS_co2_avg']
     }
-    var results_transportation = {
-        energy: _3dprint_weight / 1000 *
-            ((transportation_energies['ocean'] * transportation_distances['international_avg']) +
-                (transportation_energies['truck_14'] * transportation_distances['local_avg']) +
-                (transportation_energies['light_vehicle'] * transportation_distances['local_city_avg'])),
-        co2: _3dprint_weight / 1000 *
-            ((transportation_co2['ocean'] * transportation_distances['international_avg']) +
-                (transportation_co2['truck_14'] * transportation_distances['local_avg']) +
-                (transportation_co2['light_vehicle'] * transportation_distances['local_city_avg']))
-    }
+    var results_transportation = transportation_calculation();
     const temp1 = ((_3dprint_time * percentage_3dprint_time['cad_prep'] * makerBot_power['cad_prep']) +
         (_3dprint_time * percentage_3dprint_time['plate_warm_up'] * makerBot_power['plate_warm_up']) +
         (_3dprint_time * percentage_3dprint_time['nozzle_warm_up'] * makerBot_power['nozzle_warm_up'])) / 1000000
@@ -289,6 +343,7 @@ function lifecycle_calculation_ABS() {
 }
 
 function start_the_magic() {
+    refresh_user_input();
     // if (material === 'PLA') {
     results_PLA = lifecycle_calculation_PLA()
     // }

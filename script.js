@@ -73,7 +73,7 @@
     SupportSlider.onchange = function(){
         //console.log(inhaleSlider.value);
         document.getElementById("Support_material_display").innerHTML = SupportSlider.value;
-        refresh_user_input()
+        // refresh_user_input()
     };
 
     WasteSlider.onchange = function(){
@@ -88,6 +88,6 @@
     //     document.getElementById("sessiondisplay").innerHTML = sessionSlider.value;
     // };
 
-
+    // document.getElementById('btn_submit_3dprint').addEventListener('click', start_the_magic);
 
 }());
