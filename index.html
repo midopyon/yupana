@@ -189,7 +189,7 @@
           </div>
 
           <div class="button">
-            <button id="btn_submit_3dprint" type="next" onclick="start_the_magic();">Submit</button>
+            <button id="btn_submit_3dprint" type="next">Submit</button>
           </div>
 
 
@@ -202,7 +202,7 @@
             <h2>Material & Manufacturing Phase</h2>
             <p><label for="material_lasercut"> Which material will you use for prototyping? *</label></p>
 
-            <p><select id="material_lastercut" class="dropdown" name="opt">
+            <p><select id="material_lasercut" class="dropdown" name="opt">
                 <option>choose</option>
                 <option value="Acrylic">Acrylic</option>
                 <option value="MDF">MDF</option>
@@ -268,7 +268,7 @@
             <p><label id="sheetsize_lasercut" for="Length_laser_input_lasercut">Type you sheet size (m2)
                 *</label></p>
 
-            <p>Length: <input type="text" id="Length_laser_input_lasercut" class="input-field" style="width:60px;" placeholder="Number" required>&nbspm x Width: <input type="text" id="Length_laser_input" class="input-field" style="width:60px;"
+            <p>Length: <input type="text" id="length_input_lasercut" class="input-field" style="width:60px;" placeholder="Number" required>&nbspm x Width: <input type="text" id="width_input_lasercut" class="input-field" style="width:60px;"
                 placeholder="Number" required>&nbspm</p>
 
             <p><label id="area" for="area_laser_input_lasercut">Area of material cut (m2) *</label></p>
@@ -305,20 +305,20 @@
           <div id="end_of_life_phase_lasercut">
             <h2>End of Life Phase</h2>
             <p>Where do you dispose your leftovers, waste or unused prototypes? *</p>
-            <p><label class="radio_button"><input type="radio" value="change" name="change">&nbsp Recycling
+            <p><label class="radio_button"><input type="radio" value="recycling" name="end_life_lasercut">&nbsp Recycling
                 bin</label>
             </p>
-            <p><label class="radio_button"><Input type="radio" value="change" name="change">&nbsp General
+            <p><label class="radio_button"><Input type="radio" value="landfill" name="end_life_lasercut">&nbsp General
                 waste/landfill</label></p>
             <!--      <p><label class="radio_button"><Input type="radio" value="change" name="change">&nbsp Compost bin</label></p>-->
-            <p><label class="radio_button"><Input type="radio" value="change" name="change">&nbsp I don't
+            <p><label class="radio_button"><Input type="radio" value="idk" name="end_life_lasercut">&nbsp I don't
                 know</label></p>
             </select>
           </div>
 
-          <!--    <div class="button">-->
-          <!--      <button id="next" type="next">Submit</button>-->
-          <!--    </div>-->
+          <div class="button">
+            <button id="btn_submit_laser" type="next">Submit</button>
+          </div>
 
         </article>
       </div>
@@ -355,6 +355,7 @@
 
   <script src="script.js"></script>
   <script src="3d_print.js"></script>
+  <script src="laser.js"></script>
 
 </body>
 

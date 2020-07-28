@@ -6,13 +6,12 @@ var _3dprint_iteration = null;
 var _3dprint_time = null;
 var _3dprint_location = null;
 var _3dprint_shipment = null;
-var material = 'PLA'
+// var material = 'PLA'
 var end_of_life_radios = 'recycle_bin'
 var machine_3dprint_radios = 'makerbot'
 var first = true
 var material_3dprint = null
-
-
+// TODO: change co2_DF_electricity to match electricity source type
 const material_PLA = {
     PLA_emb_energy_avg: ((49 + 54) / 2 + (15.4 + 17) / 2),
     PLA_co2_avg: ((3.4 + 3.8) / 2 + (1.15 + 1.27) / 2),
@@ -28,32 +27,6 @@ const material_ABS = {
     ABS_emb_energy_recycling_avg: (((42 - 37.6) + (51 - 39)) / 2),
     ABS_co2_recycling_avg: (((2.5 + 3.1) + (3.1 + 3.2)) / 2)
 };
-
-const transportation_energies = {
-    airplane: 13.00,
-    ocean: 0.16,
-    truck_32: 0.82,
-    truck_14: 1.15,
-    light_vehicle: 2.5
-};
-
-const transportation_co2 = {
-    airplane: 0.76,
-    ocean: 0.015,
-    truck_32: 0.06,
-    truck_14: 0.11,
-    light_vehicle: 0.18
-};
-
-const transportation_distances = {
-    international_avg: (8111.176 + 9542.560) / 2,
-    national_avg: (3617.515 + 4255.900) / 2,
-    local_avg: (313.973 + 369.380) / 2,
-    local_recycling_avg: (29.2 + 306.6) / 2,
-    local_city_avg: (29.2 + 306.6) / 2,
-    local_landfill_avg: (87.6 + 160 + 6) / 2
-};
-
 
 const makerBot_power = {
     _3dprinting: (21.752 + 20.808) / 2,
@@ -94,8 +67,8 @@ function refresh_user_input() {
 
     e = document.getElementById("shipment_3dprint");
     _3dprint_shipment = e.options[e.selectedIndex].value;
-    console.log("location: " + _3dprint_location);
-    console.log("shipment: " + _3dprint_shipment);
+    // console.log("location: " + _3dprint_location);
+    // console.log("shipment: " + _3dprint_shipment);
     material_3dprint = document.getElementById("material_3dprint").value
 
     // machine_3dprint = document.getElementById("machine_3dprint_dropdown").value
@@ -106,7 +79,8 @@ function refresh_user_input() {
     for (i = 0; i < l; i++) {
         checked = machine_3dprint_radios_nodes[i].checked
         if (checked === true) {
-            machine_3dprint_radios = machine_3dprint_radios_nodes[i].value
+            machine_3dprint_radios = machine_3dprint_radios_nodes[i].value;
+            break;
         }
     }
 
@@ -116,7 +90,8 @@ function refresh_user_input() {
     for (i = 0; i < l; i++) {
         checked = end_of_life_radios_nodes[i].checked
         if (checked === true) {
-            end_of_life_radios = end_of_life_radios_nodes[i].value
+            end_of_life_radios = end_of_life_radios_nodes[i].value;
+            break;
         }
     }
 
@@ -127,78 +102,20 @@ function refresh_user_input() {
 
 }
 
-function transportation_calculation() {
-  console.log("calling transport calc");
-  console.log('recieved: ' + _3dprint_shipment + " " + _3dprint_location);
-  let transport_energy;
-  let transport_co2;
-  let transport_mode;
-  let transport_base_en = (transportation_energies['truck_14'] * transportation_distances['local_avg']) +
-  (transportation_energies['light_vehicle'] * transportation_distances['local_city_avg']);
-  let transport_base_co2 = (transportation_co2['truck_14'] * transportation_distances['local_avg']) +
-  (transportation_co2['light_vehicle'] * transportation_distances['local_city_avg']);
-
-  if (_3dprint_shipment == "By air") {
-    transport_mode = 'airplane';
-  } else if (_3dprint_shipment == 'By sea') {
-    transport_mode = 'ocean';
-  } else if (_3dprint_shipment == 'By road') {
-    transport_mode = 'truck_32';
-  } else { //idk so defer choice
-    transport_mode = 'idk'
-  }
-
-  if( _3dprint_location == 'International') {
-    if(transport_mode == 'idk') {
-      transport_mode = 'airplane'
-    }
-    transport_energy = ((transportation_energies[transport_mode] * transportation_distances['international_avg']) + transport_base_en);
-
-    transport_co2 = ((transportation_co2[transport_mode] * transportation_distances['international_avg']) + transport_base_co2);
-
-  } else if (_3dprint_location == "National") {
-    if(transport_mode == 'idk') {
-      transport_mode = 'truck_32'
-    }
-    transport_energy = ((transportation_energies[transport_mode] * transportation_distances['national_avg']) + transport_base_en);
-
-    transport_co2 = ((transportation_co2[transport_mode] * transportation_distances['national_avg']) + transport_base_co2);
-
-  } else if (_3dprint_location == 'Local') {
-    if(transport_mode == 'idk' || transport_mode == 'truck_32') {
-      transport_mode = 'truck_14';
-    }
-    transport_energy = (transportation_energies[transport_mode] * transportation_distances['local_avg']) +
-    (transportation_energies['light_vehicle'] * transportation_distances['local_city_avg']);
-
-    transport_co2 = (transportation_co2[transport_mode] * transportation_distances['local_avg']) +
-    (transportation_co2['light_vehicle'] * transportation_distances['local_city_avg']);
-  } else { //idk distance so assume the worst
-    if(transport_mode == 'idk') {
-      transport_mode = 'airplane'
-    }
-    transport_energy = ((transportation_energies[transport_mode] * transportation_distances['international_avg']) +
-        transport_base_en);
-    transport_co2 = ((transportation_co2[transport_mode] * transportation_distances['international_avg']) +
-        transport_base_co2);
-  }
-
-  return {
-      energy: _3dprint_weight / 1000 * transport_energy,
-      co2: _3dprint_weight / 1000 * transport_co2
-  }
-}
-
 function lifecycle_calculation_PLA() {
     var results_mat_manufacturing = {
         energy: _3dprint_weight * material_PLA['PLA_emb_energy_avg'],
         co2: _3dprint_weight * material_PLA['PLA_co2_avg']
     }
-    var results_transportation = transportation_calculation();
+    var results_transportation = transportation_calculation(_3dprint_location, _3dprint_shipment);
+    results_transportation.energy = _3dprint_weight / 1000 * results_transportation.energy; //divided by 1000 twice???
+    results_transportation.co2 = _3dprint_weight / 1000 * results_transportation.co2;
+
     const temp1 = ((_3dprint_time * percentage_3dprint_time['cad_prep'] * makerBot_power['cad_prep']) +
         (_3dprint_time * percentage_3dprint_time['plate_warm_up'] * makerBot_power['plate_warm_up']) +
         (_3dprint_time * percentage_3dprint_time['nozzle_warm_up'] * makerBot_power['nozzle_warm_up'])) / 1000000
 
+    // TODO: change PLA_co2_DF_electricity to match electricity source type
     var stand_by_energy_makerbot = {
         energy: temp1,
         co2: temp1 / 3.6 * material_PLA['PLA_co2_DF_electricity']
@@ -271,7 +188,10 @@ function lifecycle_calculation_ABS() {
         energy: _3dprint_weight * material_ABS['ABS_emb_energy_avg'],
         co2: _3dprint_weight * material_ABS['ABS_co2_avg']
     }
-    var results_transportation = transportation_calculation();
+    var results_transportation = transportation_calculation(_3dprint_location, _3dprint_shipment);
+    results_transportation.energy = _3dprint_weight / 1000 * results_transportation.energy;
+    results_transportation.co2 = _3dprint_weight / 1000 * results_transportation.co2;
+
     const temp1 = ((_3dprint_time * percentage_3dprint_time['cad_prep'] * makerBot_power['cad_prep']) +
         (_3dprint_time * percentage_3dprint_time['plate_warm_up'] * makerBot_power['plate_warm_up']) +
         (_3dprint_time * percentage_3dprint_time['nozzle_warm_up'] * makerBot_power['nozzle_warm_up'])) / 1000000
@@ -342,6 +262,8 @@ function lifecycle_calculation_ABS() {
     }
 }
 
+document.getElementById('btn_submit_3dprint').addEventListener('click', start_the_magic);
+
 function start_the_magic() {
     refresh_user_input();
     // if (material === 'PLA') {
@@ -353,193 +275,67 @@ function start_the_magic() {
     if (first === true) {
         first = false
     }
-    // plot_diagram(results_PLA, results_ABS)
-    drawChart_energy()
-    drawChart_co2()
-}
-function drawChart_energy() {
+    results_energy = [
+      {
+        name: "PLA",
+        mat_manufacturing: results_PLA.mat_manufacturing.energy,
+        transportation: results_PLA.transportation.energy,
+        fabrication: null,
+        end_life: null
+      },
+      {
+        name: 'ABS',
+        mat_manufacturing: results_ABS.mat_manufacturing.energy,
+        transportation: results_ABS.transportation.energy,
+        fabrication: null,
+        end_life: null
+      }
+    ]
 
-    var chartDiv = document.getElementById('chart_div_energy');
-
-    const mat_manufacturing_PLA = results_PLA['mat_manufacturing']
-    const transportation_PLA = results_PLA['transportation']
-    const fabrication_makerbot_PLA = results_PLA['fabrication_makerbot']
-    const fabrication_ultimaker_PLA = results_PLA['fabrication_ultimaker']
-    const end_life_recycling_PLA = results_PLA['end_life_recycling']
-    const end_life_landfill_PLA = results_PLA['end_life_landfill']
-
-    const mat_manufacturing_ABS = results_ABS['mat_manufacturing']
-    const transportation_ABS = results_ABS['transportation']
-    const fabrication_makerbot_ABS = results_ABS['fabrication_makerbot']
-    const fabrication_ultimaker_ABS = results_ABS['fabrication_ultimaker']
-    const end_life_recycling_ABS = results_ABS['end_life_recycling']
-    const end_life_landfill_ABS = results_ABS['end_life_landfill']
-
-    var fabrication_PLA = null
-    var fabrication_ABS = null
-    // var bar_opacity = null
-
-    if (machine_3dprint_radios === 'makerbot') {
-        fabrication_PLA = fabrication_makerbot_PLA['energy']
-        fabrication_ABS = fabrication_makerbot_ABS['energy']
-    } else if (machine_3dprint_radios === 'ultimaker') {
-        fabrication_PLA = fabrication_ultimaker_PLA['energy']
-        fabrication_ABS = fabrication_ultimaker_ABS['energy']
-    }
-
-    var end_life_PLA = null
-    var end_life_ABS = null
-    var bar_opacity = null
-
-    if (end_of_life_radios === 'recycle_bin') {
-        end_life_PLA = end_life_recycling_PLA['energy']
-        end_life_ABS = end_life_recycling_ABS['energy']
-    } else if (end_of_life_radios === 'landfill') {
-        end_life_PLA = end_life_landfill_PLA['energy']
-        end_life_ABS = end_life_landfill_ABS['energy']
-    }
-
-    var data = google.visualization.arrayToDataTable([
-        ['Prototyping Material', 'Material & Manufacturing', 'Transportation', 'Fabrication', 'End of Life', {role: 'annotation'}],
-        ['PLA', mat_manufacturing_PLA['energy'], transportation_PLA['energy'], fabrication_PLA, end_life_PLA,
-            'Total: ' + String((mat_manufacturing_PLA['energy'] + transportation_PLA['energy'] + fabrication_PLA + end_life_PLA).toFixed(4))],
-        ['ABS', mat_manufacturing_ABS['energy'], transportation_ABS['energy'], fabrication_ABS, end_life_ABS,
-            'Total: ' + String((mat_manufacturing_ABS['energy'] + transportation_ABS['energy'] + fabrication_ABS + end_life_ABS).toFixed(4))],
-    ]);
-
-
-    var materialOptions = {
-            width: 700,
-            height: 600,
-            colors: ['#837BE7', '#E6BDF2', '#F97494', '#FD9F82'],
-            titleTextStyle: {
-                color: '#3b4456',
-                fontSize: 16,
-                fontName: 'Helvetica',
-                bold: true,
-                //italic: true
-            },
-            chart: {
-                title: 'Energy Consumption',
-                subtitle: ''
-            },
-            vAxis: {
-                title: 'Energy (MJ)',
-                textStyle: {
-                    //color: '#01579b',
-                    fontSize: 14,
-                    //fontName: 'Helvetica',
-                    //bold: true,
-                    //italic: true
-                }
-            },
-            hAxis: {
-                textStyle: {
-                    //color: '#01579b',
-                    fontSize: 14,
-                    //fontName: 'Arial',
-                    //bold: true,
-                    //italic: true
-                }
-            },
-        };
-    var view = new google.visualization.DataView(data);
-    var materialChart = new google.charts.Bar(chartDiv);
-    materialChart.draw(data, google.charts.Bar.convertOptions(materialOptions));
-}
-
-function drawChart_co2() {
-
-    var chartDiv = document.getElementById('chart_div_co2');
-
-    const mat_manufacturing_PLA = results_PLA['mat_manufacturing']
-    const transportation_PLA = results_PLA['transportation']
-    const fabrication_makerbot_PLA = results_PLA['fabrication_makerbot']
-    const fabrication_ultimaker_PLA = results_PLA['fabrication_ultimaker']
-    const end_life_recycling_PLA = results_PLA['end_life_recycling']
-    const end_life_landfill_PLA = results_PLA['end_life_landfill']
-
-    const mat_manufacturing_ABS = results_ABS['mat_manufacturing']
-    const transportation_ABS = results_ABS['transportation']
-    const fabrication_makerbot_ABS = results_ABS['fabrication_makerbot']
-    const fabrication_ultimaker_ABS = results_ABS['fabrication_ultimaker']
-    const end_life_recycling_ABS = results_ABS['end_life_recycling']
-    const end_life_landfill_ABS = results_ABS['end_life_landfill']
-
-
-    var fabrication_PLA = null
-    var fabrication_ABS = null
-    // var bar_opacity = null
+    results_co2 = [
+      {
+        name: "PLA",
+        mat_manufacturing: results_PLA.mat_manufacturing.co2,
+        transportation: results_PLA.transportation.co2,
+        fabrication: null,
+        end_life: null
+      },
+      {
+        name: "ABS",
+        mat_manufacturing: results_ABS.mat_manufacturing.co2,
+        transportation: results_ABS.transportation.co2,
+        fabrication: null,
+        end_life: null
+      }
+    ]
 
     if (machine_3dprint_radios === 'makerbot') {
-        fabrication_PLA = fabrication_makerbot_PLA['co2']
-        fabrication_ABS = fabrication_makerbot_ABS['co2']
+        results_energy[0].fabrication = results_PLA['fabrication_makerbot']['energy'];
+        results_energy[1].fabrication = results_ABS['fabrication_makerbot']['energy'];
+        results_co2[0].fabrication = results_PLA['fabrication_makerbot']['co2'];
+        results_co2[1].fabrication = results_ABS['fabrication_makerbot']['co2'];
     } else if (machine_3dprint_radios === 'ultimaker') {
-        fabrication_PLA = fabrication_ultimaker_PLA['co2']
-        fabrication_ABS = fabrication_ultimaker_ABS['co2']
+        results_energy[0].fabrication = results_PLA['fabrication_ultimaker']['energy'];
+        results_energy[1].fabrication = results_ABS['fabrication_ultimaker']['energy'];
+        results_co2[0].fabrication = results_PLA['fabrication_ultimaker']['co2'];
+        results_co2[1].fabrication = results_ABS['fabrication_ultimaker']['co2'];
     }
-
-    var end_life_PLA = null
-    var end_life_ABS = null
-    var bar_opacity = null
 
     if (end_of_life_radios === 'recycle_bin') {
-        end_life_PLA = end_life_recycling_PLA['co2']
-        end_life_ABS = end_life_recycling_ABS['co2']
+        results_energy[0].end_life = results_PLA['end_life_recycling']['energy'];
+        results_energy[1].end_life = results_ABS['end_life_recycling']['energy'];
+        results_co2[0].end_life = results_PLA['end_life_recycling']['co2'];
+        results_co2[1].end_life = results_ABS['end_life_recycling']['co2'];
     } else if (end_of_life_radios === 'landfill') {
-        end_life_PLA = end_life_landfill_PLA['co2']
-        end_life_ABS = end_life_landfill_ABS['co2']
+        results_energy[0].end_life = results_PLA['end_life_landfill']['energy'];
+        results_energy[1].end_life = results_ABS['end_life_landfill']['energy'];
+        results_co2[0].end_life = results_PLA['end_life_landfill']['co2'];
+        results_co2[1].end_life = results_ABS['end_life_landfill']['co2'];
     }
-
-    var data = google.visualization.arrayToDataTable([
-        ['Prototyping Material', 'Material & Manufacturing', 'Transportation', 'Fabrication', 'End of Life', {role: 'annotation'}],
-        ['PLA', mat_manufacturing_PLA['co2'], transportation_PLA['co2'], fabrication_PLA, end_life_PLA,
-            'Total: ' + String((mat_manufacturing_PLA['co2'] + transportation_PLA['co2'] + fabrication_PLA + end_life_PLA).toFixed(4))],
-        ['ABS', mat_manufacturing_ABS['co2'], transportation_ABS['co2'], fabrication_ABS, end_life_ABS,
-            'Total: ' + String((mat_manufacturing_ABS['co2'] + transportation_ABS['co2'] + fabrication_ABS + end_life_ABS).toFixed(4))],
-    ]);
-
-
-    var materialOptions = {
-        //margin: auto,
-        width: 700,
-        height: 600,
-        colors: ['#3C91CE', '#44C6E7', '#A8D8B7', '#FDD96E'],
-        titleTextStyle: {
-            color: '#3b4456',
-            fontSize: 16,
-            fontName: 'Helvetica',
-            bold: true,
-            //italic: true
-        },
-        chart: {
-            title: 'CO2 Emissions',
-            subtitle: ''
-        },
-        vAxis: {
-            title: 'CO2 (kg CO2/kg)',
-            textStyle: {
-                //color: '#01579b',
-                fontSize: 14,
-                //fontName: 'Arial',
-                //bold: true,
-                //italic: true
-            }
-        },
-        hAxis: {
-            textStyle: {
-                //color: '#01579b',
-                fontSize: 14,
-                //fontName: 'Arial',
-                //bold: true,
-                //italic: true
-            }
-        },
-    };
-    var view = new google.visualization.DataView(data);
-    var materialChart = new google.charts.Bar(chartDiv);
-    materialChart.draw(data, google.charts.Bar.convertOptions(materialOptions));
+    drawChart_energy(results_energy)
+    drawChart_co2(results_co2)
 }
+
 
 // var options = {
 //     width: 600,
