@@ -6,68 +6,55 @@
     const Cutting = document.getElementById("Cutting");
     const cut = document.getElementById("Laser_Cutting");
 
-    // const manu = document.getElementById("manu");
-    // const trans = document.getElementById("trans");
-    // const use = document.getElementById("use");
-    // const end = document.getElementById("end");
-
-    // const Manu = document.getElementsById("Manufacturing");
-    // const Trans = document.getElementsById("Transportation");
-    // const Use = document.getElementsById("Use phase");
-    // const End = document.getElementsById("End");
-
     Printing.addEventListener("click", function(){
         print.setAttribute('class', 'visible');
         cut.setAttribute('class', 'invisible');
 
-        // Manu.setAttribute('class', 'visible');
-        // Trans.setAttribute('class', 'invisible');
-        // Use.setAttribute('class', 'invisible');
-        // End.setAttribute('class', 'invisible');
     });
 
     Cutting.addEventListener("click", function(){
         print.setAttribute('class', 'invisible');
         cut.setAttribute('class', 'visible');
-        // chart.setAttribute('class', 'visible');
-
-        // Manu.setAttribute('class', 'visible');
-        // Trans.setAttribute('class', 'invisible');
-        // Use.setAttribute('class', 'invisible');
-        // End.setAttribute('class', 'invisible');
     });
 
-    // manu.addEventListener("click", function(){
-    //     Manu.setAttribute('class', 'visible');
-    //     Trans.setAttribute('class', 'invisible');
-    //     Use.setAttribute('class', 'invisible');
-    //     End.setAttribute('class', 'invisible');
-    // });
+    let field = document.getElementById('support_field');
+    let slider = document.getElementById('support_slider');
+    document.getElementById('Gram').addEventListener('click', function () {
+      field.classList.remove('invisible');
+      slider.classList.add('invisible');
+    });
+    document.getElementById('Percent').addEventListener('click', function() {
+      slider.classList.remove('invisible');
+      field.classList.add('invisible');
+    });
 
-    // trans.addEventListener("click", function(){
-    //     Manu.setAttribute('class', 'invisible');
-    //     Trans.setAttribute('class', 'visible');
-    //     Use.setAttribute('class', 'invisible');
-    //     End.setAttribute('class', 'invisible');
-    // });
+    let waste_area = document.getElementById('waste_field');
+    let percent = document.getElementById('waste_slider');
 
-    // use.addEventListener("click", function(){
-    //     Manu.setAttribute('class', 'invisible');
-    //     Trans.setAttribute('class', 'invisible');
-    //     Use.setAttribute('class', 'visible');
-    //     End.setAttribute('class', 'invisible');
-    // });
+    document.getElementById('Waste_Area').addEventListener('click', function () {
+      waste_area.classList.remove('invisible');
+      percent.classList.add('invisible');
+    });
+    document.getElementById('Waste_Percent').addEventListener('click', function() {
+      percent.classList.remove('invisible');
+      waste_area.classList.add('invisible');
+    });
 
-    // end.addEventListener("click", function(){
-    //     Manu.setAttribute('class', 'invisible');
-    //     Trans.setAttribute('class', 'invisible');
-    //     Use.setAttribute('class', 'invisible');
-    //     End.setAttribute('class', 'visible');
-    // });
+    let area = document.getElementById('area_area');
+    let length = document.getElementById('area_length');
 
-    var SupportSlider = document.getElementById("_3dprint_support_input");
-    var WasteSlider = document.getElementById("Waste_laser");
-    var LeftoverSlider = document.getElementById("Leftover_laser");
+    document.getElementById('Area').addEventListener('click', function () {
+      area.classList.remove('invisible');
+      length.classList.add('invisible');
+    });
+    document.getElementById('Length').addEventListener('click', function() {
+      length.classList.remove('invisible');
+      area.classList.add('invisible');
+    });
+
+    var SupportSlider = document.getElementById("_3dprint_support_slider");
+    var WasteSlider = document.getElementById("waste_laser");
+    // var LeftoverSlider = document.getElementById("Leftover_laser");
     // var sessionSlider = document.getElementById("sessionTime");
 
     SupportSlider.onchange = function(){
@@ -80,9 +67,9 @@
         document.getElementById("Waste_laser_display").innerHTML = WasteSlider.value;
     };
 
-    LeftoverSlider.onchange = function(){
-        document.getElementById("Leftover_laser_display").innerHTML = LeftoverSlider.value;
-    };
+    // LeftoverSlider.onchange = function(){
+    //     document.getElementById("Leftover_laser_display").innerHTML = LeftoverSlider.value;
+    // };
 
     // sessionSlider.onchange = function(){
     //     document.getElementById("sessiondisplay").innerHTML = sessionSlider.value;
@@ -110,14 +97,14 @@
         national_avg: (3617.515 + 4255.900) / 2,
         local_avg: (313.973 + 369.380) / 2,
         local_recycling_avg: (29.2 + 306.6) / 2,
-        local_city_avg: (29.2 + 306.6) / 2,
-        local_landfill_avg: (87.6 + 160 + 6) / 2
+        local_city_avg: (87.6 + 160.6) / 2,
+        local_landfill_avg: (87.6 + 160.6) / 2
     };
 
 
     function transportation_calculation(shipment, location) {
       console.log("calling transport calc");
-      console.log('recieved: ' + shipment + " " + location);
+      console.log('recieved: "' + shipment + '" "' + location +'"');
       let transport_energy;
       let transport_co2;
       let transport_mode;
@@ -135,8 +122,9 @@
       } else { //idk so defer choice
         transport_mode = 'idk'
       }
-
+      console.log(transport_mode);
       if(location == 'International') {
+        console.log("calc international");
         if(transport_mode == 'idk') {
           transport_mode = 'ocean'
         }
@@ -145,6 +133,8 @@
         transport_co2 = ((transportation_co2[transport_mode] * transportation_distances['international_avg']) + transport_base_co2);
 
       } else if (location == "National") {
+        console.log("calc national");
+
         if(transport_mode == 'idk') {
           transport_mode = 'truck_32'
         }
@@ -153,6 +143,8 @@
         transport_co2 = ((transportation_co2[transport_mode] * transportation_distances['national_avg']) + transport_base_co2);
 
       } else if (location == 'Local') {
+        console.log("calc local");
+
         if(transport_mode == 'idk' || transport_mode == 'truck_32') {
           transport_mode = 'truck_14';
         }
@@ -162,6 +154,8 @@
         transport_co2 = (transportation_co2[transport_mode] * transportation_distances['local_avg']) +
         (transportation_co2['light_vehicle'] * transportation_distances['local_city_avg']);
       } else { //idk distance so assume the worst
+        console.log("calc idk");
+
         if(transport_mode == 'idk') {
           transport_mode = 'ocean'
         }
@@ -172,8 +166,8 @@
       }
 
       return {
-          energy: transport_energy,
-          co2: transport_co2
+          energy: transport_energy / 1000,
+          co2: transport_co2 / 1000
       }
     }
 

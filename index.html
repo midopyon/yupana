@@ -156,14 +156,23 @@
               </label></p>
             <p><input type="text" id="_3dprint_weight_input" class="input-field" placeholder="Type a number" required>&nbsp(gr)</p>
 
-            <p><label id="support_3dprint_label" for="_3dprint_support_input">Supporting material (%) * <br />
-                <p1>i.e. how much % of your 3D printing material is for support aprox.</p1>
+            <p><label id="support_3dprint_label" for="_3dprint_support_input">Supporting material * <br />
+                <p1>i.e. aprox. how much of your 3D printing material is for support</p1>
               </label></p>
-            <p class="slidecontainer">
-              <input type="range" min="0" max="100" value="50" class="slider" id="_3dprint_support_input">
+
+            <p>
+              <label class="radio_button" id="Gram">
+                <input type="radio" value="weight" name="support">&nbsp Grams (g)
+              </label>
+              <label class="radio_button" id="Percent">
+                <Input type="radio" value="support_percent" name="support">&nbsp Percentage (%)
+              </label>
+            </p>
+            <p class="slidecontainer invisible" id="support_slider">
+              <input type="range" min="0" max="100" value="50" class="slider" id="_3dprint_support_slider">
               <p2 class="displayslider" id="Support_material_display">50</p2>
             </p>
-
+            <p class="invisible" id="support_field"><input type="text" id="_3dprint_support_input" class="input-field" placeholder="Type a number" required>&nbsp(gr)</p>
 
             <p><label id="time_3d_print_label">Printing time (min) * <br />
                 <p1> i.e. 14.5 instead of 14,5</p1>
@@ -265,30 +274,41 @@
               </select></p>
 
 
-            <p><label id="sheetsize_lasercut" for="Length_laser_input_lasercut">Type you sheet size (m2)
-                *</label></p>
+            <p><label id="sheetsize_lasercut" for="Length_laser_input_lasercut">Area of cut material *</label></p>
 
-            <p>Length: <input type="text" id="length_input_lasercut" class="input-field" style="width:60px;" placeholder="Number" required>&nbspm x Width: <input type="text" id="width_input_lasercut" class="input-field" style="width:60px;"
-                placeholder="Number" required>&nbspm</p>
+            <p>
+              <label class="radio_button" id="Area">
+                <input type="radio" value="area" name="area">&nbsp Area (m2)
+              </label>
+              <label class="radio_button" id="Length">
+                <Input type="radio" value="length" name="area">&nbsp Length x Width
+                (m)
+              </label>
+            </p>
 
-            <p><label id="area" for="area_laser_input_lasercut">Area of material cut (m2) *</label></p>
+            <p class="invisible" id="area_length">Length: <input type="text" id="length_input_lasercut" class="input-field" style="width:60px;" placeholder="Number" required>&nbspm x Width: <input type="text" id="width_input_lasercut"
+                class="input-field" style="width:60px;" placeholder="Number" required>&nbspm
+            </p>
 
-            <p><input type="text" id="area_laser_input_lasercut" class="input-field" placeholder="Type a number" required>&nbspm2</p>
+            <p class="invisible" id="area_area"><input type="text" id="area_input_lasercut" class="input-field" placeholder="Type a number" required>&nbsp(m2)</p>
 
+            <p><label id="waste_laser_label" for="waste_laser">Waste *</label></p>
 
-            <p><label id="waste_laser_label" for="waste_laser">Waste (%) *</label></p>
-
-            <p class="slidecontainer">
-              <input type="range" min="0" max="100" value="50" class="slider" id="Waste_laser">
+            <p>
+              <label class="radio_button" id="Waste_Area">
+                <input type="radio" value="waste_area" name="waste">&nbsp Waste Area (m2)
+              </label>
+              <label class="radio_button" id="Waste_Percent">
+                <Input type="radio" value="waste_percent" name="waste">&nbsp Percentage
+                (%)
+              </label>
+            </p>
+            <p class="slidecontainer invisible" id="waste_slider">
+              <input type="range" min="0" max="100" value="50" class="slider" id="waste_laser">
               <p2 class="displayslider" id="Waste_laser_display">50</p2>
             </p>
+            <p class="invisible" id="waste_field"><input type="text" id="waste_laser_area" class="input-field" placeholder="Type a number" required>&nbsp(m2)</p>
 
-            <p><label id="Leftover_laser_label" for="leftover_laser">Leftover (%) *</label></p>
-
-            <p class="slidecontainer">
-              <input type="range" min="0" max="100" value="50" class="slider" id="Leftover_laser">
-              <p2 class="displayslider" id="Leftover_laser_display">50</p2>
-            </p>
 
             <p><label id="time_label">Cutting time (min) * <br />
                 <p1> i.e. 14.5 instead of 14,5</p1>
@@ -297,7 +317,7 @@
             </p>
 
             <p><label id="Iterations_label"># Iteration (ie.1,2,3,...) *</label></p>
-            <p><input type="text" id="Iteration" class="input-field" placeholder="Type a number" required>
+            <p><input type="text" id="laser_iteration" class="input-field" placeholder="Type a number" required>
             </p>
 
           </div>
