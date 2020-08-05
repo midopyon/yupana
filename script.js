@@ -76,6 +76,16 @@ document.getElementById('Length').addEventListener('click', function() {
   area.classList.add('invisible');
 });
 
+let recycle_choice = document.getElementById('recycling');
+let material_choice = document.getElementById('material_lasercut');
+material_choice.addEventListener('change', function () {
+  if(material_choice.options[material_choice.selectedIndex].value == 'Acrylic') {
+    recycle_choice.classList.add('invisible');
+  } else {
+    recycle_choice.classList.remove('invisible');
+  }
+});
+
 var SupportSlider = document.getElementById("_3dprint_support_slider");
 var WasteSlider = document.getElementById("waste_laser");
 // var LeftoverSlider = document.getElementById("Leftover_laser");
@@ -90,6 +100,11 @@ SupportSlider.onchange = function() {
 WasteSlider.onchange = function() {
   document.getElementById("Waste_laser_display").innerHTML = WasteSlider.value;
 };
+
+function update_button() {
+  document.getElementById('btn_submit_3dprint').textContent = "Update Values";
+  document.getElementById('btn_submit_laser').textContent = "Update Values";
+}
 
 // LeftoverSlider.onchange = function(){
 //     document.getElementById("Leftover_laser_display").innerHTML = LeftoverSlider.value;
@@ -195,14 +210,22 @@ function transportation_calculation(shipment, location) {
   }
 }
 
-function end_life_calculation(waste, type) {
+function end_life_calculation(waste, type, incineration) {
   let results_end_life;
   if (type === 'recycle_bin') {
     results_end_life = {
         energy: (waste / 1000 * transportation_energies['truck_14'] * transportation_distances['local_recycling_avg']),
         co2: (waste / 1000 * transportation_co2['truck_14'] * transportation_distances['local_recycling_avg']),
     }
-  } else {
+  } else if (type == 'incineration') {
+    results_end_life = {
+      energy: (waste / 1000 * transportation_energies['truck_14'] *
+        (transportation_distances['local_recycling_avg'] + transportation_distances['local_landfill_avg'])) + waste * incineration.energy,
+      co2: (waste / 1000 * transportation_co2['truck_14'] *
+          (transportation_distances['local_recycling_avg'] + transportation_distances['local_landfill_avg'])) + waste * incineration.co2
+        }
+  }
+  else { //assume idk is landfill
     results_end_life = {
         energy: (waste / 1000 * transportation_energies['truck_14'] *
             (transportation_distances['local_recycling_avg'] + transportation_distances['local_landfill_avg'])),
@@ -217,6 +240,7 @@ function add_ar_draw(results_energy, results_co2) {
   if(results_energy_ar.length == 0) {
     results_energy_ar = [results_energy];
     results_co2_ar = [results_co2];
+    update_button();
   } else if (results_energy_ar.length == 1) {
     results_energy_ar[0].name = 'Original ' + results_energy_ar[0].name;
     results_co2_ar[0].name = 'Original ' + results_co2_ar[0].name;

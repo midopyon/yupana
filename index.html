@@ -91,7 +91,11 @@
             <p><select id="material_3dprint" class="dropdown" name="opt">
                 <option>choose</option>
                 <option value="PLA">PLA</option>
+                <option value="PLA_recycled">Recycled PLA</option>
                 <option value="ABS">ABS</option>
+                <option value="ABS_recycled">Recycled ABS</option>
+                <option value="Nylon">Nylon</option>
+                <option value="Nylon_recycled">Recycled Nylon</option>
               </select></p>
 
             <p><label for="diameter"> What's your filament diameter? *</label></p>
@@ -181,6 +185,8 @@
             <p><label class="radio_button"><input type="radio" value="recycle_bin" name="end_of_life_radio_button" checked="checked">&nbsp Recycle bin</label>
             </p>
             <p><label class="radio_button"><Input type="radio" value="landfill" name="end_of_life_radio_button">&nbsp General trash/landfill</label>
+            </p>
+            <p><label class="radio_button"><Input type="radio" value="incineration" name="end_of_life_radio_button">&nbsp Incineration</label>
             </p>
             <!--      <p><label class="radio_button"><Input type="radio" value="compost_bin" name="end_of_life_radio_button" onchange="refresh_user_input()">&nbsp Compost bin</label></p>-->
             <p><label class="radio_button"><Input type="radio" value="idk" name="end_of_life_radio_button">&nbsp I don't know</label>
@@ -307,11 +313,14 @@
           <div id="end_of_life_phase_lasercut">
             <h2>End of Life Phase</h2>
             <p>Where do you dispose your leftovers, waste or unused prototypes? *</p>
-            <p><label class="radio_button"><input type="radio" value="recycling" name="end_life_lasercut">&nbsp Recycling
+            <p id="recycling"><label class="radio_button"><input type="radio" value="recycling" name="end_life_lasercut">&nbsp Recycling
                 bin</label>
             </p>
             <p><label class="radio_button"><Input type="radio" value="landfill" name="end_life_lasercut">&nbsp General
                 waste/landfill</label></p>
+
+            <p><label class="radio_button"><Input type="radio" value="incineration" name="end_life_lasercut">&nbsp Incineration</label>
+            </p>
             <!--      <p><label class="radio_button"><Input type="radio" value="change" name="change">&nbsp Compost bin</label></p>-->
             <p><label class="radio_button"><Input type="radio" value="idk" name="end_life_lasercut">&nbsp I don't
                 know</label></p>

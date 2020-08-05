@@ -4,35 +4,43 @@ let _laser_material, _laser_thickness, _laser_location, _laser_shipment, _laser_
 //co2_avg: co2 Emissions + processing
 const material_laser = {
   Acrylic: { //missing data
-    emb_energy_avg: null,
-    co2_avg: null,
-    co2_DF_electricity: null,
-    emb_energy_recycling_avg: null,
-    co2_recycling_avg: null,
-    density: null
+    emb_energy_avg: (90 + 131.5) / 2,
+    co2_avg: (2.8 + 3.2) / 2,
+    // co2_DF_electricity: null,
+    // emb_energy_recycling_avg: null,
+    // co2_recycling_avg: null,
+    co2_combustion: (1.96 + 2.05) / 2,
+    energy_incineration: (-25.1 + -25.6) / 2,
+    density: 1180
   },
   MDF: {
     emb_energy_avg: (11.3 + 11.9) / 2, //missing processing
     co2_avg: (1.1 + 1.2) / 2 + (3.67 + 3.68) / 2,
-    co2_DF_electricity: 0.5,
+    // co2_DF_electricity: 0.5,
     emb_energy_recycling_avg: (18 + 21) / 2,
     co2_recycling_avg: (0.72 + 0.8) / 2,
+    co2_combustion: (1.8 + 1.9) / 2,
+    energy_incineration: (-19 + -20) / 2,
     density: (680 + 830) / 2
   },
   Cardboard: {
     emb_energy_avg: (49 + 54) / 2 + (0.475 + 0.525) / 2,
     co2_avg: (1.1 + 1.2) / 2 + (0.023 + 0.026) / 2,
-    co2_DF_electricity: 0.5,
+    // co2_DF_electricity: 0.5,
     emb_energy_recycling_avg: (18 + 21) / 2,
     co2_recycling_avg: (0.72 + 0.8) / 2,
+    co2_combustion: (1.8 + 1.9) / 2,
+    energy_incineration: (-19 + -20) / 2,
     density: (480 + 860) / 2 //kg/m3
   },
   Mycelium: { //missing vals
     emb_energy_avg: 1.227,
     co2_avg: 0.039,
-    co2_DF_electricity: 0.5,
-    emb_energy_recycling_avg: null,
-    co2_recycling_avg: null,
+    // co2_DF_electricity: 0.5,
+    // emb_energy_recycling_avg: null,
+    // co2_recycling_avg: null,
+    co2_combustion: null,
+    energy_incineration: null,
     density: 390
   }
 };
@@ -143,7 +151,8 @@ function lifecycle_calculation_laser() {
   _co2.fabrication = _energy.fabrication / 3.6 * material_laser[_laser_material].co2_DF_electricity;
 
   //end of life
-  let end_life_results = end_life_calculation(_laser_waste, _laser_end_life);
+  let end_life_results = end_life_calculation(_laser_waste, _laser_end_life, {energy: material_laser[_laser_material].energy_incineration,
+  co2: material_laser[_laser_material].co2_combustion});
   _energy.end_life = end_life_results.energy;
   _co2.end_life = end_life_results.co2;
 
