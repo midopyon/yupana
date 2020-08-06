@@ -4,8 +4,8 @@
 <head>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link rel="stylesheet" href="styles.css">
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
@@ -39,56 +39,48 @@
       COMPARE the impacts of different prototyping materials
       <br />
       REDUCE your environmental impacts</p>
-    <p>Contact:<a
+    <p>Contact: <a
         href="mailto:&#101;&#115;&#108;&#097;&#122;&#097;&#114;&#111;&#064;&#117;&#099;&#100;&#097;&#118;&#105;&#115;&#046;&#101;&#100;&#117;">&#101;&#115;&#108;&#097;&#122;&#097;&#114;&#111;&#064;&#117;&#099;&#100;&#097;&#118;&#105;&#115;&#046;&#101;&#100;&#117;
       </a></p>
     <p>Note: The aim of this project is to encourage sustainable prototyping with digital fabrication. </p>
     <!-- <p>Please Sign up by submitting your Name below (your email will automatically be submitted).</p> -->
 
-    <p><label id="firstname-label" for="firstname">First name *</label></p>
-    <p><input autofocus type="text" id="firstname" class="input-field" placeholder="Enter your First name" name="firstname" required></p>
+    <div class="flex">
+      <p class="first">
+        <label id="firstname-label" for="firstname">First name *</label>
+        <input autofocus type="text" id="firstname" class="input-field" placeholder="Enter your First name" name="firstname" required>
+      </p>
+      <p>
+        <label id="lastname-label" for="lastname">Last name *</label>
+        <input type="text" id="lastname" class="input-field" placeholder="Enter your Last name" name="lastname" required>
+      </p>
+    </div>
 
-    <p><label id="lastname-label" for="lastname">Last name *</label></p>
-    <p><input type="text" id="lastname" class="input-field" placeholder="Enter your Last name" name="lastname" required>
+    <p>
+      <label id="lab-label" for="lab">Lab name</label>
+      <input autofocus type="text" id="labname" class="input-field" placeholder="Enter your Lab name" name="lab">
     </p>
 
-    <p class="q1">Choose your digital fabrication technique *</p>
-    <p><label class="radio_button" id="Cutting"><input type="radio" value="change" name="change">&nbsp Laser
-        Cutting</label></p>
-    <p><label class="radio_button" id="Printing"><Input type="radio" value="change" name="change">&nbsp 3D
-        Printing</label></p>
+    <p>Choose your digital fabrication technique *</p>
+    <div>
+      <label class="radio_button" id="Printing"><Input type="radio" value="change" name="change">&nbsp 3D
+        Printing</label>
+      <label class="radio_button" id="Cutting"><input type="radio" value="change" name="change">&nbsp Laser
+        Cutting</label>
+    </div>
   </div>
-  <!--    <div class="container">-->
-  <!--        <div class="row">-->
-  <!--            <div class="col-sm-12">-->
-  <!--                <nav>-->
-  <!--                    <ul>-->
-  <!--                        <li>-->
-  <!--                            <button id="manu_">Phase 1-->
-  <!--                            </button>-->
-  <!--                        </li>-->
-  <!--                        <li>-->
-  <!--                            <button id="trans">Phase 2</button>-->
-  <!--                        </li>-->
-  <!--                        <li>-->
-  <!--                            <button id="use">Phase 3</button>-->
-  <!--                        </li>-->
-  <!--                        <li>-->
-  <!--                            <button id="end">Phase 4</button>-->
-  <!--                        </li>-->
-  <!--                    </ul>-->
-  <!--                </nav>-->
-  <!--            </div>-->
-  <!--        </div>-->
-  <!--    </div>-->
+
   <div class="container-fluid">
     <div class="row">
       <div class="col-sm-6">
         <article id="3D_Printing" class="invisible">
-          <div id="manufacturing_phase_3d_print">
-            <h3>Material & Manufacturing Phase</h3>
-            <p><label for="material_3dprint"> Which material will you use for prototyping? *</label></p>
-            <p><select id="material_3dprint" class="dropdown" name="opt">
+          <div class="manufacturing">
+            <h3>Raw Material Phase</h3>
+            <div class="question">
+              <label for="material_3dprint">
+                <h5>Which material will you use for prototyping? *</h5>
+              </label>
+              <select id="material_3dprint" class="dropdown input-field" name="opt">
                 <option>choose</option>
                 <option value="PLA">PLA</option>
                 <option value="PLA_recycled">Recycled PLA</option>
@@ -96,239 +88,267 @@
                 <option value="ABS_recycled">Recycled ABS</option>
                 <option value="Nylon">Nylon</option>
                 <option value="Nylon_recycled">Recycled Nylon</option>
-              </select></p>
-
-            <p><label for="diameter"> What's your filament diameter? *</label></p>
-            <p><select id="diameter" class="dropdown" name="opt">
+              </select>
+            </div>
+            <div class="question">
+              <label for="diameter">
+                <h5> What's your filament diameter? *</h5>
+              </label>
+              <select id="diameter" class="dropdown input-field" name="opt">
                 <option>choose</option>
                 <option value="2.85">2.85mm</option>
                 <option value="1.75">1.75mm</option>
-              </select></p>
+              </select>
+            </div>
           </div>
 
-          <div id="transportion_phase_3d_print">
+          <div class="transportation">
             <h3>Transportation Phase</h3>
-            <p>Where was your material manufactured? * <br />
-              <p1>i.e. local= same state; national= same country; international= outside country</P1>
-            </p>
-            <p><select id="where_3d_print" class="dropdown" name="opt">
+            <div class="question">
+              <label for="where_3d_print">
+                <h5>Where was your material manufactured? * </h5>
+                <h6>i.e. local= same state; national= same country; international= outside country</h6>
+              </label>
+              <select id="where_3d_print" class="dropdown input-field" name="opt">
                 <option>choose</option>
                 <option value="International">International</option>
                 <option value="National">National</option>
                 <option value="Local">Local</option>
                 <option value="I don't know">I don't know</option>
-              </select></p>
-
-            <p>Which method of shipment was used to deliver the material to your lab? *</p>
-            <p><select id="shipment_3dprint" class="dropdown" name="opt">
+              </select>
+            </div>
+            <div class="question">
+              <label for="shipment_3dprint">
+                <h5>Which method of shipment was used to deliver the material to your lab? *</h5>
+              </label>
+              <select id="shipment_3dprint" class="dropdown input-field" name="opt">
                 <option>choose</option>
                 <option value="By air">By air</option>
                 <option value="By sea">By sea</option>
                 <option value="By road">By road</option>
                 <option value="I don't know">I don't know</option>
-              </select></p>
+              </select>
+            </div>
           </div>
 
-          <div id="fabrication_phase_3dprint">
+          <div class="fabrication">
             <h3>Fabrication Phase</h3>
-            <p>Where is your lab located? * <br />
-              <p1>this tells us what type of electricity you use</p1>
-            </p>
-            <p><input list="countries" id="country_3dprint" name="Countries" /></p>
-            <p class="invisible" id="_3dprint_state_selector"><input list="states" id="state_3dprint" name="States" /></p>
-
-            <p>Choose your 3D printing machine *</p>
-            <p><label class="radio_button"><input type="radio" value="makerbot" name="machine_3dprint_radio_button" checked="checked">&nbsp MakerBot Replicator+</label>
-            </p>
-            <p><label class="radio_button"><Input type="radio" value="ultimaker" name="machine_3dprint_radio_button">&nbsp Ultimaker 2 Extended</label>
-            </p>
-            <!--      <p><label class="radio_button"><Input type="radio" value="compost_bin" name="machine_3dprint_radio_button" onchange="refresh_user_input()">&nbsp Compost bin</label></p>-->
-
-            <!--      </select>-->
-
-            <p><label id="weight_3dprint_label" for="_3dprint_weight_input">Weight of your 3D model (gr) * <br />
-                <p1>i.e. find this info in your 3d printing software (Cura, Simplify 3D, other)</p1>
-              </label></p>
-            <p><input type="text" id="_3dprint_weight_input" class="input-field" placeholder="Type a number" required>&nbsp(gr)</p>
-
-            <p><label id="support_3dprint_label" for="_3dprint_support_input">Supporting material * <br />
-                <p1>i.e. aprox. how much of your 3D printing material is for support</p1>
-              </label></p>
-
-            <p>
-              <label class="radio_button" id="Gram">
-                <input type="radio" value="weight" name="support">&nbsp Grams (g)
+            <div class="question">
+              <label for="country_3dprint">
+                <h5>Where is your lab located? * </h5>
+                <h6>This determines the source of electricity for your machine</h6>
               </label>
-              <label class="radio_button" id="Percent">
-                <Input type="radio" value="support_percent" name="support">&nbsp Percentage (%)
+              <input placeholder="choose" list="countries" id="country_3dprint" name="Countries" class="input-field" />
+              <input placeholder="choose" list="states" id="state_3dprint" name="States" class="invisible input-field" />
+            </div>
+            <div class="question">
+              <h5>Choose your 3D printing machine *</h5>
+              <label class="radio_button"><input type="radio" value="makerbot" name="machine_3dprint_radio_button" checked="checked">&nbsp MakerBot Replicator+</label>
+              <label class="radio_button"><input type="radio" value="ultimaker" name="machine_3dprint_radio_button">&nbsp Ultimaker 2 Extended</label>
+            </div>
+            <div class="question">
+              <label id="weight_3dprint_label" for="_3dprint_weight_input">
+                <h5>Weight of your 3D model (gr) * </h5>
+                <h6>i.e. find this info in your 3d printing software (Cura, Simplify 3D, other)</h6>
               </label>
-            </p>
-            <p class="slidecontainer invisible" id="support_slider">
-              <input type="range" min="0" max="100" value="50" class="slider" id="_3dprint_support_slider">
-              <p2 class="displayslider" id="Support_material_display">50</p2>
-            </p>
-            <p class="invisible" id="support_field"><input type="text" id="_3dprint_support_input" class="input-field" placeholder="Type a number" required>&nbsp(gr)</p>
-
-            <p><label id="time_3d_print_label">Printing time (min) * <br />
-                <p1> i.e. 14.5 instead of 14,5</p1>
-              </label></p>
-            <p><input type="text" id="_3dprint_time_input" class="input-field" placeholder="Type a number" required>&nbspmin</p>
-
-            <p><label id="Iteration_label"># Iteration (ie.1,2,3,...) *</label></p>
-            <p><input type="text" id="_3dprint_iteration_input" class="input-field" placeholder="Type a number" required></p>
-
+              <p><input type="text" id="_3dprint_weight_input" class="input-field" placeholder="Type a number" required>&nbsp(gr)</p>
+            </div>
+            <div class="question">
+              <!-- <label id="support_3dprint_label" for="_3dprint_support_input"> -->
+              <h5>Supporting material * </h5>
+              <h6>i.e. aprox. how much of your 3D printing material is for support</h6>
+              <!-- </label> -->
+              <div class="flex">
+                <label class="radio_button first" id="Gram">
+                  <input type="radio" value="weight" name="support">&nbsp Grams (g)
+                </label>
+                <label class="radio_button" id="Percent">
+                  <input type="radio" value="support_percent" name="support">&nbsp Percentage (%)
+                </label>
+              </div>
+              <p class="slidecontainer invisible" id="support_slider">
+                <input type="range" min="0" max="100" value="50" class="slider" id="_3dprint_support_slider">
+                <p2 class="displayslider" id="Support_material_display">50</p2>
+              </p>
+              <p class="invisible" id="support_field">
+                <input type="text" id="_3dprint_support_input" class="input-field" placeholder="Type a number" required>&nbsp(gr)</p>
+            </div>
+            <div class="question">
+              <label id="time_3d_print_label" for="_3dprint_time_input">
+                <h5>Printing time (min) * </h5>
+                <h6> i.e. 14.5 instead of 14,5</h6>
+              </label>
+              <p><input type="text" id="_3dprint_time_input" class="input-field" placeholder="Type a number" required>&nbspmin</p>
+            </div>
+            <div class="question">
+              <label id="Iteration_label" for="_3dprint_iteration_input">
+                <h5># Iteration (ie.1,2,3,...) *</h5>
+              </label>
+              <input type="text" id="_3dprint_iteration_input" class="input-field" placeholder="Type a number" required>
+            </div>
           </div>
 
-          <div id="end_of_life_phase_3dprint">
+          <div class="end_life">
             <h3>End of Life Phase </h3>
-            <p>Where do you dispose your leftovers, waste or unused prototypes? *</p>
-            <p><label class="radio_button"><input type="radio" value="recycle_bin" name="end_of_life_radio_button" checked="checked">&nbsp Recycle bin</label>
-            </p>
-            <p><label class="radio_button"><Input type="radio" value="landfill" name="end_of_life_radio_button">&nbsp General trash/landfill</label>
-            </p>
-            <p><label class="radio_button"><Input type="radio" value="incineration" name="end_of_life_radio_button">&nbsp Incineration</label>
-            </p>
-            <!--      <p><label class="radio_button"><Input type="radio" value="compost_bin" name="end_of_life_radio_button" onchange="refresh_user_input()">&nbsp Compost bin</label></p>-->
-            <p><label class="radio_button"><Input type="radio" value="idk" name="end_of_life_radio_button">&nbsp I don't know</label>
-            </p>
+            <div class="question">
+              <h5>Where do you dispose your leftovers, waste or unused prototypes? *</h5>
+              <label class="radio_button"><input type="radio" value="recycle_bin" name="end_of_life_radio_button" checked="checked">&nbsp Recycle bin</label>
+              <label class="radio_button"><Input type="radio" value="landfill" name="end_of_life_radio_button">&nbsp General trash/landfill</label>
+              <label class="radio_button"><Input type="radio" value="incineration" name="end_of_life_radio_button">&nbsp Incineration</label>
+              <!--      <label class="radio_button"><Input type="radio" value="compost_bin" name="end_of_life_radio_button" onchange="refresh_user_input()">&nbsp Compost bin</label>-->
+              <label class="radio_button"><Input type="radio" value="idk" name="end_of_life_radio_button">&nbsp I don't know</label>
+            </div>
             <!--      </select>-->
           </div>
 
           <div class="button">
-            <button id="btn_submit_3dprint" type="next">Submit</button>
+            <button id="btn_clear_3dprint" type="reset">Clear all</button>
+            <button id="btn_add_3dprint" type="next">+ Add Job</button>
+            <button id="btn_submit_3dprint" type="submit">Submit</button>
           </div>
-
-
         </article>
-
 
         <article id="Laser_Cutting" class="invisible">
 
-          <div id="manufacturing_phase_lasercut">
-            <h2>Material & Manufacturing Phase</h2>
-            <p><label for="material_lasercut"> Which material will you use for prototyping? *</label></p>
-
-            <p><select id="material_lasercut" class="dropdown" name="opt">
+          <div class="manufacturing">
+            <h3>Raw Material Phase</h3>
+            <div class="question">
+              <label for="material_lasercut">
+                <h5>Which material will you use for prototyping? *</h5>
+              </label>
+              <select id="material_lasercut" class="dropdown input-field" name="opt">
                 <option>choose</option>
                 <option value="Acrylic">Acrylic</option>
                 <option value="MDF">MDF</option>
                 <option value="Cardboard">Cardboard/Matboard</option>
                 <option value="Mycelium">Mycelium</option>
-              </select></p>
-
-
-            <p><label id="mat_thickness_label">What's your material thickness? *</label></p>
-            <p><input type="text" id="mat_thickness_input_lasercut" class="input-field" placeholder="Type a number" required>&nbspmm</p>
+              </select>
+            </div>
+            <div class="question">
+              <label id="mat_thickness_label">
+                <h5>What's your material thickness? *</h5>
+              </label>
+              <p><input type="text" id="mat_thickness_input_lasercut" class="input-field" placeholder="Type a number" required>&nbspmm</p>
+            </div>
           </div>
 
-          <div id="transportation_phase_lasercut">
-            <h2>Transportation Phase</h2>
-            <p>Where was your material manufactured? * <br />
-              <p1>i.e. local= same state; national= same country; international; outside country</p1>
-            </p>
-            <p><select id="where_lasercut" class="dropdown" name="opt">
+          <div class="transportation">
+            <h3>Transportation Phase</h3>
+            <div class="question">
+              <label for="where_lasercut">
+                <h5>Where was your material manufactured? * </h5>
+                <h6>i.e. local= same state; national= same country; international; outside country</h6>
+              </label>
+              <select id="where_lasercut" class="dropdown input-field" name="opt">
                 <option>choose</option>
                 <option value="International">International</option>
                 <option value="National">National</option>
                 <option value="Local">Local</option>
                 <option value="I don't know">I don't know</option>
-              </select></p>
-
-            <p>Which method of shipment was used to deliver the material to your lab? *</p>
-            <p><select id="shipment_lasercut" class="dropdown" name="opt">
+              </select>
+            </div>
+            <div class="question">
+              <label for="shipment_lasercut">
+                <h5>Which method of shipment was used to deliver the material to your lab? *</h5>
+              </label>
+              <select id="shipment_lasercut" class="dropdown input-field" name="opt">
                 <option>choose</option>
                 <option value="By air">By air</option>
                 <option value="By sea">By sea</option>
                 <option value="By road">By road</option>
                 <option value="I don't know">I don't know</option>
-              </select></p>
+              </select>
+            </div>
           </div>
 
-          <div id="fabrication_phase_lasercut">
-            <h2>Fabrication Phase</h2>
-            <p>Where is your lab located? * <br />
-              <p1>this tells us what type of electricity you use</p1>
-            </p>
-            <p><input list="countries" id="country_laser" name="Countries" /></p>
-            <p class="invisible" id="_laser_state_selector"><input list="states" id="state_laser" name="States" /></p>
-
-            <p><label for="machine_lasercut"> Choose your machine's model *</label></p>
-
-            <p><select id="machine_lasercut" class="Laser_input" name="opt">
+          <div class="fabrication">
+            <h3>Fabrication Phase</h3>
+            <div class="question">
+              <label for="country_laser">
+                <h5>Where is your lab located? * </h5>
+                <h6>This determines the source of electricity for your machine</h6>
+              </label>
+              <input placeholder="choose" list="countries" id="country_laser" name="Countries" class="input-field" />
+              <input placeholder="choose" list="states" id="state_laser" name="States" class="invisible input-field" />
+            </div>
+            <div class="question">
+              <label for="machine_lasercut">
+                <h5> Choose your machine's model *</h5>
+              </label>
+              <select id="machine_lasercut" class="Laser_input input-field" name="opt">
                 <option>choose</option>
                 <option value="Trotec">Trotec: Speedy 400</option>
                 <option value="Epilog">Epilog: Fusion Pro 32</option>
                 <option value="Universal">Universal: PLS6.75</option>
-              </select></p>
-
-
-            <p><label id="sheetsize_lasercut" for="Length_laser_input_lasercut">Area of cut material *</label></p>
-
-            <p>
-              <label class="radio_button" id="Area">
-                <input type="radio" value="area" name="area">&nbsp Area (m2)
+              </select>
+            </div>
+            <div class="question">
+              <h5>Area of cut material *</h5>
+              <div class="flex">
+                <label class="radio_button first" id="Area">
+                  <input type="radio" value="area" name="area">&nbsp Area (m2)
+                </label>
+                <label class="radio_button" id="Length">
+                  <input type="radio" value="length" name="area">&nbsp Length x Width
+                  (m)
+                </label>
+              </div>
+              <p class="invisible" id="area_length">Length: <input type="text" id="length_input_lasercut" class="input-field" style="width:60px;" placeholder="Number" required>&nbspm x Width: <input type="text" id="width_input_lasercut"
+                  class="input-field" style="width:60px;" placeholder="Number" required>&nbspm
+              </p>
+              <p class="invisible" id="area_area"><input type="text" id="area_input_lasercut" class="input-field" placeholder="Type a number" required>&nbsp(m2)</p>
+            </div>
+            <div class="question">
+              <h5>Waste *</h5>
+              <p>
+                <label class="radio_button" id="Waste_Area">
+                  <input type="radio" value="waste_area" name="waste">&nbsp Waste Area (m2)
+                </label>
+                <label class="radio_button" id="Waste_Percent">
+                  <input type="radio" value="waste_percent" name="waste">&nbsp Percentage
+                  (%)
+                </label>
+              </p>
+              <p class="slidecontainer invisible" id="waste_slider">
+                <input type="range" min="0" max="100" value="50" class="slider" id="waste_laser">
+                <p2 class="displayslider" id="Waste_laser_display">50</p2>
+              </p>
+              <p class="invisible" id="waste_field"><input type="text" id="waste_laser_area" class="input-field" placeholder="Type a number" required>&nbsp(m2)</p>
+            </div>
+            <div class="question">
+              <label id="time_label" for="time">
+                <h5>Cutting time (min) * </h5>
+                <h6> i.e. 14.5 instead of 14,5</h6>
               </label>
-              <label class="radio_button" id="Length">
-                <Input type="radio" value="length" name="area">&nbsp Length x Width
-                (m)
+              <p><input type="text" id="time" class="input-field" placeholder="Type a number" required>&nbspmin</p>
+            </div>
+            <div class="question">
+              <label id="Iterations_label" for="laser_iteration">
+                <h5># Iteration (ie.1,2,3,...) *</h5>
               </label>
-            </p>
-
-            <p class="invisible" id="area_length">Length: <input type="text" id="length_input_lasercut" class="input-field" style="width:60px;" placeholder="Number" required>&nbspm x Width: <input type="text" id="width_input_lasercut"
-                class="input-field" style="width:60px;" placeholder="Number" required>&nbspm
-            </p>
-
-            <p class="invisible" id="area_area"><input type="text" id="area_input_lasercut" class="input-field" placeholder="Type a number" required>&nbsp(m2)</p>
-
-            <p><label id="waste_laser_label" for="waste_laser">Waste *</label></p>
-
-            <p>
-              <label class="radio_button" id="Waste_Area">
-                <input type="radio" value="waste_area" name="waste">&nbsp Waste Area (m2)
-              </label>
-              <label class="radio_button" id="Waste_Percent">
-                <Input type="radio" value="waste_percent" name="waste">&nbsp Percentage
-                (%)
-              </label>
-            </p>
-            <p class="slidecontainer invisible" id="waste_slider">
-              <input type="range" min="0" max="100" value="50" class="slider" id="waste_laser">
-              <p2 class="displayslider" id="Waste_laser_display">50</p2>
-            </p>
-            <p class="invisible" id="waste_field"><input type="text" id="waste_laser_area" class="input-field" placeholder="Type a number" required>&nbsp(m2)</p>
-
-
-            <p><label id="time_label">Cutting time (min) * <br />
-                <p1> i.e. 14.5 instead of 14,5</p1>
-              </label></p>
-            <p><input type="text" id="time" class="input-field" placeholder="Type a number" required>&nbspmin
-            </p>
-
-            <p><label id="Iterations_label"># Iteration (ie.1,2,3,...) *</label></p>
-            <p><input type="text" id="laser_iteration" class="input-field" placeholder="Type a number" required>
-            </p>
-
+              <input type="text" id="laser_iteration" class="input-field" placeholder="Type a number" required>
+            </div>
           </div>
 
-          <div id="end_of_life_phase_lasercut">
-            <h2>End of Life Phase</h2>
-            <p>Where do you dispose your leftovers, waste or unused prototypes? *</p>
-            <p id="recycling"><label class="radio_button"><input type="radio" value="recycling" name="end_life_lasercut">&nbsp Recycling
+          <div class="end_life">
+            <h3>End of Life Phase</h3>
+            <div class="question">
+              <h5>Where do you dispose your leftovers, waste or unused prototypes? *</h5>
+              <label class="radio_button" id="recycling"><input type="radio" value="recycling" name="end_life_lasercut">&nbsp Recycling
                 bin</label>
-            </p>
-            <p><label class="radio_button"><Input type="radio" value="landfill" name="end_life_lasercut">&nbsp General
-                waste/landfill</label></p>
-
-            <p><label class="radio_button"><Input type="radio" value="incineration" name="end_life_lasercut">&nbsp Incineration</label>
-            </p>
-            <!--      <p><label class="radio_button"><Input type="radio" value="change" name="change">&nbsp Compost bin</label></p>-->
-            <p><label class="radio_button"><Input type="radio" value="idk" name="end_life_lasercut">&nbsp I don't
-                know</label></p>
-            </select>
+              <label class="radio_button"><Input type="radio" value="landfill" name="end_life_lasercut">&nbsp General
+                waste/landfill</label>
+              <label class="radio_button"><Input type="radio" value="incineration" name="end_life_lasercut">&nbsp Incineration</label>
+              <!--      <p><label class="radio_button"><Input type="radio" value="change" name="change">&nbsp Compost bin</label></p>-->
+              <label class="radio_button"><Input type="radio" value="idk" name="end_life_lasercut">&nbsp I don't
+                know</label>
+            </div>
           </div>
 
           <div class="button">
-            <button id="btn_submit_laser" type="next">Submit</button>
+            <button id="btn_clear_laser" type="reset">Clear all</button>
+            <button id="btn_add_laser" type="next">+ Add Job</button>
+            <button id="btn_submit_laser" type="submit">Submit</button>
           </div>
 
         </article>
@@ -587,20 +607,6 @@
     <option value="WI">Wisconsin</option>
     <option value="WY">Wyoming</option>
   </datalist>
-
-  <!--<div id="chart"  class="invisible">-->
-  <!--  <a><img src="images/chart.png" alt="Chart"class="chart"></a>-->
-
-  <!--</div>-->
-
-  <!--<div id="chart"  class="invisible">-->
-  <!--  <div id="chartdiv"></div>-->
-  <!--</div>-->
-
-  <!-- <footer>
-    <p><a href="https://validator.w3.org/">Valid HTML</a></p>
-    <p><a href="https://jigsaw.w3.org/css-validator/">Valid CSS</a></p>
-</footer> -->
 
   <script src="script.js"></script>
   <script src="3d_print.js"></script>

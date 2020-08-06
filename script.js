@@ -19,7 +19,7 @@ Cutting.addEventListener("click", function() {
   cut.setAttribute('class', 'visible');
 });
 
-let _3dprint_state_select = document.getElementById('_3dprint_state_selector');
+let _3dprint_state_select = document.getElementById('state_3dprint');
 
 let _3dprint_country_select = document.getElementById('country_3dprint')
 _3dprint_country_select.addEventListener('change', function(e) {
@@ -30,7 +30,7 @@ _3dprint_country_select.addEventListener('change', function(e) {
   }
 });
 
-let _laser_state_select = document.getElementById('_laser_state_selector');
+let _laser_state_select = document.getElementById('state_laser');
 
 let _laser_country_select = document.getElementById('country_laser')
 _laser_country_select.addEventListener('change', function(e) {
@@ -338,7 +338,7 @@ function drawChart_co2(results) {
     //margin: auto,
     width: 700,
     height: 600,
-    colors: ['#3C91CE', '#44C6E7', '#A8D8B7', '#FDD96E'],
+    colors: ['#837BE7', '#E6BDF2', '#F97494', '#FD9F82'],
     titleTextStyle: {
       color: '#3b4456',
       fontSize: 16,
