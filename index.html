@@ -72,10 +72,10 @@
 
   <div class="container-fluid">
     <div class="row">
-      <div class="col-sm-6">
+      <div class="col_form">
         <article id="3D_Printing" class="invisible">
           <div class="manufacturing">
-            <h3>Raw Material Phase</h3>
+            <h3>Raw Material Processing Phase</h3>
             <div class="question">
               <label for="material_3dprint">
                 <h5>Which material will you use for prototyping? *</h5>
@@ -90,16 +90,6 @@
                 <option value="Nylon_recycled">Recycled Nylon</option>
               </select>
             </div>
-            <div class="question">
-              <label for="diameter">
-                <h5> What's your filament diameter? *</h5>
-              </label>
-              <select id="diameter" class="dropdown input-field" name="opt">
-                <option>choose</option>
-                <option value="2.85">2.85mm</option>
-                <option value="1.75">1.75mm</option>
-              </select>
-            </div>
           </div>
 
           <div class="transportation">
@@ -107,7 +97,7 @@
             <div class="question">
               <label for="where_3d_print">
                 <h5>Where was your material manufactured? * </h5>
-                <h6>i.e. local= same state; national= same country; international= outside country</h6>
+                <h6>e.g. local= same state; national= same country; international= outside country</h6>
               </label>
               <select id="where_3d_print" class="dropdown input-field" name="opt">
                 <option>choose</option>
@@ -132,7 +122,7 @@
           </div>
 
           <div class="fabrication">
-            <h3>Fabrication Phase</h3>
+            <h3>Digital Fabrication Phase</h3>
             <div class="question">
               <label for="country_3dprint">
                 <h5>Where is your lab located? * </h5>
@@ -149,14 +139,14 @@
             <div class="question">
               <label id="weight_3dprint_label" for="_3dprint_weight_input">
                 <h5>Weight of your 3D model (gr) * </h5>
-                <h6>i.e. find this info in your 3d printing software (Cura, Simplify 3D, other)</h6>
+                <h6>e.g. find this info in your 3d printing software (Cura, Simplify 3D, other)</h6>
               </label>
               <p><input type="text" id="_3dprint_weight_input" class="input-field" placeholder="Type a number" required>&nbsp(gr)</p>
             </div>
             <div class="question">
               <!-- <label id="support_3dprint_label" for="_3dprint_support_input"> -->
               <h5>Supporting material * </h5>
-              <h6>i.e. aprox. how much of your 3D printing material is for support</h6>
+              <h6>e.g. aprox. how much of your 3D printing material is for support</h6>
               <!-- </label> -->
               <div class="flex">
                 <label class="radio_button first" id="Gram">
@@ -176,7 +166,7 @@
             <div class="question">
               <label id="time_3d_print_label" for="_3dprint_time_input">
                 <h5>Printing time (min) * </h5>
-                <h6> i.e. 14.5 instead of 14,5</h6>
+                <h6> e.g. 14.5 instead of 14,5</h6>
               </label>
               <p><input type="text" id="_3dprint_time_input" class="input-field" placeholder="Type a number" required>&nbspmin</p>
             </div>
@@ -211,7 +201,7 @@
         <article id="Laser_Cutting" class="invisible">
 
           <div class="manufacturing">
-            <h3>Raw Material Phase</h3>
+            <h3>Raw Material Processing Phase</h3>
             <div class="question">
               <label for="material_lasercut">
                 <h5>Which material will you use for prototyping? *</h5>
@@ -224,12 +214,6 @@
                 <option value="Mycelium">Mycelium</option>
               </select>
             </div>
-            <div class="question">
-              <label id="mat_thickness_label">
-                <h5>What's your material thickness? *</h5>
-              </label>
-              <p><input type="text" id="mat_thickness_input_lasercut" class="input-field" placeholder="Type a number" required>&nbspmm</p>
-            </div>
           </div>
 
           <div class="transportation">
@@ -237,7 +221,7 @@
             <div class="question">
               <label for="where_lasercut">
                 <h5>Where was your material manufactured? * </h5>
-                <h6>i.e. local= same state; national= same country; international; outside country</h6>
+                <h6>e.g. local= same state; national= same country; international; outside country</h6>
               </label>
               <select id="where_lasercut" class="dropdown input-field" name="opt">
                 <option>choose</option>
@@ -262,7 +246,7 @@
           </div>
 
           <div class="fabrication">
-            <h3>Fabrication Phase</h3>
+            <h3>Digital Fabrication Phase</h3>
             <div class="question">
               <label for="country_laser">
                 <h5>Where is your lab located? * </h5>
@@ -281,6 +265,12 @@
                 <option value="Epilog">Epilog: Fusion Pro 32</option>
                 <option value="Universal">Universal: PLS6.75</option>
               </select>
+            </div>
+            <div class="question">
+              <label id="mat_thickness_label">
+                <h5>What's your material thickness? *</h5>
+              </label>
+              <p><input type="text" id="mat_thickness_input_lasercut" class="input-field" placeholder="Type a number" required>&nbspmm</p>
             </div>
             <div class="question">
               <h5>Area of cut material *</h5>
@@ -318,7 +308,7 @@
             <div class="question">
               <label id="time_label" for="time">
                 <h5>Cutting time (min) * </h5>
-                <h6> i.e. 14.5 instead of 14,5</h6>
+                <h6> e.g. 14.5 instead of 14,5</h6>
               </label>
               <p><input type="text" id="time" class="input-field" placeholder="Type a number" required>&nbspmin</p>
             </div>
@@ -353,7 +343,7 @@
 
         </article>
       </div>
-      <div class="col-sm-6">
+      <div class="col_graph">
         <div class="row">
           <div class="col-sm-12">
             <div id="chart_div_energy"></div>
@@ -368,6 +358,21 @@
         </div>
       </div>
     </div>
+  </div>
+
+  <div id="original" class="invisible">
+    <!-- <ul>
+      <li><b>Material: </b>Recycled PLA</li>
+      <li><b>Transport Distance: </b>National</li>
+      <li><b>Transport Shipment: </b>By road</li>
+      <li><b>Electricity Coefficient: </b>0.637 CO2 kg/kWh</li>
+      <li><b>Machine Model: </b>makerbot</li>
+      <li><b>Prototype Weight: </b>100 gr</li>
+      <li><b>Prototype Waste: </b>20 gr</li>
+      <li><b>Fabrication Time: </b>600 min</li>
+      <li><b>Iterations: </b>2</li>
+      <li><b>Disposal: </b>recycle_bin</li>
+    </ul> -->
   </div>
 
   <datalist id="countries">

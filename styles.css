@@ -29,7 +29,7 @@ h2 {
   color: #252b37;
 }
 
-/* 
+/*
 h3 {
   writing-mode: vertical-rl;
   text-orientation: sideways;
@@ -79,6 +79,22 @@ input, label {
 
 p input, label input {
   display: inline;
+}
+
+.col_form {
+  flex: 0 0 40%;
+  max-width: 40%;
+  padding-left: 2rem;
+}
+
+.col_graph {
+  flex: 0 0 60%;
+  max-width: 60%;
+  padding-left: 2rem;
+}
+
+#state_laser, #state_3dprint {
+  margin-top: 1em;
 }
 
 /* ['#837BE7', '#E6BDF2', '#F97494', '#FD9F82'] */
@@ -131,6 +147,17 @@ button:hover {
 a {
   color: #b4b8c5;
   text-decoration: underline
+}
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+#original {
+  position: absolute;
+  z-index: 2;
 }
 
 /* a:hover {

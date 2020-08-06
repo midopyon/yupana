@@ -85,7 +85,7 @@ function get_user_input() {
      _laser_electric = electricity_coeff[country];
    }
 
-  let iteration = parseFloat(document.getElementById("laser_iteration").value)
+ _laser_iteration = parseFloat(document.getElementById("laser_iteration").value)
 
   _laser_thickness = parseFloat(document.getElementById("mat_thickness_input_lasercut").value) / 1000; //convert from mm to m
   if(document.querySelector("input[value=length]").checked) {
@@ -96,7 +96,7 @@ function get_user_input() {
     _laser_area = parseFloat(document.getElementById("area_input_lasercut").value);
   }
   console.log(_laser_area);
-  _laser_weight = _laser_area * _laser_thickness * material_laser[_laser_material].density * iteration; //weight (kg) = volume (m3) * density (kg/m3)
+  _laser_weight = _laser_area * _laser_thickness * material_laser[_laser_material].density * _laser_iteration; //weight (kg) = volume (m3) * density (kg/m3)
   console.log("Weight: " + _laser_weight);
   if(document.querySelector("input[value=waste_percent]").checked) {
     let percent_waste = parseFloat(document.getElementById("waste_laser").value) / 100;
@@ -105,14 +105,14 @@ function get_user_input() {
     console.log("calc waste area");
     let _laser_waste_area = parseFloat(document.getElementById("waste_laser_area").value); //in m2
     console.log(_laser_waste_area);
-    _laser_waste = _laser_waste_area * _laser_thickness * material_laser[_laser_material].density * iteration;
+    _laser_waste = _laser_waste_area * _laser_thickness * material_laser[_laser_material].density * _laser_iteration;
   }
 
   console.log("Waste: " + _laser_waste);
   // e = document.getElementById("machine_lasercut");
   //  _laser_model = e.options[e.selectedIndex].value;
 
-   _laser_cut_time = parseFloat(document.getElementById("time").value) * 60 * iteration; //covert from min to sec
+   _laser_cut_time = parseFloat(document.getElementById("time").value) * 60 * _laser_iteration; //covert from min to sec
 
    var end_of_life_radios_nodes = document.getElementsByName('end_life_lasercut');
    l = end_of_life_radios_nodes.length
@@ -142,10 +142,6 @@ function lifecycle_calculation_laser() {
   _co2.transportation = _laser_weight * results_transportation.co2;
 
   //fabrication
-  // console.log(_laser_cut_time);
-  // console.log(_laser_cut_time * machine_energy[_laser_model].cutting / 1000000);
-  // console.log(_laser_cut_time * .3 * machine_energy[_laser_model].cutting / 1000000);
-  // console.log(_laser_cut_time * .5 * machine_energy[_laser_model].cutting / 1000000);
   _energy.fabrication = (_laser_cut_time * .85 * machine_energy[_laser_model].cutting + _laser_cut_time * .15 * machine_energy[_laser_model].stand_by  + _laser_cut_time * .2 * machine_energy[_laser_model].idle) / 1000000;
 
   _co2.fabrication = _energy.fabrication / 3.6 * material_laser[_laser_material].co2_DF_electricity;
@@ -166,5 +162,19 @@ function start_graphing() {
   get_user_input();
   let results = lifecycle_calculation_laser();
   console.log(results);
+  if (results_energy_ar.length == 0) {
+    original = {
+      material: _laser_material,
+      transport_distance: _laser_location,
+      transport_shipment: _laser_shipment,
+      df_electricity: _laser_electric,
+      machine_model: _laser_model,
+      prototype_weight: _laser_weight * 1000 / _laser_iteration,
+      prototype_waste: _laser_waste * 1000 / _laser_iteration,
+      fabrication_time: _laser_cut_time / 60,
+      iterations: _laser_iteration,
+      disposal: _laser_end_life
+    }
+  }
   add_ar_draw(results.energy, results.co2);
 }

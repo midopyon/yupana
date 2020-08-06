@@ -2,6 +2,7 @@
 
 let results_energy_ar = [];
 let results_co2_ar = [];
+let original = {};
 
 const Printing = document.getElementById("Printing");
 const print = document.getElementById("3D_Printing");
@@ -34,7 +35,11 @@ let _laser_state_select = document.getElementById('state_laser');
 
 let _laser_country_select = document.getElementById('country_laser')
 _laser_country_select.addEventListener('change', function(e) {
-  if (_3dprint_country_select.value == "United States") {
+  console.log('checking country');
+  console.log(_laser_state_select);
+  console.log(_laser_country_select.value);
+  if (_laser_country_select.value == "United States") {
+    console.log('found US');
     _laser_state_select.classList.remove('invisible');
   } else {
     _laser_state_select.classList.add('invisible');
@@ -242,6 +247,8 @@ function add_ar_draw(results_energy, results_co2) {
     results_co2_ar = [results_co2];
     update_button();
   } else if (results_energy_ar.length == 1) {
+    console.log(original);
+    create_original();
     results_energy_ar[0].name = 'Original ' + results_energy_ar[0].name;
     results_co2_ar[0].name = 'Original ' + results_co2_ar[0].name;
     results_energy.name = 'Updated ' + results_energy.name;
@@ -256,6 +263,26 @@ function add_ar_draw(results_energy, results_co2) {
   }
   drawChart_energy(results_energy_ar);
   drawChart_co2(results_co2_ar);
+}
+
+function create_original() {
+  let original_div = document.getElementById('original');
+  original_div.classList.remove('invisible');
+  original_div.innerHTML = "<h5>Original Values</h5><ul><li><b>Material: </b>" + original.material +
+   "</li><li><b>Transport Distance: </b>" + original.transport_distance +
+   "</li><li><b>Transport Shipment: </b>" + original.transport_shipment +
+   "</li><li><b>Electricity Coefficient: </b>" + original.df_electricity +
+   " CO2 kg/kWh</li><li><b>Machine Model: </b>" + original.machine_model +
+   "</li><li><b>Prototype Weight: </b>" + original.prototype_weight +
+   " gr</li><li><b>Prototype Waste: </b>" + original.prototype_waste +
+   " gr</li><li><b>Fabrication Time: </b>" + original.fabrication_time +
+   " min</li><li><b>Iterations: </b>" + original.iterations +
+   "</li><li><b>Disposal: </b>" + original.disposal + "</li><ul>";
+
+   let chartRect = document.querySelector('#chart_div_energy').getBoundingClientRect();
+   console.log(chartRect);
+   original_div.style.top = (window.scrollY + chartRect.top + 220) + 'px';
+   original_div.style.left = (window.scrollX + chartRect.left + 500) + 'px';
 }
 
 function drawChart_energy(results) {
