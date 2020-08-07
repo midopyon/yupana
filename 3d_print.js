@@ -11,9 +11,10 @@ var _3dprint_machine = null;
 var _3dprint_end_life = null;
 var _3dprint_electric = null;
 var _3dprint_country = null;
+var _3dprint_end_life = null;
 var recycled = false;
 // var material = 'PLA'
-// var end_of_life_radios = 'recycle_bin'
+// var _3dprint_end_life= 'recycle_bin'
 // var machine_3dprint_radios = 'makerbot'
 var first = true
 
@@ -142,7 +143,7 @@ function refresh_user_input() {
   for (i = 0; i < l; i++) {
     checked = end_of_life_radios_nodes[i].checked
     if (checked === true) {
-      end_of_life_radios = end_of_life_radios_nodes[i].value;
+      _3dprint_end_life = end_of_life_radios_nodes[i].value;
       break;
     }
   }
@@ -190,7 +191,7 @@ function lifecycle_calculation_3dprint() {
   results_fabrication.co2 = results_fabrication.energy * _3dprint_electric / 3.6;
 
   //end_life
-  var results_end_life = end_life_calculation(_3dprint_support, end_of_life_radios, {energy: material_3dprint[_3dprint_material].energy_incineration,
+  var results_end_life = end_life_calculation(_3dprint_support, _3dprint_end_life, {energy: material_3dprint[_3dprint_material].energy_incineration,
   co2: material_3dprint[_3dprint_material].co2_combustion});
 
 
@@ -244,7 +245,7 @@ function start_the_magic() {
       prototype_waste: Math.round(_3dprint_support * 1000 / _3dprint_iteration),
       fabrication_time: _3dprint_time / 60,
       iterations: _3dprint_iteration,
-      disposal: end_of_life_radios
+      disposal: _3dprint_end_life
     }
   }
   set_manu_3dprint();
@@ -352,16 +353,16 @@ function set_end_life_3dprint() {
   let textbox = document.querySelector('#end_life_textbox_3dprint');
   _3dprint_end_life_exclamation.classList.remove('invisible');
   let text = document.createDocumentFragment();
-  if(end_of_life_radios == 'idk') {
+  if(_3dprint_end_life == 'idk') {
     text.appendChild(document.createTextNode('Since you didn’t specify an end of life type, we assume your material will end up in the landfill.'));
     text.appendChild(document.createElement("BR"));
-    end_of_life_radios = 'landfill';
+    _3dprint_end_life = 'landfill';
   }
-  if(end_of_life_radios == 'recycle_bin') {
+  if(_3dprint_end_life == 'recycle_bin') {
     text.appendChild(document.createTextNode('Recycling reduces the need for extracting, refining and processing raw materials all of which create substantial air and water pollution. Recycling allows the waste to become the raw material for a new material with lower embodied energy than a primary manufactured one. However, the recycling process still generates CO2 emissions which can be avoided by using compostable materials. We only analyzed the cost of transporting the waste to a recycling facility.'));
-  } else if (end_of_life_radios == 'incineration') {
+  } else if (_3dprint_end_life == 'incineration') {
     text.appendChild(document.createTextNode('Even though the incineration process generates energy bonus because of the burning process, it still creates about 8000% more CO2 emissions than when the waste is recycled. We analyzed the cost of transporting the waste to a garbage facility and the energy and CO2 emissions generated from burning the waste.'));
-  } else if (end_of_life_radios == 'landfill') {
+  } else if (_3dprint_end_life == 'landfill') {
     if(_3dprint_material == 'PLA') {
       text.appendChild(document.createTextNode('If PLA ends up in the landfill, it breaks down anaerobically to release methane, a greenhouse gas that is about 30 times more potent than carbon dioxide and that contributes to climate change (2). Sending your waste to recycling reduces the need for extracting, refining and processing raw materials all of which create substantial air and water pollution. Recycling allows the waste to become the raw material for a new material with lower embodied energy than a primary manufactured one. 20 % of total US methane emissions come from landfills. We only analyzed the cost of transporting the waste to a landfill.'));
     } else if (_3dprint_material == 'ABS') {

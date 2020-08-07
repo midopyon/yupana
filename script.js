@@ -84,10 +84,11 @@ document.getElementById('Length').addEventListener('click', function() {
 let recycle_choice = document.getElementById('recycling');
 let material_choice = document.getElementById('material_lasercut');
 material_choice.addEventListener('change', function() {
-  if (material_choice.options[material_choice.selectedIndex].value == 'Acrylic') {
-    recycle_choice.classList.add('invisible');
-  } else {
+  let value = material_choice.options[material_choice.selectedIndex].value;
+  if (value == 'Cardboard' || value == 'Cardboard_recycled') {
     recycle_choice.classList.remove('invisible');
+  } else {
+    recycle_choice.classList.add('invisible');
   }
 });
 
@@ -421,7 +422,7 @@ function get_transport_text(location, shipment) {
   if (shipment == "By air") {
     text_shipment = document.createTextNode('Airplanes have a 1000% more environmental impact related to energy than road transportation and they emit 700% more CO2. Switching to ocean or road transportation if possible uses less fuel and generates less CO2 emissions.');
   } else if (shipment == 'By sea') {
-    text_shipment = document.createTextNode("Great choice! Ocean transportation has the least environmental impact when it's combined with local - road distances to ship a material. It impacts 700% less in energy and generates 730% less CO2 emissions than national transportation by road. Longer transportation distances require more fuel and therefore generate more CO2 emissions."");
+    text_shipment = document.createTextNode("Great choice! Ocean transportation has the least environmental impact when it's combined with local - road distances to ship a material. It impacts 700% less in energy and generates 730% less CO2 emissions than national transportation by road. Longer transportation distances require more fuel and therefore generate more CO2 emissions.");
   } else if (shipment == 'By road') {
     text_shipment = document.createTextNode('Using a 32 metric ton truck to travel national distances has 30% less environmental impact related to energy than using a 14 metric ton truck, and it emits 50% less CO2. A good combination of road shipping will always be to avoid xpress deliveries because they use a light goods vehicle that has a 115% more environmental impact related to energy than a 14 metric truck and it emits 63% more CO2.');
   } else {

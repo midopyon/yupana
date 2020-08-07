@@ -1,4 +1,4 @@
-let _laser_material, _laser_thickness, _laser_location, _laser_shipment, _laser_model, _laser_cut_time, _laser_sheet_area, _laser_proto_area, _laser_weight, _laser_end_life, _laser_waste, _laser_electric, _laser_country;
+let _laser_material, _laser_thickness, _laser_location, _laser_shipment, _laser_machine, _laser_cut_time, _laser_sheet_area, _laser_proto_area, _laser_weight, _laser_end_life, _laser_waste, _laser_electric, _laser_country;
 
 //emb_energy_avg: emb eng primary + processing
 //co2_avg: co2 Emissions + processing
@@ -6,9 +6,6 @@ const material_laser = {
   Acrylic: { //missing data
     emb_energy_avg: (90 + 131.5) / 2,
     co2_avg: (2.8 + 3.2) / 2,
-    // co2_DF_electricity: null,
-    // emb_energy_recycling_avg: null,
-    // co2_recycling_avg: null,
     co2_combustion: (1.96 + 2.05) / 2,
     energy_incineration: (-25.1 + -25.6) / 2,
     density: 1180
@@ -16,9 +13,6 @@ const material_laser = {
   MDF: {
     emb_energy_avg: (11.3 + 11.9) / 2, //missing processing
     co2_avg: (1.1 + 1.2) / 2 + (3.67 + 3.68) / 2,
-    // co2_DF_electricity: 0.5,
-    emb_energy_recycling_avg: (18 + 21) / 2,
-    co2_recycling_avg: (0.72 + 0.8) / 2,
     co2_combustion: (1.8 + 1.9) / 2,
     energy_incineration: (-19 + -20) / 2,
     density: (680 + 830) / 2
@@ -26,9 +20,13 @@ const material_laser = {
   Cardboard: {
     emb_energy_avg: (49 + 54) / 2 + (0.475 + 0.525) / 2,
     co2_avg: (1.1 + 1.2) / 2 + (0.023 + 0.026) / 2,
-    // co2_DF_electricity: 0.5,
-    emb_energy_recycling_avg: (18 + 21) / 2,
-    co2_recycling_avg: (0.72 + 0.8) / 2,
+    co2_combustion: (1.8 + 1.9) / 2,
+    energy_incineration: (-19 + -20) / 2,
+    density: (480 + 860) / 2 //kg/m3
+  },
+  Cardboard_recycled: {
+    emb_energy_avg: (18 + 21) / 2,
+    co2_avg: (0.72 + 0.8) / 2,
     co2_combustion: (1.8 + 1.9) / 2,
     energy_incineration: (-19 + -20) / 2,
     density: (480 + 860) / 2 //kg/m3
@@ -36,9 +34,6 @@ const material_laser = {
   Mycelium: { //missing vals
     emb_energy_avg: 1.227,
     co2_avg: 0.039,
-    // co2_DF_electricity: 0.5,
-    // emb_energy_recycling_avg: null,
-    // co2_recycling_avg: null,
     co2_combustion: null,
     energy_incineration: null,
     density: 390
@@ -74,7 +69,7 @@ function get_user_input() {
   _laser_shipment = e.options[e.selectedIndex].value;
 
   e = document.getElementById("machine_lasercut");
-   _laser_model = e.options[e.selectedIndex].value;
+   _laser_machine = e.options[e.selectedIndex].value;
 
   _laser_country = document.getElementById("country_laser").value;
 
@@ -110,7 +105,7 @@ function get_user_input() {
 
   console.log("Waste: " + _laser_waste);
   // e = document.getElementById("machine_lasercut");
-  //  _laser_model = e.options[e.selectedIndex].value;
+  //  _laser_machine = e.options[e.selectedIndex].value;
 
    _laser_cut_time = parseFloat(document.getElementById("time").value) * 60 * _laser_iteration; //covert from min to sec
 
@@ -142,7 +137,7 @@ function lifecycle_calculation_laser() {
   _co2.transportation = _laser_weight * results_transportation.co2;
 
   //fabrication
-  _energy.fabrication = (_laser_cut_time * .85 * machine_energy[_laser_model].cutting + _laser_cut_time * .15 * machine_energy[_laser_model].stand_by  + _laser_cut_time * .2 * machine_energy[_laser_model].idle) / 1000000;
+  _energy.fabrication = (_laser_cut_time * .85 * machine_energy[_laser_machine].cutting + _laser_cut_time * .15 * machine_energy[_laser_machine].stand_by  + _laser_cut_time * .2 * machine_energy[_laser_machine].idle) / 1000000;
 
   _co2.fabrication = _energy.fabrication / 3.6 * material_laser[_laser_material].co2_DF_electricity;
 
@@ -168,7 +163,7 @@ function start_graphing() {
       transport_distance: _laser_location,
       transport_shipment: _laser_shipment,
       df_electricity: _laser_electric,
-      machine_model: _laser_model,
+      machine_model: _laser_machine,
       prototype_weight: _laser_weight * 1000 / _laser_iteration,
       prototype_waste: _laser_waste * 1000 / _laser_iteration,
       fabrication_time: _laser_cut_time / 60,
@@ -176,59 +171,136 @@ function start_graphing() {
       disposal: _laser_end_life
     }
   }
+  set_manu_laser();
+  set_transport_laser();
+  set_fabrication_laser();
+  set_end_life_laser();
   add_ar_draw(results.energy, results.co2);
 }
-//
-// function set_manu_laser() {
-//   _laser_manu_exclamation.classList.remove('invisible');
-// }
-// //manufacturing
-// let _laser_manu_exclamation = document.querySelector('#manufacturing_exclamation_laser');
-// _laser_manu_exclamation.addEventListener('click', function() {
-//   document.querySelector('#manufacturing_textbox_laser').classList.remove('invisible');
-// });
-//
-// document.querySelector('#manufacturing_textbox_laser div').addEventListener('click', function() {
-//   document.querySelector('#manufacturing_textbox_laser').classList.add('invisible');
-// });
-// //transportation
-// function set_transport_laser() {
-//   _laser_transport_exclamation.classList.remove('invisible');
-// }
-//
-// let _laser_transport_exclamation = document.querySelector('#transport_exclamation_laser');
-// _laser_transport_exclamation.addEventListener('click', function() {
-//   document.querySelector('#transport_textbox_laser').classList.remove('invisible');
-// });
-//
-// document.querySelector('#transport_textbox_laser div').addEventListener('click', function() {
-//   document.querySelector('#transport_textbox_laser').classList.add('invisible');
-// });
-//
-// //fabrication
-// function set_fabrication_laser() {
-//   _laser_fabrication_exclamation.classList.remove('invisible');
-// }
-//
-// let _laser_fabrication_exclamation = document.querySelector('#fabrication_exclamation_laser');
-// _laser_fabrication_exclamation.addEventListener('click', function() {
-//   document.querySelector('#fabrication_textbox_laser').classList.remove('invisible');
-// });
-//
-// document.querySelector('#fabrication_textbox_laser div').addEventListener('click', function() {
-//   document.querySelector('#fabrication_textbox_laser').classList.add('invisible');
-// });
-//
-// //end_life
-// function set_end_life_laser() {
-//   _laser_end_life_exclamation.classList.remove('invisible');
-// }
-//
-// let _laser_end_life_exclamation = document.querySelector('#end_life_exclamation_laser');
-// _laser_end_life_exclamation.addEventListener('click', function() {
-//   document.querySelector('#end_life_textbox_laser').classList.remove('invisible');
-// });
-//
-// document.querySelector('#end_life_textbox_laser div').addEventListener('click', function() {
-//   document.querySelector('#end_life_textbox_laser').classList.add('invisible');
-// });
+//manufacturing
+function set_manu_laser() {
+  let text;
+  let textbox = document.querySelector('#manufacturing_textbox_laser');
+  _laser_manu_exclamation.classList.remove('invisible');
+  //remove if prev value was good
+  textbox.classList.remove('good');
+  _laser_manu_exclamation.classList.remove('good');
+
+  if(_laser_material == 'Acrylic') {
+    text = document.createTextNode("");
+  } else if(_laser_material == 'MDF' && recycled) {
+    text = document.createTextNode('');
+  } else if(_laser_material == 'MDF') {
+    text = document.createTextNode('');
+  } else if(_laser_material == 'Cardboard' && recycled) {
+    text = document.createTextNode('');
+  } else if(_laser_material == 'Cardboard') {
+    text = document.createTextNode('');
+  } else { //Mycelium
+    text = document.createTextNode('');
+  }
+  textbox.innerHTML = "";
+  textbox.appendChild(text);
+}
+let _laser_manu_exclamation = document.querySelector('#manufacturing_exclamation_laser');
+_laser_manu_exclamation.addEventListener('click', function() {
+  document.querySelector('#manufacturing_textbox_laser').parentElement.classList.remove('invisible');
+});
+
+document.querySelector('#x_manufacturing_laser').addEventListener('click', function() {
+  document.querySelector('#manufacturing_textbox_laser').parentElement.classList.add('invisible');
+});
+//transportation
+function set_transport_laser() {
+  let textbox = document.querySelector('#transport_textbox_laser');
+  _laser_transport_exclamation.classList.remove('invisible');
+
+  if (_laser_location == 'Local') {
+    textbox.classList.add('good');
+    _laser_transport_exclamation.classList.add('good');
+  } else {
+    textbox.classList.remove('good');
+    _laser_transport_exclamation.classList.remove('good');
+  }
+
+  let text = get_transport_text(_laser_location, _laser_shipment);
+  textbox.innerHTML = "";
+  textbox.appendChild(text);
+}
+
+let _laser_transport_exclamation = document.querySelector('#transport_exclamation_laser');
+console.log(_laser_transport_exclamation);
+_laser_transport_exclamation.addEventListener('click', function() {
+  document.querySelector('#transport_textbox_laser').parentElement.classList.remove('invisible');
+});
+
+document.querySelector('#x_transport_laser').addEventListener('click', function() {
+  document.querySelector('#transport_textbox_laser').parentElement.classList.add('invisible');
+});
+
+//fabrication
+function set_fabrication_laser() {
+  let textbox = document.querySelector('#fabrication_textbox_laser');
+  _laser_fabrication_exclamation.classList.remove('invisible');
+  let text = get_electric_text(_laser_country);
+  textbox.classList.remove('good');
+  _laser_fabrication_exclamation.classList.remove('good');
+
+  if(_laser_machine == 'Trotec') {
+    text.appendChild(document.createTextNode(''));
+  } else if(_laser_machine == 'Epilog') {
+    text.appendChild(document.createTextNode(''));
+  } else { //Universal
+    text.appendChild(document.createTextNode(""));
+  }
+
+  textbox.innerHTML = "";
+  textbox.appendChild(text);
+}
+
+let _laser_fabrication_exclamation = document.querySelector('#fabrication_exclamation_laser');
+_laser_fabrication_exclamation.addEventListener('click', function() {
+  document.querySelector('#fabrication_textbox_laser').parentElement.classList.remove('invisible');
+});
+
+document.querySelector('#x_fabrication_laser').addEventListener('click', function() {
+  document.querySelector('#fabrication_textbox_laser').parentElement.classList.add('invisible');
+});
+
+//end_life
+function set_end_life_laser() {
+  let textbox = document.querySelector('#end_life_textbox_laser');
+  _laser_end_life_exclamation.classList.remove('invisible');
+  let text = document.createDocumentFragment();
+  if(_laser_end_life == 'idk') {
+    text.appendChild(document.createTextNode('Since you didn’t specify an end of life type, we assume your material will end up in the landfill.'));
+    text.appendChild(document.createElement("BR"));
+    _laser_end_life = 'landfill';
+  }
+  if(_laser_end_life == 'recycle_bin') {
+    text.appendChild(document.createTextNode('Recycling reduces the need for extracting, refining and processing raw materials all of which create substantial air and water pollution. Recycling allows the waste to become the raw material for a new material with lower embodied energy than a primary manufactured one. However, the recycling process still generates CO2 emissions which can be avoided by using compostable materials. We only analyzed the cost of transporting the waste to a recycling facility.'));
+  } else if (_laser_end_life == 'incineration') {
+    text.appendChild(document.createTextNode('Even though the incineration process generates energy bonus because of the burning process, it still creates about 8000% more CO2 emissions than when the waste is recycled. We analyzed the cost of transporting the waste to a garbage facility and the energy and CO2 emissions generated from burning the waste.'));
+  } else if (_laser_end_life == 'landfill') {
+    if(_laser_material == 'Acrylic') {
+      text.appendChild(document.createTextNode(''));
+    } else if (_laser_material == 'MDF') {
+      text.appendChild(document.createTextNode(''));
+    } else if (_laser_material == 'Cardboard') {
+      text.appendChild(document.createTextNode(''));
+    } else { //Mycelium
+      text.appendChild(document.createTextNode(''));
+    }
+  }
+  textbox.innerHTML = "";
+  textbox.appendChild(text);
+}
+
+let _laser_end_life_exclamation = document.querySelector('#end_life_exclamation_laser');
+_laser_end_life_exclamation.addEventListener('click', function() {
+  document.querySelector('#end_life_textbox_laser').parentElement.classList.remove('invisible');
+});
+
+document.querySelector('#x_end_life_laser').addEventListener('click', function() {
+  document.querySelector('#end_life_textbox_laser').parentElement.classList.add('invisible');
+});
