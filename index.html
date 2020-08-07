@@ -73,8 +73,13 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col_form">
-        <article id="3D_Printing" class="invisible">
+        <article id="_3D_Printing" class="invisible">
           <div class="manufacturing">
+            <button id="manufacturing_exclamation_3dprint" class="exclamation invisible">!</button>
+            <div class="textbox invisible">
+              <button id="x_manufacturing_3dprint">X</button>
+              <div id="manufacturing_textbox_3dprint"></div>
+            </div>
             <h3>Raw Material Processing Phase</h3>
             <div class="question">
               <label for="material_3dprint">
@@ -83,16 +88,21 @@
               <select id="material_3dprint" class="dropdown input-field" name="opt">
                 <option>choose</option>
                 <option value="PLA">PLA</option>
-                <option value="PLA_recycled">Recycled PLA</option>
+                <option value="PLA_recycled">PLA Recycled</option>
                 <option value="ABS">ABS</option>
-                <option value="ABS_recycled">Recycled ABS</option>
+                <option value="ABS_recycled">ABS Recycled</option>
                 <option value="Nylon">Nylon</option>
-                <option value="Nylon_recycled">Recycled Nylon</option>
+                <option value="Nylon_recycled">Nylon Recycled</option>
               </select>
             </div>
           </div>
 
           <div class="transportation">
+            <button id="transport_exclamation_3dprint" class="exclamation invisible">!</button>
+            <div class="textbox invisible">
+              <button id="x_transport_3dprint">X</button>
+              <div id="transport_textbox_3dprint"></div>
+            </div>
             <h3>Transportation Phase</h3>
             <div class="question">
               <label for="where_3d_print">
@@ -122,6 +132,11 @@
           </div>
 
           <div class="fabrication">
+            <button id="fabrication_exclamation_3dprint" class="exclamation invisible">!</button>
+            <div class="textbox invisible">
+              <button id="x_fabrication_3dprint">X</button>
+              <div id="fabrication_textbox_3dprint"></div>
+            </div>
             <h3>Digital Fabrication Phase</h3>
             <div class="question">
               <label for="country_3dprint">
@@ -179,6 +194,11 @@
           </div>
 
           <div class="end_life">
+            <button id="end_life_exclamation_3dprint" class="exclamation invisible">!</button>
+            <div class="textbox invisible">
+              <button id="x_end_life_3dprint">X</button>
+              <div id="end_life_textbox_3dprint"></div>
+            </div>
             <h3>End of Life Phase </h3>
             <div class="question">
               <h5>Where do you dispose your leftovers, waste or unused prototypes? *</h5>
@@ -201,6 +221,11 @@
         <article id="Laser_Cutting" class="invisible">
 
           <div class="manufacturing">
+            <button id="manufacturing_exclamation_laser" class="exclamation invisible">!</button>
+            <div class="textbox invisible">
+              <button id="x_manufacturing_laser">X</button>
+              <div id="manufacturing_textbox_laser"></div>
+            </div>
             <h3>Raw Material Processing Phase</h3>
             <div class="question">
               <label for="material_lasercut">
@@ -217,6 +242,11 @@
           </div>
 
           <div class="transportation">
+            <button id="transport_exclamation_laser" class="exclamation invisible">!</button>
+            <div class="textbox invisible">
+              <button id="x_transport_laser">X</button>
+              <div id="transport_textbox_laser"></div>
+            </div>
             <h3>Transportation Phase</h3>
             <div class="question">
               <label for="where_lasercut">
@@ -246,6 +276,11 @@
           </div>
 
           <div class="fabrication">
+            <button id="fabrication_exclamation_laser" class="exclamation invisible">!</button>
+            <div class="textbox invisible">
+              <button id="x_fabrication_laser">X</button>
+              <div id="fabrication_textbox_laser"></div>
+            </div>
             <h3>Digital Fabrication Phase</h3>
             <div class="question">
               <label for="country_laser">
@@ -321,6 +356,11 @@
           </div>
 
           <div class="end_life">
+            <button id="end_life_exclamation_laser" class="exclamation invisible">!</button>
+            <div class="textbox invisible">
+              <button id="x_end_life_laser">X</button>
+              <div id="end_life_textbox_laser"></div>
+            </div>
             <h3>End of Life Phase</h3>
             <div class="question">
               <h5>Where do you dispose your leftovers, waste or unused prototypes? *</h5>
@@ -344,6 +384,7 @@
         </article>
       </div>
       <div class="col_graph">
+        <div id="original" class="invisible"></div>
         <div class="row">
           <div class="col-sm-12">
             <div id="chart_div_energy"></div>
@@ -358,21 +399,6 @@
         </div>
       </div>
     </div>
-  </div>
-
-  <div id="original" class="invisible">
-    <!-- <ul>
-      <li><b>Material: </b>Recycled PLA</li>
-      <li><b>Transport Distance: </b>National</li>
-      <li><b>Transport Shipment: </b>By road</li>
-      <li><b>Electricity Coefficient: </b>0.637 CO2 kg/kWh</li>
-      <li><b>Machine Model: </b>makerbot</li>
-      <li><b>Prototype Weight: </b>100 gr</li>
-      <li><b>Prototype Waste: </b>20 gr</li>
-      <li><b>Fabrication Time: </b>600 min</li>
-      <li><b>Iterations: </b>2</li>
-      <li><b>Disposal: </b>recycle_bin</li>
-    </ul> -->
   </div>
 
   <datalist id="countries">

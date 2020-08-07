@@ -29,13 +29,18 @@ h2 {
   color: #252b37;
 }
 
-/*
 h3 {
-  writing-mode: vertical-rl;
-  text-orientation: sideways;
-} */
-h5, h6 {
+  font-size: 1.5rem;
+}
+
+h5 {
   font-weight: normal;
+  font-size: 1rem;
+}
+
+h6 {
+  font-weight: normal;
+  font-size: .85rem;
 }
 
 .Intro {
@@ -91,6 +96,7 @@ p input, label input {
   flex: 0 0 60%;
   max-width: 60%;
   padding-left: 2rem;
+  position: relative;
 }
 
 #state_laser, #state_3dprint {
@@ -99,27 +105,79 @@ p input, label input {
 
 /* ['#837BE7', '#E6BDF2', '#F97494', '#FD9F82'] */
 .manufacturing {
-  background: #837BE7;
+  background: rgba(131, 123, 231, .5);
   padding: 1em;
+  position: relative;
 }
 
 .transportation {
-  background: #E6BDF2;
+  background: rgba(230, 189, 242, .5);
   padding: 1em;
+  position: relative;
 }
 
 .fabrication {
-  background: #F97494;
+  background: rgba(249, 116, 148, .5);
   padding: 1em;
+  position: relative;
 }
 
 .end_life {
-  background: #FD9F82;
+  background: rgba(253, 159, 130, .5);
   padding: 1em;
+  position: relative;
 }
 
 .question {
   margin: 1em 0;
+}
+
+.exclamation {
+  border: 1px solid red;
+  padding: 0 7px;
+  position: absolute;
+  right: .5em;
+  top: .5em;
+  color: red;
+}
+
+.textbox {
+  color: red;
+  position: absolute;
+  left: 100%;
+  top: 0;
+  padding: 1rem .5rem 1rem 1rem;
+  margin-left: 1rem;
+  z-index: 2;
+  width: 80%;
+  background: #e9eff8;
+  font-size: .85em;
+}
+
+.textbox .good {
+  color: #3b4456;
+}
+
+.exclamation.good {
+  color: #3b4456;
+  border-color: #3b4456;
+}
+
+.textbox button {
+  color: black;
+  position: absolute;
+  right: 8px;
+  top: 2px;
+  cursor: pointer;
+  background: none;
+  padding: 0;
+  margin: 0;
+  border: none;
+  font-weight: normal;
+}
+
+.textbox button:hover {
+  border: none;
 }
 
 .button {
@@ -158,6 +216,10 @@ ul {
 #original {
   position: absolute;
   z-index: 2;
+  top: 220px;
+  left: 540px;
+  width: 200px;
+  color: #757575;
 }
 
 /* a:hover {

@@ -1,4 +1,4 @@
-let _laser_material, _laser_thickness, _laser_location, _laser_shipment, _laser_model, _laser_cut_time, _laser_sheet_area, _laser_proto_area, _laser_weight, _laser_end_life, _laser_waste, _laser_electric;
+let _laser_material, _laser_thickness, _laser_location, _laser_shipment, _laser_model, _laser_cut_time, _laser_sheet_area, _laser_proto_area, _laser_weight, _laser_end_life, _laser_waste, _laser_electric, _laser_country;
 
 //emb_energy_avg: emb eng primary + processing
 //co2_avg: co2 Emissions + processing
@@ -76,13 +76,13 @@ function get_user_input() {
   e = document.getElementById("machine_lasercut");
    _laser_model = e.options[e.selectedIndex].value;
 
-   let country = document.getElementById("country_laser").value;
+  _laser_country = document.getElementById("country_laser").value;
 
-   if(country == "United States") {
+   if(_laser_country == "United States") {
      let state = document.getElementById("state_laser").value;
      _laser_electric = electricity_state_coeff[state];
    } else {
-     _laser_electric = electricity_coeff[country];
+     _laser_electric = electricity_coeff[_laser_country];
    }
 
  _laser_iteration = parseFloat(document.getElementById("laser_iteration").value)
@@ -178,3 +178,57 @@ function start_graphing() {
   }
   add_ar_draw(results.energy, results.co2);
 }
+//
+// function set_manu_laser() {
+//   _laser_manu_exclamation.classList.remove('invisible');
+// }
+// //manufacturing
+// let _laser_manu_exclamation = document.querySelector('#manufacturing_exclamation_laser');
+// _laser_manu_exclamation.addEventListener('click', function() {
+//   document.querySelector('#manufacturing_textbox_laser').classList.remove('invisible');
+// });
+//
+// document.querySelector('#manufacturing_textbox_laser div').addEventListener('click', function() {
+//   document.querySelector('#manufacturing_textbox_laser').classList.add('invisible');
+// });
+// //transportation
+// function set_transport_laser() {
+//   _laser_transport_exclamation.classList.remove('invisible');
+// }
+//
+// let _laser_transport_exclamation = document.querySelector('#transport_exclamation_laser');
+// _laser_transport_exclamation.addEventListener('click', function() {
+//   document.querySelector('#transport_textbox_laser').classList.remove('invisible');
+// });
+//
+// document.querySelector('#transport_textbox_laser div').addEventListener('click', function() {
+//   document.querySelector('#transport_textbox_laser').classList.add('invisible');
+// });
+//
+// //fabrication
+// function set_fabrication_laser() {
+//   _laser_fabrication_exclamation.classList.remove('invisible');
+// }
+//
+// let _laser_fabrication_exclamation = document.querySelector('#fabrication_exclamation_laser');
+// _laser_fabrication_exclamation.addEventListener('click', function() {
+//   document.querySelector('#fabrication_textbox_laser').classList.remove('invisible');
+// });
+//
+// document.querySelector('#fabrication_textbox_laser div').addEventListener('click', function() {
+//   document.querySelector('#fabrication_textbox_laser').classList.add('invisible');
+// });
+//
+// //end_life
+// function set_end_life_laser() {
+//   _laser_end_life_exclamation.classList.remove('invisible');
+// }
+//
+// let _laser_end_life_exclamation = document.querySelector('#end_life_exclamation_laser');
+// _laser_end_life_exclamation.addEventListener('click', function() {
+//   document.querySelector('#end_life_textbox_laser').classList.remove('invisible');
+// });
+//
+// document.querySelector('#end_life_textbox_laser div').addEventListener('click', function() {
+//   document.querySelector('#end_life_textbox_laser').classList.add('invisible');
+// });

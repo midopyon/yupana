@@ -10,6 +10,7 @@ var _3dprint_material = null;
 var _3dprint_machine = null;
 var _3dprint_end_life = null;
 var _3dprint_electric = null;
+var _3dprint_country = null;
 var recycled = false;
 // var material = 'PLA'
 // var end_of_life_radios = 'recycle_bin'
@@ -86,14 +87,14 @@ function refresh_user_input() {
 
   // console.log(document.getElementsByName('percent'));
   if (document.querySelector("input[value=support_percent]").checked) {
-    console.log('getting percent');
+    // console.log('getting percent');
     _3dprint_support = parseFloat(document.getElementById("_3dprint_support_slider").value) / 100 * _3dprint_weight;
   } else {
-    console.log('getting grams');
+    // console.log('getting grams');
     _3dprint_support = parseFloat(document.getElementById("_3dprint_support_input").value) / 1000 * _3dprint_iteration;
   }
 
-  console.log(_3dprint_support);
+  // console.log(_3dprint_support);
   _3dprint_prototyping_weight = (_3dprint_weight - _3dprint_support);
   _3dprint_prototyping_waste = (_3dprint_support);
 
@@ -113,15 +114,15 @@ function refresh_user_input() {
     recycled = false;
   }
   _3dprint_material = mat[0];
-  console.log(_3dprint_material, recycled);
+  // console.log(_3dprint_material, recycled);
 
-  let country = document.getElementById("country_3dprint").value;
+  _3dprint_country = document.getElementById("country_3dprint").value;
 
-  if (country == "United States") {
+  if (_3dprint_country == "United States") {
     let state = document.getElementById("state_3dprint").value;
     _3dprint_electric = electricity_state_coeff[state];
   } else {
-    _3dprint_electric = electricity_coeff[country];
+    _3dprint_electric = electricity_coeff[_3dprint_country];
   }
 
   var machine_3dprint_radios_nodes = document.getElementsByName('machine_3dprint_radio_button');
@@ -155,7 +156,7 @@ function refresh_user_input() {
 
 function lifecycle_calculation_3dprint() {
   //raw materials manufacturing
-  console.log(_3dprint_material);
+  // console.log(_3dprint_material);
   var results_mat_manufacturing;
   if (recycled) {
     results_mat_manufacturing = {
@@ -239,12 +240,145 @@ function start_the_magic() {
       transport_shipment: _3dprint_shipment,
       df_electricity: _3dprint_electric,
       machine_model: _3dprint_machine,
-      prototype_weight: _3dprint_weight * 1000 / _3dprint_iteration,
-      prototype_waste: _3dprint_support * 1000 / _3dprint_iteration,
+      prototype_weight: Math.round(_3dprint_weight * 1000 / _3dprint_iteration),
+      prototype_waste: Math.round(_3dprint_support * 1000 / _3dprint_iteration),
       fabrication_time: _3dprint_time / 60,
       iterations: _3dprint_iteration,
       disposal: end_of_life_radios
     }
   }
+  set_manu_3dprint();
+  set_transport_3dprint();
+  set_fabrication_3dprint();
+  set_end_life_3dprint();
+
   add_ar_draw(results_energy, results_co2);
 }
+//manufacturing
+function set_manu_3dprint() {
+  let text;
+  let textbox = document.querySelector('#manufacturing_textbox_3dprint');
+  _3dprint_manu_exclamation.classList.remove('invisible');
+  //remove if prev value was good
+  textbox.classList.remove('good');
+  _3dprint_manu_exclamation.classList.remove('good');
+
+  if(_3dprint_material == 'PLA' && recycled) {
+    textbox.classList.add('good');
+    _3dprint_manu_exclamation.classList.add('good');
+    text = document.createTextNode("PLA has a lower environmental impact than ABS and Nylon. PLA recycled uses 46% less energy and emits 54% less CO2 than PLA manufactured for the first time.");
+
+  } else if (_3dprint_material == 'PLA') {
+    text = document.createTextNode('PLA has a lower environmental impact than ABS and Nylon. However, PLA recycled uses 46% less energy and emits 54% less CO2 than PLA manufactured for the first time. Next time, ask your provider for PLA recycled to reduce your environmental impact in this phase.');
+  } else if(_3dprint_material == 'ABS' && recycled) {
+    text = document.createTextNode('ABS has a higher environmental impact than PLA. However, ABS recycled uses 59% less energy and emits 40% less CO2 than ABS manufactured for the first time. Next time, ask your provider for ABS recycled or PLA recycled to reduce your environmental impact in this phase.');
+  } else if(_3dprint_material == 'ABS') {
+    text = document.createTextNode('ABS primary manufacturing has a higher environmental impact than ABS recycled and PLA. ABS uses 41% more energy and emits 60% more CO2 than ABS recycled. Next time, ask your provider for ABS recycled or PLA recycled to reduce your environmental impact in this phase.');
+  } else if(_3dprint_material == 'Nylon' && recycled) {
+    text = document.createTextNode('Nylon has a higher environmental impact than ABS and PLA. However, Nylon recycled uses 69% less energy and emits 74.5% less CO2 than Nylon manufactured for the first time. Next time, ask your provider for Nylon recycled, ABS recycled or PLA recycled to reduce your environmental impact in this phase.');
+  } else { //reg nylon
+    text = document.createTextNode('Nylon primary manufacturing has a higher environmental impact than Nylon recycled, ABS or PLA. Nylon uses 31% more energy and emits 16.5% more CO2 than Nylon recycled. Next time, ask your provider for Nylon recycled, ABS recycled or PLA recycled to reduce your environmental impact in this phase.');
+  }
+  textbox.innerHTML = "";
+  textbox.appendChild(text);
+}
+let _3dprint_manu_exclamation = document.querySelector('#manufacturing_exclamation_3dprint');
+_3dprint_manu_exclamation.addEventListener('click', function() {
+  document.querySelector('#manufacturing_textbox_3dprint').parentElement.classList.remove('invisible');
+});
+
+document.querySelector('#x_manufacturing_3dprint').addEventListener('click', function() {
+  document.querySelector('#manufacturing_textbox_3dprint').parentElement.classList.add('invisible');
+});
+//transportation
+function set_transport_3dprint() {
+  let textbox = document.querySelector('#transport_textbox_3dprint');
+  _3dprint_transport_exclamation.classList.remove('invisible');
+
+  if (_3dprint_location == 'Local') {
+    textbox.classList.add('good');
+    _3dprint_transport_exclamation.classList.add('good');
+  } else {
+    textbox.classList.remove('good');
+    _3dprint_transport_exclamation.classList.remove('good');
+  }
+
+  let text = get_transport_text(_3dprint_location, _3dprint_shipment);
+  textbox.innerHTML = "";
+  textbox.appendChild(text);
+}
+
+let _3dprint_transport_exclamation = document.querySelector('#transport_exclamation_3dprint');
+console.log(_3dprint_transport_exclamation);
+_3dprint_transport_exclamation.addEventListener('click', function() {
+  document.querySelector('#transport_textbox_3dprint').parentElement.classList.remove('invisible');
+});
+
+document.querySelector('#x_transport_3dprint').addEventListener('click', function() {
+  document.querySelector('#transport_textbox_3dprint').parentElement.classList.add('invisible');
+});
+
+//fabrication
+function set_fabrication_3dprint() {
+  let textbox = document.querySelector('#fabrication_textbox_3dprint');
+  _3dprint_fabrication_exclamation.classList.remove('invisible');
+  let text = get_electric_text(_3dprint_country);
+
+  if(_3dprint_machine == 'makerbot') {
+    textbox.classList.add('good');
+    _3dprint_fabrication_exclamation.classList.add('good');
+    text.appendChild(document.createTextNode('Makerbot Replicator+ is the best choice, using half as much power than Ultimaker 2 Extended in the molding process. You can save energy by reducing print time by adjusting the 3D print speed to 50 mm/s average, changing the infill density to 10-15% and reducing idle time by turning off the machine when not in use'));
+  } else { //ultimaker
+    textbox.classList.remove('good');
+    _3dprint_fabrication_exclamation.classList.remove('good');
+    text.appendChild(document.createTextNode("Ultimaker 2 Extended uses twice as much power than Makerbot Replicator+ in the molding process. You can save energy by reducing print time by adjusting the 3D print speed to 50 mm/s average, changing the infill density to 10-15% and reducing idle time by turning off the machine when not in use."));
+  }
+
+  textbox.innerHTML = "";
+  textbox.appendChild(text);
+}
+
+let _3dprint_fabrication_exclamation = document.querySelector('#fabrication_exclamation_3dprint');
+_3dprint_fabrication_exclamation.addEventListener('click', function() {
+  document.querySelector('#fabrication_textbox_3dprint').parentElement.classList.remove('invisible');
+});
+
+document.querySelector('#x_fabrication_3dprint').addEventListener('click', function() {
+  document.querySelector('#fabrication_textbox_3dprint').parentElement.classList.add('invisible');
+});
+
+//end_life
+function set_end_life_3dprint() {
+  let textbox = document.querySelector('#end_life_textbox_3dprint');
+  _3dprint_end_life_exclamation.classList.remove('invisible');
+  let text = document.createDocumentFragment();
+  if(end_of_life_radios == 'idk') {
+    text.appendChild(document.createTextNode('Since you didn’t specify an end of life type, we assume your material will end up in the landfill.'));
+    text.appendChild(document.createElement("BR"));
+    end_of_life_radios = 'landfill';
+  }
+  if(end_of_life_radios == 'recycle_bin') {
+    text.appendChild(document.createTextNode('Recycling reduces the need for extracting, refining and processing raw materials all of which create substantial air and water pollution. Recycling allows the waste to become the raw material for a new material with lower embodied energy than a primary manufactured one. However, the recycling process still generates CO2 emissions which can be avoided by using compostable materials. We only analyzed the cost of transporting the waste to a recycling facility.'));
+  } else if (end_of_life_radios == 'incineration') {
+    text.appendChild(document.createTextNode('Even though the incineration process generates energy bonus because of the burning process, it still creates about 8000% more CO2 emissions than when the waste is recycled. We analyzed the cost of transporting the waste to a garbage facility and the energy and CO2 emissions generated from burning the waste.'));
+  } else if (end_of_life_radios == 'landfill') {
+    if(_3dprint_material == 'PLA') {
+      text.appendChild(document.createTextNode('If PLA ends up in the landfill, it breaks down anaerobically to release methane, a greenhouse gas that is about 30 times more potent than carbon dioxide and that contributes to climate change (2). Sending your waste to recycling reduces the need for extracting, refining and processing raw materials all of which create substantial air and water pollution. Recycling allows the waste to become the raw material for a new material with lower embodied energy than a primary manufactured one. 20 % of total US methane emissions come from landfills. We only analyzed the cost of transporting the waste to a landfill.'));
+    } else if (_3dprint_material == 'ABS') {
+      text.appendChild(document.createTextNode('If ABS ends up in the landfill, it becomes a potential source of microplastics. Landfills can impact on air, water and land quality. Sending your waste to recycling reduces the need for extracting, refining and processing raw materials all of which create substantial air and water pollution. Recycling allows the waste to become the raw material for a new material with lower embodied energy than a primary manufactured one. We only analyzed the cost of transporting the waste to a landfill.'));
+    } else if (_3dprint_material == 'Nylon') {
+      text.appendChild(document.createTextNode('If Nylon ends up in the landfill, it becomes a potential source of microplastics. Landfills can impact on air, water and land quality. Sending your waste to recycling reduces the need for extracting, refining and processing raw materials all of which create substantial air and water pollution. Recycling allows the waste to become the raw material for a new material with lower embodied energy than a primary manufactured one. We only analyzed the cost of transporting the waste to a landfill.'));
+    }
+  }
+  textbox.innerHTML = "";
+  textbox.appendChild(text);
+}
+
+let _3dprint_end_life_exclamation = document.querySelector('#end_life_exclamation_3dprint');
+_3dprint_end_life_exclamation.addEventListener('click', function() {
+  document.querySelector('#end_life_textbox_3dprint').parentElement.classList.remove('invisible');
+});
+
+document.querySelector('#x_end_life_3dprint').addEventListener('click', function() {
+  document.querySelector('#end_life_textbox_3dprint').parentElement.classList.add('invisible');
+});
