@@ -20,6 +20,74 @@ Cutting.addEventListener("click", function() {
   cut.setAttribute('class', 'visible');
 });
 
+function reset_form() {
+  // clearing inputs
+  var inputs = document.getElementsByTagName('input');
+  for (var i = 0; i < inputs.length; i++) {
+    if(inputs[i].classList.contains('field_selector')) {
+      continue; //skip clearing this value
+    }
+    switch (inputs[i].type) {
+      // case 'hidden':
+      case 'text':
+        inputs[i].value = '';
+        break;
+      case 'radio':
+      case 'checkbox':
+        inputs[i].checked = false;
+    }
+  }
+
+  // clearing selects
+  var selects = document.getElementsByTagName('select');
+  for (var i = 0; i < selects.length; i++)
+    selects[i].selectedIndex = 0;
+
+  // clearing textarea
+  var text = document.getElementsByTagName('textarea');
+  for (var i = 0; i < text.length; i++)
+    text[i].innerHTML = '';
+
+  document.getElementById('btn_submit_3dprint').textContent = "Submit";
+  document.getElementById('btn_submit_laser').textContent = "Submit";
+  document.getElementById('chart_div_energy').innerHTML = "";
+  document.getElementById('chart_div_co2').innerHTML = "";
+  document.querySelectorAll('.exclamation').forEach((item, i) => {
+    item.classList.add('invisible');
+  });
+
+  return false;
+}
+
+document.getElementById('btn_clear_laser').addEventListener('click', reset_form);
+document.getElementById('btn_clear_3dprint').addEventListener('click', reset_form);
+
+let region_3dprint = document.getElementById('region_input_3dprint');
+let distance_3dprint = document.getElementById('distance_input_3dprint');
+
+document.getElementById('region_radio_3dprint').addEventListener('click', function() {
+  region_3dprint.classList.remove('invisible');
+  distance_3dprint.classList.add('invisible');
+});
+
+document.getElementById('distance_radio_3dprint').addEventListener('click', function() {
+  distance_3dprint.classList.remove('invisible');
+  region_3dprint.classList.add('invisible');
+});
+
+let region_laser = document.getElementById('region_input_laser');
+let distance_laser = document.getElementById('distance_input_laser');
+
+document.getElementById('region_radio_laser').addEventListener('click', function() {
+  region_laser.classList.remove('invisible');
+  distance_laser.classList.add('invisible');
+});
+
+document.getElementById('distance_radio_laser').addEventListener('click', function() {
+  distance_laser.classList.remove('invisible');
+  region_laser.classList.add('invisible');
+});
+
 let _3dprint_state_select = document.getElementById('state_3dprint');
 
 let _3dprint_country_select = document.getElementById('country_3dprint')
@@ -216,6 +284,50 @@ function transportation_calculation(shipment, location) {
   }
 }
 
+function user_transport_calc(shipment, user_distance) {
+  let transport_energy;
+  let transport_co2;
+  let transport_mode;
+
+  if (shipment == "By air") {
+    transport_mode = 'airplane';
+  } else if (shipment == 'By sea') {
+    transport_mode = 'ocean';
+  } else if (shipment == 'By road') {
+    transport_mode = 'truck_14';
+  } else { //idk so defer choice
+    transport_mode = 'idk'
+  }
+
+  if (user_distance < transportation_distances['local_city_avg']) {
+    transport_energy = user_distance * transportation_energies['light_vehicle'];
+    transport_co2 = user_distance * transportation_co2['light_vehicle'];
+  } else if (user_distance < transportation_distances['local_city_avg'] + transportation_distances['local_avg']) {
+    if (transport_mode == 'idk') {
+      transport_mode = 'truck_14';
+    }
+    user_distance -= transportation_distances['local_city_avg']
+    transport_energy = user_distance * transportation_energies[transport_mode] + transportation_distances['local_city_avg'] * transportation_energies['light_vehicle'];
+    transport_co2 = user_distance * transportation_co2[transport_mode] + transportation_distances['local_city_avg'] * transportation_co2['light_vehicle'];
+  } else {
+    if (transport_mode == 'idk') {
+      transport_mode = 'airplane';
+    } else if (transport_mode == 'truck_14') {
+      transport_mode = 'truck_32';
+    }
+    user_distance -= (transportation_distances['local_city_avg'] + transportation_distances['local_avg']);
+    transport_energy = user_distance * transportation_energies[transport_mode] + (transportation_energies['truck_14'] * transportation_distances['local_avg']) +
+      (transportation_energies['light_vehicle'] * transportation_distances['local_city_avg']);
+    transport_co2 = user_distance * transportation_co2[transport_mode] + (transportation_co2['truck_14'] * transportation_distances['local_avg']) +
+      (transportation_co2['light_vehicle'] * transportation_distances['local_city_avg']);
+  }
+
+  return {
+    energy: transport_energy / 1000,
+    co2: transport_co2 / 1000
+  }
+}
+
 function end_life_calculation(waste, type, incineration) {
   let results_end_life;
   if (type === 'recycle_bin') {
@@ -249,15 +361,15 @@ function add_ar_draw(results_energy, results_co2) {
   } else if (results_energy_ar.length == 1) {
     // console.log(original);
     create_original();
-    results_energy_ar[0].name = 'Original ' + results_energy_ar[0].name;
-    results_co2_ar[0].name = 'Original ' + results_co2_ar[0].name;
-    results_energy.name = 'Updated ' + results_energy.name;
-    results_co2.name = 'Updated ' + results_co2.name;
+    results_energy_ar[0].name = 'Original Values: ' + results_energy_ar[0].name;
+    results_co2_ar[0].name = 'Original Values: ' + results_co2_ar[0].name;
+    results_energy.name = 'Updated Values: ' + results_energy.name;
+    results_co2.name = 'Updated Values: ' + results_co2.name;
     results_energy_ar.push(results_energy);
     results_co2_ar.push(results_co2);
   } else {
-    results_energy.name = 'Updated ' + results_energy.name;
-    results_co2.name = 'Updated ' + results_co2.name;
+    results_energy.name = 'Updated Values: ' + results_energy.name;
+    results_co2.name = 'Updated Values: ' + results_co2.name;
     results_energy_ar[1] = results_energy;
     results_co2_ar[1] = results_co2;
   }
@@ -290,15 +402,19 @@ function drawChart_energy(results) {
   var chartDiv = document.getElementById('chart_div_energy');
 
   let dataAr = [
-    ['Prototyping Material', 'Raw Material Processing', 'Transportation', 'Fabrication', 'End of Life', {
+    ['Prototyping Material', 'Raw Material Processing', {
+      role: 'annotation'
+    }, 'Transportation', {
+      role: 'annotation'
+    }, 'Fabrication', {
+      role: 'annotation'
+    }, 'End of Life', {
       role: 'annotation'
     }]
   ]
 
   for (let i = 0; i < results.length; i++) {
-    dataAr.push([results[i]['name'], results[i]['mat_manufacturing'], results[i]['transportation'], results[i]['fabrication'], results[i]['end_life'],
-      'Total: ' + String((results[i]['mat_manufacturing'] + results[i]['transportation'] + results[i]['fabrication'] + results[i]['end_life']).toFixed(4))
-    ]);
+    dataAr.push([results[i]['name'], results[i]['mat_manufacturing'], results[i]['mat_manufacturing'], results[i]['transportation'], results[i]['transportation'], results[i]['fabrication'], results[i]['fabrication'], results[i]['end_life'], results[i]['end_life']]);
   }
 
   var data = google.visualization.arrayToDataTable(dataAr);
@@ -320,6 +436,7 @@ function drawChart_energy(results) {
     },
     vAxis: {
       title: 'Energy (MJ)',
+      format: "short",
       textStyle: {
         //color: '#01579b',
         fontSize: 14,
@@ -339,8 +456,10 @@ function drawChart_energy(results) {
     },
   };
   var view = new google.visualization.DataView(data);
-  var materialChart = new google.charts.Bar(chartDiv);
-  materialChart.draw(data, google.charts.Bar.convertOptions(materialOptions));
+  // var materialChart = new google.charts.Bar(chartDiv);
+  // materialChart.draw(data, google.charts.Bar.convertOptions(materialOptions));
+  var chart = new google.visualization.ColumnChart(chartDiv);
+  chart.draw(view, materialOptions);
 }
 
 function drawChart_co2(results) {
@@ -348,15 +467,19 @@ function drawChart_co2(results) {
   var chartDiv = document.getElementById('chart_div_co2');
 
   let dataAr = [
-    ['Prototyping Material', 'Raw Material Processing', 'Transportation', 'Fabrication', 'End of Life', {
+    ['Prototyping Material', 'Raw Material Processing', {
+      role: 'annotation'
+    }, 'Transportation', {
+      role: 'annotation'
+    }, 'Fabrication', {
+      role: 'annotation'
+    }, 'End of Life', {
       role: 'annotation'
     }]
   ]
 
   for (let i = 0; i < results.length; i++) {
-    dataAr.push([results[i]['name'], results[i]['mat_manufacturing'], results[i]['transportation'], results[i]['fabrication'], results[i]['end_life'],
-      'Total: ' + String((results[i]['mat_manufacturing'] + results[i]['transportation'] + results[i]['fabrication'] + results[i]['end_life']).toFixed(4))
-    ]);
+    dataAr.push([results[i]['name'], results[i]['mat_manufacturing'], results[i]['mat_manufacturing'], results[i]['transportation'], results[i]['transportation'], results[i]['fabrication'], results[i]['fabrication'], results[i]['end_life'], results[i]['end_life']]);
   }
 
   var data = google.visualization.arrayToDataTable(dataAr);
@@ -379,6 +502,7 @@ function drawChart_co2(results) {
     },
     vAxis: {
       title: 'CO2 (kg CO2/kg)',
+      format: "short",
       textStyle: {
         //color: '#01579b',
         fontSize: 14,
@@ -398,8 +522,10 @@ function drawChart_co2(results) {
     },
   };
   var view = new google.visualization.DataView(data);
-  var materialChart = new google.charts.Bar(chartDiv);
-  materialChart.draw(data, google.charts.Bar.convertOptions(materialOptions));
+  // var materialChart = new google.charts.Bar(chartDiv);
+  // materialChart.draw(data, google.charts.Bar.convertOptions(materialOptions));
+  var chart = new google.visualization.ColumnChart(chartDiv);
+  chart.draw(view, materialOptions);
 }
 
 function get_transport_text(location, shipment) {
@@ -437,19 +563,19 @@ function get_electric_text(country) {
   content.appendChild(document.createTextNode('The co2 consumption of electricity is based on the source of the electricity (ie coal, nuclear, hydro, etc.). Different regions use different blends of electricity sources.You can check with the energy providers in your region to ensure your energy source has the least environmental impact. For example, solar and wind have a much lower environmental impact than fossil fuel sources.'));
   content.appendChild(document.createElement("BR"));
   let text_location;
-  if (region[country] == 'north america') {
+  if (country_region[country] == 'north america') {
     text_location = document.createTextNode('In 2019, about 63% of the electricity generation was from fossil fuels-coal, natural gas, petroleum, and other gases. About 20% was from nuclear energy, and about 18% was from renewable energy sources.');
-  } else if (region[country] == 'latin america') {
+  } else if (country_region[country] == 'latin america') {
     text_location = document.createTextNode('In 2015, fossil fuel remains the most important source of energy in Latin America, with a share of around 75%, 16% bioenergy,  8% hydropower, 1% geothermal, and 1% originated from solar and wind energy (IEA, 2015).');
-  } else if (region[country] == 'europe') {
+  } else if (country_region[country] == 'europe') {
     text_location = document.createTextNode('In 2018, about 45.5 % of the net electricity generated in the EU came from combustible fuels (such as natural gas, coal and oil), while a quarter (25.8 %) came from nuclear power stations.');
-  } else if (region[country] == 'middle east') {
+  } else if (country_region[country] == 'middle east') {
     text_location = document.createTextNode('');
-  } else if (region[country] == 'africa') {
+  } else if (country_region[country] == 'africa') {
     text_location = document.createTextNode('');
-  } else if (region[country] == 'south asia') {
-    text_location = document.createTextNode('Many South Asian countries depend on a single source to provide more than 50% of total electricity generation including India (Coal – 67.9%), Nepal (Hydropower – 99.9%), Bangladesh (Natural gas – 91.5%) and Sri Lanka (Oil – 50.2%).');
-  } else if (region[country] == 'north asia') {
+  } else if (country_region[country] == 'south asia') {
+    text_location = document.createTextNode('Many South Asian countries depend on a single source to provide more than 50% of total electricity generation including India (Coal - 67.9%), Nepal (Hydropower - 99.9%), Bangladesh (Natural gas - 91.5%) and Sri Lanka (Oil - 50.2%).');
+  } else if (country_region[country] == 'north asia') {
     text_location = document.createTextNode('In 2015, the energy consumption in Northeast Asia was 2.6 billion tons of coal equivalent, accounting for 14% of the global total; the total electricity consumption was 3.3 PWh, accounting for 16 % of the global total. In 2016, the total CO2 emissions in China, Japan and the ROK reached 34 4 % for the global total.');
   }
 
@@ -708,7 +834,7 @@ const electricity_state_coeff = {
   WY: 0.929
 }
 
-const region = {
+const country_region = {
   Afghanistan: "middle east",
   Albania: "europe",
   Algeria: "africa",

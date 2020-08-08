@@ -4,8 +4,10 @@ var _3dprint_prototyping_weight = null;
 var _3dprint_prototyping_waste = null;
 var _3dprint_iteration = null;
 var _3dprint_time = null;
+var _3dprint_location_type = null;
 var _3dprint_location = null;
 var _3dprint_shipment = null;
+var _3dprint_distance = null;
 var _3dprint_material = null;
 var _3dprint_machine = null;
 var _3dprint_end_life = null;
@@ -99,13 +101,25 @@ function refresh_user_input() {
   _3dprint_prototyping_weight = (_3dprint_weight - _3dprint_support);
   _3dprint_prototyping_waste = (_3dprint_support);
 
-  let e = document.getElementById("where_3d_print");
-  _3dprint_location = e.options[e.selectedIndex].value;
+  var location_radios = document.getElementsByName('location_3dprint');
+  l = location_radios.length
+  for (i = 0; i < l; i++) {
+    checked = location_radios[i].checked
+    if (checked === true) {
+      _3dprint_location_type = location_radios[i].value;
+      break;
+    }
+  }
 
-  e = document.getElementById("shipment_3dprint");
+  if (_3dprint_location_type == 'region') {
+    let e = document.getElementById("where_3d_print");
+    _3dprint_location = e.options[e.selectedIndex].value;
+  } else {
+    _3dprint_distance = parseFloat(document.getElementById('_3dprint_distance_input').value); //in km
+    console.log(_3dprint_distance);
+  }
+  let e = document.getElementById("shipment_3dprint");
   _3dprint_shipment = e.options[e.selectedIndex].value;
-  // console.log("location: " + _3dprint_location);
-  // console.log("shipment: " + _3dprint_shipment);
 
   let mat = document.getElementById("material_3dprint").value
   mat = mat.split('_');
@@ -171,7 +185,12 @@ function lifecycle_calculation_3dprint() {
     }
   }
   //transportation
-  var results_transportation = transportation_calculation(_3dprint_shipment, _3dprint_location);
+  var results_transportation;
+  if (_3dprint_location_type == 'region') {
+    results_transportation = transportation_calculation(_3dprint_shipment, _3dprint_location);
+  } else {
+    results_transportation = user_transport_calc(_3dprint_shipment, _3dprint_distance);
+  }
   results_transportation.energy = _3dprint_weight * results_transportation.energy;
   results_transportation.co2 = _3dprint_weight * results_transportation.co2;
 
@@ -191,8 +210,10 @@ function lifecycle_calculation_3dprint() {
   results_fabrication.co2 = results_fabrication.energy * _3dprint_electric / 3.6;
 
   //end_life
-  var results_end_life = end_life_calculation(_3dprint_support, _3dprint_end_life, {energy: material_3dprint[_3dprint_material].energy_incineration,
-  co2: material_3dprint[_3dprint_material].co2_combustion});
+  var results_end_life = end_life_calculation(_3dprint_support, _3dprint_end_life, {
+    energy: material_3dprint[_3dprint_material].energy_incineration,
+    co2: material_3dprint[_3dprint_material].co2_combustion
+  });
 
 
   return {
@@ -228,15 +249,15 @@ function start_the_magic() {
     end_life: results.end_life.co2
   };
 
-  if(recycled) {
-    results_energy.name = "Recycled " + _3dprint_material;
-    results_co2.name = "Recycled " + _3dprint_material;
+  if (recycled) {
+    results_energy.name = _3dprint_material + " Recycled";
+    results_co2.name = _3dprint_material + " Recycled";
   }
   console.log(results_energy);
   console.log(results_co2);
   if (results_energy_ar.length == 0) {
     original = {
-      material: recycled ? 'Recycled ' + _3dprint_material: _3dprint_material,
+      material: recycled ? _3dprint_material + ' Recycled' : _3dprint_material,
       transport_distance: _3dprint_location,
       transport_shipment: _3dprint_shipment,
       df_electricity: _3dprint_electric,
@@ -264,18 +285,18 @@ function set_manu_3dprint() {
   textbox.classList.remove('good');
   _3dprint_manu_exclamation.classList.remove('good');
 
-  if(_3dprint_material == 'PLA' && recycled) {
+  if (_3dprint_material == 'PLA' && recycled) {
     textbox.classList.add('good');
     _3dprint_manu_exclamation.classList.add('good');
     text = document.createTextNode("PLA has a lower environmental impact than ABS and Nylon. PLA recycled uses 46% less energy and emits 54% less CO2 than PLA manufactured for the first time.");
 
   } else if (_3dprint_material == 'PLA') {
     text = document.createTextNode('PLA has a lower environmental impact than ABS and Nylon. However, PLA recycled uses 46% less energy and emits 54% less CO2 than PLA manufactured for the first time. Next time, ask your provider for PLA recycled to reduce your environmental impact in this phase.');
-  } else if(_3dprint_material == 'ABS' && recycled) {
+  } else if (_3dprint_material == 'ABS' && recycled) {
     text = document.createTextNode('ABS has a higher environmental impact than PLA. However, ABS recycled uses 59% less energy and emits 40% less CO2 than ABS manufactured for the first time. Next time, ask your provider for ABS recycled or PLA recycled to reduce your environmental impact in this phase.');
-  } else if(_3dprint_material == 'ABS') {
+  } else if (_3dprint_material == 'ABS') {
     text = document.createTextNode('ABS primary manufacturing has a higher environmental impact than ABS recycled and PLA. ABS uses 41% more energy and emits 60% more CO2 than ABS recycled. Next time, ask your provider for ABS recycled or PLA recycled to reduce your environmental impact in this phase.');
-  } else if(_3dprint_material == 'Nylon' && recycled) {
+  } else if (_3dprint_material == 'Nylon' && recycled) {
     text = document.createTextNode('Nylon has a higher environmental impact than ABS and PLA. However, Nylon recycled uses 69% less energy and emits 74.5% less CO2 than Nylon manufactured for the first time. Next time, ask your provider for Nylon recycled, ABS recycled or PLA recycled to reduce your environmental impact in this phase.');
   } else { //reg nylon
     text = document.createTextNode('Nylon primary manufacturing has a higher environmental impact than Nylon recycled, ABS or PLA. Nylon uses 31% more energy and emits 16.5% more CO2 than Nylon recycled. Next time, ask your provider for Nylon recycled, ABS recycled or PLA recycled to reduce your environmental impact in this phase.');
@@ -325,7 +346,7 @@ function set_fabrication_3dprint() {
   _3dprint_fabrication_exclamation.classList.remove('invisible');
   let text = get_electric_text(_3dprint_country);
 
-  if(_3dprint_machine == 'makerbot') {
+  if (_3dprint_machine == 'makerbot') {
     textbox.classList.add('good');
     _3dprint_fabrication_exclamation.classList.add('good');
     text.appendChild(document.createTextNode('Makerbot Replicator+ is the best choice, using half as much power than Ultimaker 2 Extended in the molding process. You can save energy by reducing print time by adjusting the 3D print speed to 50 mm/s average, changing the infill density to 10-15% and reducing idle time by turning off the machine when not in use'));
@@ -353,17 +374,17 @@ function set_end_life_3dprint() {
   let textbox = document.querySelector('#end_life_textbox_3dprint');
   _3dprint_end_life_exclamation.classList.remove('invisible');
   let text = document.createDocumentFragment();
-  if(_3dprint_end_life == 'idk') {
+  if (_3dprint_end_life == 'idk') {
     text.appendChild(document.createTextNode('Since you didn’t specify an end of life type, we assume your material will end up in the landfill.'));
     text.appendChild(document.createElement("BR"));
     _3dprint_end_life = 'landfill';
   }
-  if(_3dprint_end_life == 'recycle_bin') {
+  if (_3dprint_end_life == 'recycle_bin') {
     text.appendChild(document.createTextNode('Recycling reduces the need for extracting, refining and processing raw materials all of which create substantial air and water pollution. Recycling allows the waste to become the raw material for a new material with lower embodied energy than a primary manufactured one. However, the recycling process still generates CO2 emissions which can be avoided by using compostable materials. We only analyzed the cost of transporting the waste to a recycling facility.'));
   } else if (_3dprint_end_life == 'incineration') {
     text.appendChild(document.createTextNode('Even though the incineration process generates energy bonus because of the burning process, it still creates about 8000% more CO2 emissions than when the waste is recycled. We analyzed the cost of transporting the waste to a garbage facility and the energy and CO2 emissions generated from burning the waste.'));
   } else if (_3dprint_end_life == 'landfill') {
-    if(_3dprint_material == 'PLA') {
+    if (_3dprint_material == 'PLA') {
       text.appendChild(document.createTextNode('If PLA ends up in the landfill, it breaks down anaerobically to release methane, a greenhouse gas that is about 30 times more potent than carbon dioxide and that contributes to climate change (2). Sending your waste to recycling reduces the need for extracting, refining and processing raw materials all of which create substantial air and water pollution. Recycling allows the waste to become the raw material for a new material with lower embodied energy than a primary manufactured one. 20 % of total US methane emissions come from landfills. We only analyzed the cost of transporting the waste to a landfill.'));
     } else if (_3dprint_material == 'ABS') {
       text.appendChild(document.createTextNode('If ABS ends up in the landfill, it becomes a potential source of microplastics. Landfills can impact on air, water and land quality. Sending your waste to recycling reduces the need for extracting, refining and processing raw materials all of which create substantial air and water pollution. Recycling allows the waste to become the raw material for a new material with lower embodied energy than a primary manufactured one. We only analyzed the cost of transporting the waste to a landfill.'));

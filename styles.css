@@ -213,13 +213,21 @@ ul {
   padding: 0;
 }
 
+#chart_div_energy, #chart_div_co2 {
+  position: relative;
+  left: -60px;
+  top: -20px;
+  z-index: -1;
+}
+
 #original {
   position: absolute;
   z-index: 2;
   top: 220px;
-  left: 540px;
+  left: 560px;
   width: 200px;
   color: #757575;
+  font-size: .85rem;
 }
 
 /* a:hover {
