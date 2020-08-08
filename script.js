@@ -52,6 +52,7 @@ function reset_form() {
   document.getElementById('btn_submit_laser').textContent = "Submit";
   document.getElementById('chart_div_energy').innerHTML = "";
   document.getElementById('chart_div_co2').innerHTML = "";
+  document.getElementById('original').classList.add('invisible');
   document.querySelectorAll('.exclamation').forEach((item, i) => {
     item.classList.add('invisible');
   });
