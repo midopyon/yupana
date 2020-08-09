@@ -56,6 +56,9 @@ function reset_form() {
   document.querySelectorAll('.exclamation').forEach((item, i) => {
     item.classList.add('invisible');
   });
+  //clear array
+  results_energy_ar = [];
+  results_co2_ar = [];
 
   return false;
 }
@@ -407,7 +410,7 @@ function drawChart_energy(results) {
       role: 'annotation'
     }, 'Transportation', {
       role: 'annotation'
-    }, 'Fabrication', {
+    }, 'Digital Fabrication', {
       role: 'annotation'
     }, 'End of Life', {
       role: 'annotation'
@@ -421,7 +424,7 @@ function drawChart_energy(results) {
   var data = google.visualization.arrayToDataTable(dataAr);
 
   var materialOptions = {
-    width: 700,
+    width: 800,
     height: 600,
     colors: ['#837BE7', '#E6BDF2', '#F97494', '#FD9F82'],
     titleTextStyle: {
@@ -435,8 +438,11 @@ function drawChart_energy(results) {
       title: 'Energy Consumption',
       subtitle: ''
     },
+    chartArea: {
+      width: "60%"
+    },
     vAxis: {
-      title: 'Energy (MJ)',
+      title: '\n\n\n\nEnergy (MJ)',
       format: "short",
       textStyle: {
         //color: '#01579b',
@@ -472,7 +478,7 @@ function drawChart_co2(results) {
       role: 'annotation'
     }, 'Transportation', {
       role: 'annotation'
-    }, 'Fabrication', {
+    }, 'Digital Fabrication', {
       role: 'annotation'
     }, 'End of Life', {
       role: 'annotation'
@@ -487,7 +493,7 @@ function drawChart_co2(results) {
 
   var materialOptions = {
     //margin: auto,
-    width: 700,
+    width: 800,
     height: 600,
     colors: ['#837BE7', '#E6BDF2', '#F97494', '#FD9F82'],
     titleTextStyle: {
@@ -501,8 +507,11 @@ function drawChart_co2(results) {
       title: 'CO2 Emissions',
       subtitle: ''
     },
+    chartArea: {
+      width: "60%"
+    },
     vAxis: {
-      title: 'CO2 (kg CO2/kg)',
+      title: '\n\n\n\nCO2 (kg CO2/kg)',
       format: "short",
       textStyle: {
         //color: '#01579b',
@@ -532,6 +541,17 @@ function drawChart_co2(results) {
 function get_transport_text(location, shipment) {
   let content = document.createDocumentFragment();
   let text_location;
+  if(!isNaN(location)) {
+    if(location < transportation_distances.local_avg) {
+      location = 'Local';
+    } else if (location < transportation_distances.national_avg) {
+      location = 'National';
+    } else {
+      location = 'International';
+    }
+    content.appendChild(document.createTextNode('We categorized the distance you entered into Local, National, or International based on how large it is.'));
+    content.appendChild(document.createElement("BR"));
+  }
   if (location == 'International') {
     text_location = document.createTextNode('Materials that travel international distances have a 95% higher environmental impact than national and local manufactured materials. Longer transportation distances require more fuel and therefore generate more CO2 emissions.');
   } else if (location == 'National') {
@@ -539,7 +559,7 @@ function get_transport_text(location, shipment) {
   } else if (location == 'Local') {
     text_location = document.createTextNode('Locally manufactured materials have the least environmental impact: 95% less than international and 30% less than national. Longer transportation distances require more fuel and therefore generate more CO2 emissions.');
   } else { //idk
-    text_location = document.createTextNode('Since you didn’t specify where your material was manufactured, we assume it travelled from China. Longer transportation distances require more fuel and therefore generate more CO2 emissions. See if you can find out where your materials are coming from and switch to local if possible.');
+    text_location = document.createTextNode("Since you didn't specify where your material was manufactured, we assume it travelled from China. Longer transportation distances require more fuel and therefore generate more CO2 emissions. See if you can find out where your materials are coming from and switch to local if possible.");
   }
 
   content.appendChild(text_location);
@@ -553,7 +573,7 @@ function get_transport_text(location, shipment) {
   } else if (shipment == 'By road') {
     text_shipment = document.createTextNode('Using a 32 metric ton truck to travel national distances has 30% less environmental impact related to energy than using a 14 metric ton truck, and it emits 50% less CO2. A good combination of road shipping will always be to avoid xpress deliveries because they use a light goods vehicle that has a 115% more environmental impact related to energy than a 14 metric truck and it emits 63% more CO2.');
   } else {
-    text_shipment = document.createTextNode('Since you didn’t specify a shipping method, we assumed: International - airplane, National - road, Local - road.');
+    text_shipment = document.createTextNode("Since you didn't specify a shipping method, we assumed: International - airplane, National - road, Local - road.");
   }
   content.appendChild(text_shipment);
   return content;

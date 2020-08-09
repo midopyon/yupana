@@ -18,6 +18,12 @@ image {
   max-height: 100%;
 }
 
+#laser_img {
+  width: 60%;
+  background: white;
+  margin: 1em 0;
+}
+
 h1 {
   color: #252b37;
   ;
@@ -215,7 +221,7 @@ ul {
 
 #chart_div_energy, #chart_div_co2 {
   position: relative;
-  left: -60px;
+  left: -100px;
   top: -20px;
   z-index: -1;
 }
@@ -224,8 +230,8 @@ ul {
   position: absolute;
   z-index: 2;
   top: 220px;
-  left: 560px;
-  width: 200px;
+  left: 575px;
+  width: 190px;
   color: #757575;
   font-size: .85rem;
 }

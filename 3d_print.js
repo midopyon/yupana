@@ -325,7 +325,12 @@ function set_transport_3dprint() {
     _3dprint_transport_exclamation.classList.remove('good');
   }
 
-  let text = get_transport_text(_3dprint_location, _3dprint_shipment);
+  let text;
+  if (_3dprint_location_type == 'region') {
+    text = get_transport_text(_3dprint_location, _3dprint_shipment);
+  } else {
+    text = get_transport_text(_3dprint_distance, _3dprint_shipment);
+  }
   textbox.innerHTML = "";
   textbox.appendChild(text);
 }
@@ -375,7 +380,7 @@ function set_end_life_3dprint() {
   _3dprint_end_life_exclamation.classList.remove('invisible');
   let text = document.createDocumentFragment();
   if (_3dprint_end_life == 'idk') {
-    text.appendChild(document.createTextNode('Since you didn’t specify an end of life type, we assume your material will end up in the landfill.'));
+    text.appendChild(document.createTextNode("Since you didn't specify an end of life type, we assume your material will end up in the landfill."));
     text.appendChild(document.createElement("BR"));
     _3dprint_end_life = 'landfill';
   }

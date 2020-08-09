@@ -83,21 +83,21 @@ function get_user_input() {
   _laser_shipment = e.options[e.selectedIndex].value;
 
   e = document.getElementById("machine_lasercut");
-   _laser_machine = e.options[e.selectedIndex].value;
+  _laser_machine = e.options[e.selectedIndex].value;
 
   _laser_country = document.getElementById("country_laser").value;
 
-   if(_laser_country == "United States") {
-     let state = document.getElementById("state_laser").value;
-     _laser_electric = electricity_state_coeff[state];
-   } else {
-     _laser_electric = electricity_coeff[_laser_country];
-   }
+  if (_laser_country == "United States") {
+    let state = document.getElementById("state_laser").value;
+    _laser_electric = electricity_state_coeff[state];
+  } else {
+    _laser_electric = electricity_coeff[_laser_country];
+  }
 
- _laser_iteration = parseFloat(document.getElementById("laser_iteration").value)
+  _laser_iteration = parseFloat(document.getElementById("laser_iteration").value)
 
   _laser_thickness = parseFloat(document.getElementById("mat_thickness_input_lasercut").value) / 1000; //convert from mm to m
-  if(document.querySelector("input[value=length]").checked) {
+  if (document.querySelector("input[value=length]").checked) {
     let width = parseFloat(document.getElementById("width_input_lasercut").value); //in m
     let length = parseFloat(document.getElementById("length_input_lasercut").value); //in m
     _laser_area = width * length;
@@ -107,7 +107,7 @@ function get_user_input() {
   console.log(_laser_area);
   _laser_weight = _laser_area * _laser_thickness * material_laser[_laser_material].density * _laser_iteration; //weight (kg) = volume (m3) * density (kg/m3)
   console.log("Weight: " + _laser_weight);
-  if(document.querySelector("input[value=waste_percent]").checked) {
+  if (document.querySelector("input[value=waste_percent]").checked) {
     let percent_waste = parseFloat(document.getElementById("waste_laser").value) / 100;
     _laser_waste = _laser_weight * percent_waste;
   } else {
@@ -121,28 +121,32 @@ function get_user_input() {
   // e = document.getElementById("machine_lasercut");
   //  _laser_machine = e.options[e.selectedIndex].value;
 
-   _laser_cut_time = parseFloat(document.getElementById("time").value) * 60 * _laser_iteration; //covert from min to sec
+  _laser_cut_time = parseFloat(document.getElementById("time").value) * 60 * _laser_iteration; //covert from min to sec
 
-   var end_of_life_radios_nodes = document.getElementsByName('end_life_lasercut');
-   l = end_of_life_radios_nodes.length
+  var end_of_life_radios_nodes = document.getElementsByName('end_life_lasercut');
+  l = end_of_life_radios_nodes.length
 
-   for (i = 0; i < l; i++) {
-       checked = end_of_life_radios_nodes[i].checked
-       if (checked === true) {
-           _laser_end_life = end_of_life_radios_nodes[i].value
-           break;
-       }
-   }
+  for (i = 0; i < l; i++) {
+    checked = end_of_life_radios_nodes[i].checked
+    if (checked === true) {
+      _laser_end_life = end_of_life_radios_nodes[i].value
+      break;
+    }
+  }
 }
 document.getElementById('btn_submit_laser').addEventListener('click', start_graphing);
 
 
 function lifecycle_calculation_laser() {
-  let _energy = {name: _laser_material};
-  let _co2 = {name: _laser_material};
+  let _energy = {
+    name: _laser_material
+  };
+  let _co2 = {
+    name: _laser_material
+  };
 
   //raw materials processing
-  _energy.mat_manufacturing =  _laser_weight * material_laser[_laser_material]['emb_energy_avg'];
+  _energy.mat_manufacturing = _laser_weight * material_laser[_laser_material]['emb_energy_avg'];
   _co2.mat_manufacturing = _laser_weight * material_laser[_laser_material]['co2_avg'];
 
   //transportation
@@ -156,13 +160,15 @@ function lifecycle_calculation_laser() {
   _co2.transportation = _laser_weight * results_transportation.co2;
 
   //fabrication
-  _energy.fabrication = (_laser_cut_time * .85 * machine_energy[_laser_machine].cutting + _laser_cut_time * .15 * machine_energy[_laser_machine].stand_by  + _laser_cut_time * .2 * machine_energy[_laser_machine].idle) / 1000000;
+  _energy.fabrication = (_laser_cut_time * .85 * machine_energy[_laser_machine].cutting + _laser_cut_time * .15 * machine_energy[_laser_machine].stand_by + _laser_cut_time * .2 * machine_energy[_laser_machine].idle) / 1000000;
 
   _co2.fabrication = _energy.fabrication / 3.6 * _laser_electric;
 
   //end of life
-  let end_life_results = end_life_calculation(_laser_waste, _laser_end_life, {energy: material_laser[_laser_material].energy_incineration,
-  co2: material_laser[_laser_material].co2_combustion});
+  let end_life_results = end_life_calculation(_laser_waste, _laser_end_life, {
+    energy: material_laser[_laser_material].energy_incineration,
+    co2: material_laser[_laser_material].co2_combustion
+  });
   _energy.end_life = end_life_results.energy;
   _co2.end_life = end_life_results.co2;
 
@@ -205,15 +211,15 @@ function set_manu_laser() {
   textbox.classList.remove('good');
   _laser_manu_exclamation.classList.remove('good');
 
-  if(_laser_material == 'Acrylic') {
+  if (_laser_material == 'Acrylic') {
     text = document.createTextNode("Acrylic has the highest environmental impact in this group of materials followed by Cardboard/Matboard first time manufactured and MDF. Acrylic is not recycled at its end of life which means it's always created from virgin raw material. It uses 89% more energy and emits 33% more CO2 than MDF. Next time, ask your provider  for alternative recycled materials to reduce your environmental impact in this phase.");
-  } else if(_laser_material == 'MDF') {
+  } else if (_laser_material == 'MDF') {
     text = document.createTextNode("MDF has a lower environmental impact than Acrylic. MDF is not recycled at its end of life which means it's always created from primary production raw material. It uses 89% less energy and emits 33% less CO2 than Acrylic. Next time, ask your provider for alternative recycled materials to reduce your environmental impact in this phase.");
-  } else if(_laser_material == 'Cardboard' && recycled) {
+  } else if (_laser_material == 'Cardboard' && recycled) {
     textbox.classList.add('good');
     _laser_manu_exclamation.classList.add('good');
     text = document.createTextNode('Cardboard/Matboard recycled has a lower environmental impact than MDF and Acrylic. Cardboard/Matboard recycled uses 62% less energy and emits 33% less CO2 than Cardboard/Matboard manufactured for the first time, 82% less energy and 74% less CO2 emissions than Acrylic.');
-  } else if(_laser_material == 'Cardboard') {
+  } else if (_laser_material == 'Cardboard') {
     text = document.createTextNode('Cardboard/Matboard has a lower environmental impact than MDF and Acrylic. However, Cardboard/Matboard recycled uses 62% less energy and emits 33% less CO2 than Cardboard/Matboard manufactured for the first time. Next time, ask your provider for Cardboard/Matboard recycled to reduce your environmental impact in this phase.');
   } else { //Mycelium
     text = document.createTextNode('');
@@ -242,7 +248,12 @@ function set_transport_laser() {
     _laser_transport_exclamation.classList.remove('good');
   }
 
-  let text = get_transport_text(_laser_location, _laser_shipment);
+  let text;
+  if (_laser_location_type == 'region') {
+    text = get_transport_text(_laser_location, _laser_shipment);
+  } else {
+    text = get_transport_text(_laser_distance, _laser_shipment);
+  }
   textbox.innerHTML = "";
   textbox.appendChild(text);
 }
@@ -265,9 +276,9 @@ function set_fabrication_laser() {
   textbox.classList.remove('good');
   _laser_fabrication_exclamation.classList.remove('good');
 
-  if(_laser_machine == 'Trotec') {
+  if (_laser_machine == 'Trotec') {
     text.appendChild(document.createTextNode('Trotec Speedy 400 uses 41% more power than Epilog Fusion Pro 32, and 25% more than Universal PLS6.75 in the cutting process. You can save energy by reducing laser cutting time, avoiding double cuts, optimizing the cutting area, and using the optimal cutting parameters per material. You can also save energy reducing idle time by turning off the machine when not in use, or sending jobs in series.'));
-  } else if(_laser_machine == 'Epilog') {
+  } else if (_laser_machine == 'Epilog') {
     textbox.classList.add('good');
     _laser_fabrication_exclamation.classList.add('good');
     text.appendChild(document.createTextNode('Epilog Fusion Pro 32 uses 41% less power than Trotec Speedy 400, and 25% less power than Universal PLS6.75 in the cutting process. You can save energy by reducing laser cutting time, avoiding double cuts, optimizing the cutting area, and using the optimal cutting parameters per material. You can also save energy reducing idle time by turning off the machine when not in use, or sending jobs in series.'));
@@ -293,24 +304,24 @@ function set_end_life_laser() {
   let textbox = document.querySelector('#end_life_textbox_laser');
   _laser_end_life_exclamation.classList.remove('invisible');
   let text = document.createDocumentFragment();
-  if(_laser_end_life == 'idk') {
+  if (_laser_end_life == 'idk') {
     text.appendChild(document.createTextNode("Since you didn't specify an end of life type, we assume your material will end up in the landfill."));
     text.appendChild(document.createElement("BR"));
     _laser_end_life = 'landfill';
   }
-  if(_laser_end_life == 'recycle_bin') {
+  if (_laser_end_life == 'recycle_bin') {
     text.appendChild(document.createTextNode('Recycling reduces the need for extracting, refining and processing raw materials all of which create substantial air and water pollution. Recycling allows the waste to become the raw material for a new material with lower embodied energy than a primary manufactured one. However, the recycling process still generates CO2 emissions which can be avoided by using compostable materials. We only analyzed the cost of transporting the waste to a recycling facility.'));
   } else if (_laser_end_life == 'incineration') {
     text.appendChild(document.createTextNode('Even though the incineration process generates energy bonus because of the burning process, it still creates about 8000% more CO2 emissions than when the waste is recycled. We analyzed the cost of transporting the waste to a garbage facility and the energy and CO2 emissions generated from burning the waste.'));
   } else if (_laser_end_life == 'landfill') {
-    if(_laser_material == 'Acrylic') {
+    if (_laser_material == 'Acrylic') {
       text.appendChild(document.createTextNode('If acrylic or plexiglass ends up in the landfill, it could take up to 400 years to degrade, and it becomes a potential source of microplastics. Landfills can impact on air, water and land quality. We only analyzed the cost of transporting the waste to a landfill in this phase.'));
     } else if (_laser_material == 'MDF') {
       text.appendChild(document.createTextNode('If MDF ends up in the landfill, it could take up to 14 years to degrade. Landfills can impact on air, water and land quality. In fact, landfilling this material is the least preferable option to use to dispose of it. Sending your waste to recycling reduces the need for extracting, refining and processing raw materials all of which create substantial air and water pollution. 20 % of total US methane emissions come from landfills. We only analyzed the cost of transporting the waste to a landfill.'));
     } else if (_laser_material == 'Cardboard' || _laser_material == "Cardboard_recycled") {
-      text.appendChild(document.createTextNode('If Cardboard/Matboard ends up in the landfill, it will decompose in about  2 months. Landfills can impact on air, water and land quality, and sending recyclable materials to the landfill will require extracting, refining and processing raw materials all over again to manufacture a new material, which processes create substantial air and water pollution. Make sure you’re disposing your waste in the right place. We only analyzed the cost of transporting the waste to a landfill in this phase.'));
+      text.appendChild(document.createTextNode("If Cardboard/Matboard ends up in the landfill, it will decompose in about  2 months. Landfills can impact on air, water and land quality, and sending recyclable materials to the landfill will require extracting, refining and processing raw materials all over again to manufacture a new material, which processes create substantial air and water pollution. Make sure you're disposing your waste in the right place. We only analyzed the cost of transporting the waste to a landfill in this phase."));
     } else { //Mycelium
-      text.appendChild(document.createTextNode('If Mycelium ends up in the landfill, it will decompose in about 2 months if oxygen is available. However, when compostable materials are placed in the more common anaerobic landfill and deprived of oxygen and microorganisms, their ability to decompose will be severely restricted. Landfills can impact on air, water and land quality. Make sure you’re disposing your waste in the right place. We only analyzed the cost of transporting the waste to a landfill in this phase.'));
+      text.appendChild(document.createTextNode("If Mycelium ends up in the landfill, it will decompose in about 2 months if oxygen is available. However, when compostable materials are placed in the more common anaerobic landfill and deprived of oxygen and microorganisms, their ability to decompose will be severely restricted. Landfills can impact on air, water and land quality. Make sure you're disposing your waste in the right place. We only analyzed the cost of transporting the waste to a landfill in this phase."));
     }
   }
   textbox.innerHTML = "";

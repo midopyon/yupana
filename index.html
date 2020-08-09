@@ -170,7 +170,7 @@
             <div class="question">
               <label id="weight_3dprint_label" for="_3dprint_weight_input">
                 <h5>Weight of your 3D model (gr) * </h5>
-                <h6>e.g. find this info in your 3d printing software (Cura, Simplify 3D, other)</h6>
+                <h6>Total weight of your 3d model, including supports</h6>
               </label>
               <p><input type="text" id="_3dprint_weight_input" class="input-field" placeholder="Type a number" required>&nbsp(gr)</p>
             </div>
@@ -341,7 +341,8 @@
               <p><input type="text" id="mat_thickness_input_lasercut" class="input-field" placeholder="Type a number" required>&nbspmm</p>
             </div>
             <div class="question">
-              <h5>Area of cut material *</h5>
+              <h5>Total area of cut material *</h5>
+              <img id="laser_img" src="images/lasercut_area.svg" alt="Header">
               <div class="flex">
                 <label class="radio_button first" id="Area">
                   <input class="field_selector" type="radio" value="area" name="area">&nbsp Area (m2)
