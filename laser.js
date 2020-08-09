@@ -158,7 +158,7 @@ function lifecycle_calculation_laser() {
   //fabrication
   _energy.fabrication = (_laser_cut_time * .85 * machine_energy[_laser_machine].cutting + _laser_cut_time * .15 * machine_energy[_laser_machine].stand_by  + _laser_cut_time * .2 * machine_energy[_laser_machine].idle) / 1000000;
 
-  _co2.fabrication = _energy.fabrication / 3.6 * material_laser[_laser_material].co2_DF_electricity;
+  _co2.fabrication = _energy.fabrication / 3.6 * _laser_electric;
 
   //end of life
   let end_life_results = end_life_calculation(_laser_waste, _laser_end_life, {energy: material_laser[_laser_material].energy_incineration,

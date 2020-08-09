@@ -560,6 +560,8 @@ function get_transport_text(location, shipment) {
 }
 
 function get_electric_text(country) {
+  console.log(country);
+  console.log(country_region[country]);
   let content = document.createDocumentFragment();
   content.appendChild(document.createTextNode('The co2 consumption of electricity is based on the source of the electricity (ie coal, nuclear, hydro, etc.). Different regions use different blends of electricity sources.You can check with the energy providers in your region to ensure your energy source has the least environmental impact. For example, solar and wind have a much lower environmental impact than fossil fuel sources.'));
   content.appendChild(document.createElement("BR"));
@@ -578,6 +580,9 @@ function get_electric_text(country) {
     text_location = document.createTextNode('Many South Asian countries depend on a single source to provide more than 50% of total electricity generation including India (Coal - 67.9%), Nepal (Hydropower - 99.9%), Bangladesh (Natural gas - 91.5%) and Sri Lanka (Oil - 50.2%).');
   } else if (country_region[country] == 'north asia') {
     text_location = document.createTextNode('In 2015, the energy consumption in Northeast Asia was 2.6 billion tons of coal equivalent, accounting for 14% of the global total; the total electricity consumption was 3.3 PWh, accounting for 16 % of the global total. In 2016, the total CO2 emissions in China, Japan and the ROK reached 34 4 % for the global total.');
+  } else {
+    console.log('error');
+    text_location = document.createTextNode('');
   }
 
   content.appendChild(text_location);
@@ -617,7 +622,7 @@ const electricity_coeff = {
   Benin: 0.701,
   Bhutan: 0.928,
   Bolivia: 0.535,
-  "Bosnia and Herzegovina": 1.326,
+  "Bosnia and Herzegowina": 1.326,
   Botswana: 1.826,
   Brazil: 0.093,
   "Brunei Darussalam": 0.819,
@@ -855,7 +860,7 @@ const country_region = {
   Benin: "africa",
   Bhutan: "south asia",
   Bolivia: "latin america",
-  "Bosnia and Herzegovina": "europe",
+  "Bosnia and Herzegowina": "europe",
   Botswana: "africa",
   Brazil: "latin america",
   "Brunei Darussalam": "south asia",
