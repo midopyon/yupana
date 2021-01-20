@@ -26,7 +26,6 @@ image {
 
 h1 {
   color: #252b37;
-  ;
   text-align: center;
   font-size: 2.6em;
 }
@@ -46,7 +45,7 @@ h5 {
 
 h6 {
   font-weight: normal;
-  font-size: .85rem;
+  font-size: 0.85rem;
 }
 
 .Intro {
@@ -84,11 +83,13 @@ h6 {
   margin-right: 1em;
 }
 
-input, label {
+input,
+label {
   display: block;
 }
 
-p input, label input {
+p input,
+label input {
   display: inline;
 }
 
@@ -101,37 +102,97 @@ p input, label input {
 .col_graph {
   flex: 0 0 60%;
   max-width: 60%;
-  padding-left: 2rem;
-  position: relative;
+  padding-left: 5em;
 }
 
-#state_laser, #state_3dprint {
+.bottomRowflex {
+  position: relative;
+  padding: 0;
+  margin: 1;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.col_leftButtons {
+  flex: 0 0 65%;
+}
+
+.col_rightButtons {
+  flex: 1;
+}
+
+.col_leftGraph {
+  flex: 1 1 0px;
+}
+
+.col_rightTable {
+  position: relative;
+  flex: 1 1 0px;
+  left: -150px;
+}
+
+.col_pagination {
+  display: flex;
+  margin: 1px;
+  padding: 5px;
+}
+
+.col_clearAllbutton {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+#state_laser,
+#state_3dprint {
   margin-top: 1em;
 }
 
 /* ['#837BE7', '#E6BDF2', '#F97494', '#FD9F82'] */
 .manufacturing {
-  background: rgba(131, 123, 231, .5);
+  background: rgba(131, 123, 231, 0.5);
   padding: 1em;
   position: relative;
 }
 
 .transportation {
-  background: rgba(230, 189, 242, .5);
+  background: rgba(230, 189, 242, 0.5);
   padding: 1em;
   position: relative;
 }
 
 .fabrication {
-  background: rgba(249, 116, 148, .5);
+  background: rgba(249, 116, 148, 0.5);
   padding: 1em;
   position: relative;
 }
 
 .end_life {
-  background: rgba(253, 159, 130, .5);
+  background: rgba(253, 159, 130, 0.5);
   padding: 1em;
   position: relative;
+}
+
+.rawHeader {
+  background-color: rgb(123, 124, 231);
+  justify-content: center;
+}
+
+.transpHeader {
+  background-color: rgb(230, 189, 242);
+  justify-content: center;
+}
+
+.digHeader {
+  background-color: rgb(249, 116, 148);
+  justify-content: center;
+}
+
+.endHeader {
+  background-color: rgb(253, 159, 130);
+  justify-content: center;
 }
 
 .question {
@@ -142,8 +203,8 @@ p input, label input {
   border: 1px solid red;
   padding: 0 7px;
   position: absolute;
-  right: .5em;
-  top: .5em;
+  right: 0.5em;
+  top: 0.5em;
   color: red;
 }
 
@@ -152,12 +213,12 @@ p input, label input {
   position: absolute;
   left: 100%;
   top: 0;
-  padding: 1rem .5rem 1rem 1rem;
+  padding: 1rem 0.5rem 1rem 1rem;
   margin-left: 1rem;
   z-index: 2;
   width: 80%;
   background: #e9eff8;
-  font-size: .85em;
+  font-size: 0.85em;
 }
 
 .textbox .good {
@@ -191,16 +252,18 @@ p input, label input {
 }
 
 button {
-  padding: 10px 20px;
+  padding: 5px 10px;
   border: none;
-  font-weight: bold;
   background: #e9eff8;
-  border-radius: 5px;
+  border-radius: 1px;
 }
 
-button[type=submit] {
-  background: #b4b8c5;
-  margin-left: 1em;
+button[type="submit"] {
+  background: #e9eff8;
+}
+
+button[type="next"] {
+  float: right;
 }
 
 button:hover {
@@ -208,18 +271,28 @@ button:hover {
   border: 1px solid #3b4456;
 }
 
+button.link {
+  background: none;
+  border: none;
+}
+
+.selectedButton {
+  text-decoration: underline;
+  pointer-events: none;
+}
+
 a {
   color: #b4b8c5;
-  text-decoration: underline
+  text-decoration: underline;
 }
 
 ul {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
+  display: flex;
+  list-style: none;
 }
 
-#chart_div_energy, #chart_div_co2 {
+#chart_div_energy,
+#chart_div_co2 {
   position: relative;
   left: -100px;
   top: -20px;
@@ -233,7 +306,7 @@ ul {
   left: 575px;
   width: 190px;
   color: #757575;
-  font-size: .85rem;
+  font-size: 0.85rem;
 }
 
 /* a:hover {
@@ -291,7 +364,7 @@ select {
   box-shadow: none;
   border: 1px solid #3b4456;
   background: #e9eff8;
-  padding: 0 .5em;
+  padding: 0 0.5em;
   line-height: 2;
   width: 200px;
 }
@@ -299,9 +372,9 @@ select {
 .input-field {
   border: 1px solid #3b4456;
   background: #fefffe;
-  padding: 0 .5em;
+  padding: 0 0.5em;
   line-height: 2;
-  border-radius: .25em;
+  border-radius: 0.25em;
   width: 182px;
 }
 
@@ -320,8 +393,8 @@ select {
   background: #e9eff8;
   outline: none;
   opacity: 0.7;
-  -webkit-transition: .2s;
-  transition: opacity .2s;
+  -webkit-transition: 0.2s;
+  transition: opacity 0.2s;
   border: 1px solid #3b4456;
 }
 
@@ -351,4 +424,8 @@ p2 {
 #chartdiv {
   width: 100%;
   height: 500px;
+}
+
+div.ag-theme-alpine div.ag-row {
+  font-size: 12px !important;
 }
