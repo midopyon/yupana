@@ -448,7 +448,7 @@ function DrawGoogleChartsEnergy(results) {
       },
       viewWindow: {
         min: -20,
-        max: 100,
+        max: 800,
       },
       title: "\nEnergy (MJ)",
       titleTextStyle: {
