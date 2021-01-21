@@ -432,7 +432,7 @@ function DrawGoogleChartsEnergy(results) {
     titleTextStyle: {
       color: "#3b4456",
       fontSize: 18,
-      fontName: "Helvetica",
+      fontName: "Open Sans",
       bold: true,
       //italic: true
     },
@@ -522,7 +522,7 @@ function DrawGoogleChartsCo2(results) {
     titleTextStyle: {
       color: "#3b4456",
       fontSize: 18,
-      fontName: "Helvetica",
+      fontName: "Open Sans",
       bold: true,
       //italic: true
     },
