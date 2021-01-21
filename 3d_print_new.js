@@ -79,20 +79,26 @@ var recycled = false;
 // var machine_3dprint_radios = 'makerbot'
 var first = true;
 
-//HELPER DEBUG
-document.getElementById("btn_helper").addEventListener("click", function () {
-  SetFormValues(TESTSOURCEVALUE);
-});
+// //HELPER DEBUG
+// document.getElementById("btn_helper").addEventListener("click", function () {
+//   SetFormValues(TESTSOURCEVALUE);
+// });
 
 // Add an event listener
 document.addEventListener("changePage", function (e) {
   //If already saved, show values of selected page and change text
 
   if (jobsArray[selectedPage - 1] !== undefined) {
+    //Set Delete Job enabled
+    SetDeleteJobActive();
+
     update_button_onSubmit();
     SetFormValues(jobsArray[selectedPage - 1].formValues);
     SetExclamationTexts(jobsArray[selectedPage - 1].formValues);
   } else {
+    //Set delete Job disabled
+    SetDeleteJobInactive();
+
     update_button_onNewJob();
     document.querySelectorAll(".exclamation").forEach((item, i) => {
       item.classList.add("invisible");
@@ -592,10 +598,6 @@ function refresh_user_input() {
       break;
     }
   }
-
-  // if (first === false && _3dprint_iteration !== null && _3dprint_weight !== null && _3dprint_support !== null && _3dprint_time !== null) {
-  //     start_the_magic()
-  // }
 }
 
 function lifecycle_calculation_3dprint() {
@@ -706,6 +708,12 @@ function start_the_magic_calculate_mode() {
     addRowEnergy(selectedPage, Object3DPrint.resultsEnergy);
     addRowCo2(selectedPage, Object3DPrint.resultsCo2);
   } else {
+    if (isDeleteJobHidden && selectedPage != 1) {
+      ShowDeleteJobButton();
+    } else {
+      SetDeleteJobActive();
+    }
+
     jobsArray[selectedPage - 1] = Object3DPrint;
 
     if (isUpdating) {

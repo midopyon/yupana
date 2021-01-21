@@ -10,13 +10,21 @@ let selectedJobsCo2 = [];
 
 let latestPage = 0;
 let selectedPage = 1;
+let maxEnergyValue = new Object();
+maxEnergyValue.rawMat = 0;
+maxEnergyValue.transp = 0;
+maxEnergyValue.digFab = 0;
+maxEnergyValue.endLife = 0;
+
 let hasJobStackEmpty = true;
 let isUpdating = false;
+let isDeleteJobHidden = true;
 // **** Loading Form Elements
 
 let region_3dprint = document.getElementById("region_input_3dprint");
 let distance_3dprint = document.getElementById("distance_input_3dprint");
 let addjob_3dprint = document.getElementById("buttonAddJob");
+let deljob_3dprint = document.getElementById("buttonDelJob");
 
 let _3dprint_country_select = document.getElementById("country_3dprint");
 let _3dprint_state_select = document.getElementById("state_3dprint");
@@ -29,7 +37,15 @@ var SupportSlider = document.getElementById("_3dprint_support_slider");
 
 document
   .getElementById("btn_clear_3dprint")
-  .addEventListener("click", reset_form);
+  .addEventListener("click", function () {
+    var w = confirm("Are you sure you want to clear ALL jobs?");
+    if (w == true) {
+      //Reset form
+      reset_form();
+    } else {
+      //nothing
+    }
+  });
 
 document
   .getElementById("region_radio_3dprint")
@@ -45,6 +61,22 @@ document.getElementById("btn_addJob").addEventListener("click", function () {
 
   createNewPageNumber();
   update_button_onNewJob();
+
+  if (!isDeleteJobHidden) {
+    SetDeleteJobInactive();
+  }
+});
+
+document.getElementById("btn_delJob").addEventListener("click", function () {
+  var r = confirm(
+    "Are you sure you want to delete Job #" + selectedPage + " ?"
+  );
+  if (r == true) {
+    //Delete Job
+    DeleteJobFromArray(selectedPage);
+  } else {
+    //nothing
+  }
 });
 
 _3dprint_country_select.addEventListener("change", CheckIfUS);
@@ -55,6 +87,9 @@ document.getElementById("Percent").addEventListener("click", ShowSupportSlider);
 // Defining Functions called on form action
 
 function reset_form() {
+  HideDeleteJobButton();
+  HideAddJobButton();
+
   // clearing inputs
   var inputs = document.getElementsByTagName("input");
   for (var i = 0; i < inputs.length; i++) {
@@ -83,12 +118,31 @@ function reset_form() {
   document.getElementById("btn_calculate").textContent = "Calculate";
   document.getElementById("chart_div_energy").innerHTML = "";
   document.getElementById("chart_div_co2").innerHTML = "";
+  document.getElementById("myGridEnergy").innerHTML = "";
+  document.getElementById("myGridCo2").innerHTML = "";
+  document.getElementById("NumbersList").innerHTML = "";
+
   document.querySelectorAll(".exclamation").forEach((item, i) => {
     item.classList.add("invisible");
   });
+
   //clear array
-  results_energy_ar = [];
-  results_co2_ar = [];
+  rowDataEnergy = [];
+  rowDataCo2 = [];
+  selectedJobsEnergy = [];
+  selectedJobsCo2 = [];
+  jobsArray = [];
+
+  latestPage = 0;
+  selectedPage = 1;
+  hasJobStackEmpty = true;
+  isUpdating = false;
+  isDeleteJobHidden = true;
+
+  maxEnergyValue.rawMat = 0;
+  maxEnergyValue.transp = 0;
+  maxEnergyValue.digFab = 0;
+  maxEnergyValue.endLife = 0;
 
   return false;
 }
@@ -113,6 +167,24 @@ function ShowAddJobButton() {
 
 function HideAddJobButton() {
   addjob_3dprint.classList.add("invisible");
+}
+
+function ShowDeleteJobButton() {
+  deljob_3dprint.classList.remove("invisible");
+  isDeleteJobHidden = false;
+}
+
+function HideDeleteJobButton() {
+  deljob_3dprint.classList.add("invisible");
+  isDeleteJobHidden = true;
+}
+
+function SetDeleteJobActive() {
+  document.getElementById("btn_delJob").disabled = false;
+}
+
+function SetDeleteJobInactive() {
+  document.getElementById("btn_delJob").disabled = true;
 }
 
 function CheckIfUS() {
@@ -391,19 +463,19 @@ function DrawGoogleChartsEnergy(results) {
   let dataArray = [
     [
       "Prototyping Material",
-      "Raw Material Processing",
+      "Raw Material Processing (RM)",
       {
         role: "annotation",
       },
-      "Transportation",
+      "Transportation (T)",
       {
         role: "annotation",
       },
-      "Digital Fabrication",
+      "Digital Fabrication (DF)",
       {
         role: "annotation",
       },
-      "End of Life",
+      "End of Life (EL)",
       {
         role: "annotation",
       },
@@ -424,8 +496,11 @@ function DrawGoogleChartsEnergy(results) {
 
   var data = google.visualization.arrayToDataTable(dataArray);
 
+  let arr = Object.values(maxEnergyValue);
+  console.log("fromgoogle" + arr.toString());
+
   var materialOptions = {
-    width: 500,
+    width: 520,
     height: 400,
     colors: ["#837BE7", "#E6BDF2", "#F97494", "#FD9F82"],
     title: "Energy Consumption\n ",
@@ -448,7 +523,7 @@ function DrawGoogleChartsEnergy(results) {
       },
       viewWindow: {
         min: -20,
-        max: 800,
+        max: Math.ceil(Math.max(...arr) / 50) * 50,
       },
       title: "\nEnergy (MJ)",
       titleTextStyle: {
@@ -481,19 +556,19 @@ function DrawGoogleChartsCo2(results) {
   let dataArray = [
     [
       "Prototyping Material",
-      "Raw Material Processing",
+      "Raw Material Processing (RM)",
       {
         role: "annotation",
       },
-      "Transportation",
+      "Transportation (T)",
       {
         role: "annotation",
       },
-      "Digital Fabrication",
+      "Digital Fabrication (DF)",
       {
         role: "annotation",
       },
-      "End of Life",
+      "End of Life (EL)",
       {
         role: "annotation",
       },
@@ -515,7 +590,7 @@ function DrawGoogleChartsCo2(results) {
   var data = google.visualization.arrayToDataTable(dataArray);
 
   var materialOptions = {
-    width: 500,
+    width: 520,
     height: 400,
     colors: ["#837BE7", "#E6BDF2", "#F97494", "#FD9F82"],
     title: "CO2 Emissions\n ",
@@ -678,24 +753,28 @@ var columnDefsEnergy = [
     field: "rawMat",
     headerClass: "rawHeader",
     valueFormatter: (params) => params.data.rawMat.toFixed(2),
+    suppressMovable: true,
   },
   {
     headerName: "T",
     field: "transp",
     headerClass: "transpHeader",
     valueFormatter: (params) => params.data.transp.toFixed(2),
+    suppressMovable: true,
   },
   {
     headerName: "DG",
     field: "digFab",
     headerClass: "digHeader",
     valueFormatter: (params) => params.data.digFab.toFixed(2),
+    suppressMovable: true,
   },
   {
     headerName: "EL",
     field: "endLife",
     headerClass: "endHeader",
     valueFormatter: (params) => params.data.endLife.toFixed(2),
+    suppressMovable: true,
   },
 ];
 
@@ -712,7 +791,13 @@ function addRowEnergy(job, Results) {
     endLife: Results.end_life,
   };
 
+  maxEnergyValue.rawMat += data.rawMat;
+  maxEnergyValue.transp += data.transp;
+  maxEnergyValue.digFab += data.digFab;
+  maxEnergyValue.endLife += data.endLife;
+
   rowDataEnergy.push(data);
+
   updateTableEnergy();
 }
 
@@ -727,6 +812,19 @@ function updateRowEnergy(job, Results) {
   };
 
   rowDataEnergy[job - 1] = data;
+
+  maxEnergyValue.rawMat = 0;
+  maxEnergyValue.transp = 0;
+  maxEnergyValue.digFab = 0;
+  maxEnergyValue.endLife = 0;
+
+  rowDataEnergy.forEach(function (row, index) {
+    maxEnergyValue.rawMat += row.rawMat;
+    maxEnergyValue.transp += row.transp;
+    maxEnergyValue.digFab += row.digFab;
+    maxEnergyValue.endLife += row.endLife;
+  });
+
   updateTableEnergy();
 }
 
@@ -787,24 +885,28 @@ var columnDefsCo2 = [
     field: "rawMat",
     headerClass: "rawHeader",
     valueFormatter: (params) => params.data.rawMat.toFixed(2),
+    suppressMovable: true,
   },
   {
     headerName: "T",
     field: "transp",
     headerClass: "transpHeader",
     valueFormatter: (params) => params.data.transp.toFixed(2),
+    suppressMovable: true,
   },
   {
     headerName: "DG",
     field: "digFab",
     headerClass: "digHeader",
     valueFormatter: (params) => params.data.digFab.toFixed(2),
+    suppressMovable: true,
   },
   {
     headerName: "EL",
     field: "endLife",
     headerClass: "endHeader",
     valueFormatter: (params) => params.data.endLife.toFixed(2),
+    suppressMovable: true,
   },
 ];
 
@@ -885,4 +987,98 @@ function updateTableCo2() {
   gridOptionsCo2.api.selectAll();
   gridOptionsCo2.api.sizeColumnsToFit();
   gridOptionsCo2.api.refreshCells();
+}
+
+function DeleteJobFromArray(pageToDelete) {
+  var tempJobArray = [];
+
+  jobsArray.forEach(function (job, index) {
+    if (index + 1 == pageToDelete) {
+      //Don't save Because you're erasing!!
+    } else {
+      tempJobArray.push(job);
+    }
+  });
+
+  //Set jobsArray to tempJobArray
+  jobsArray.length = 0;
+  jobsArray = tempJobArray;
+
+  // Update Latest Page
+  latestPage = tempJobArray.length;
+
+  // Update Selected Page (to page to Delete)
+  if (pageToDelete == latestPage + 1) {
+    selectedPage = latestPage;
+  } else {
+    selectedPage = pageToDelete;
+  }
+
+  //Set Form Values and Exclamation Marks
+
+  SetFormValues(jobsArray[selectedPage - 1].formValues);
+  SetExclamationTexts(jobsArray[selectedPage - 1].formValues);
+
+  // If it has just one element, hide Delete Job Button
+
+  if (tempJobArray.length == 1) {
+    HideDeleteJobButton();
+  }
+
+  // Change buttons to match size of array
+
+  var elem = document.getElementById("listItem" + (latestPage + 1).toString());
+  elem.remove();
+
+  // Set selectedPage as Selected Button
+  var currentButton = document.getElementById(
+    "buttonPage" + selectedPage.toString()
+  );
+
+  currentButton.className = "link selectedButton";
+
+  // Load Table again with new values
+
+  //Set row datas to zero
+
+  rowDataEnergy = [];
+  rowDataCo2 = [];
+
+  //iterate through jobArray and add row foreach value
+
+  maxEnergyValue.rawMat = 0;
+  maxEnergyValue.transp = 0;
+  maxEnergyValue.digFab = 0;
+  maxEnergyValue.endLife = 0;
+
+  jobsArray.forEach(function (job, index) {
+    let dataEnergy = {
+      jobName: "J" + (index + 1).toString(),
+      rawMat: job.resultsEnergy.mat_manufacturing,
+      transp: job.resultsEnergy.transportation,
+      digFab: job.resultsEnergy.fabrication,
+      endLife: job.resultsEnergy.end_life,
+    };
+
+    let dataCo2 = {
+      jobName: "J" + (index + 1).toString(),
+      rawMat: job.resultsEnergy.mat_manufacturing,
+      transp: job.resultsEnergy.transportation,
+      digFab: job.resultsEnergy.fabrication,
+      endLife: job.resultsEnergy.end_life,
+    };
+
+    maxEnergyValue.rawMat += dataEnergy.rawMat;
+    maxEnergyValue.transp += dataEnergy.transp;
+    maxEnergyValue.digFab += dataEnergy.digFab;
+    maxEnergyValue.endLife += dataEnergy.endLife;
+
+    rowDataEnergy.push(dataEnergy);
+    rowDataCo2.push(dataCo2);
+  });
+
+  //update tables
+
+  updateTableCo2();
+  updateTableEnergy();
 }

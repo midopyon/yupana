@@ -116,11 +116,25 @@ label input {
 }
 
 .col_leftButtons {
-  flex: 0 0 65%;
+  flex: 0 0 50%;
 }
 
 .col_rightButtons {
+  position: relative;
+  left: 60px;
   flex: 1;
+}
+
+.subcol_addJob {
+  flex: 1 1 0px;
+  display: inline-block;
+  margin-right: 5px;
+}
+
+.subcol_delJob {
+  flex: 1 1 0px;
+  display: inline-block;
+  margin-right: 5px;
 }
 
 .col_leftGraph {
