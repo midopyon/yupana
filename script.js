@@ -836,10 +836,10 @@ function addRowEnergy(job, Results) {
   }
 
   document.getElementById("tableEnergyTitle").innerHTML =
-    "Energy Consumption for Jobs: " + TableTitle;
+    "Energy Consumption for: " + TableTitle;
 
   document.getElementById("tableCoTitle").innerHTML =
-    "Co2 Emissions for Jobs: " + TableTitle;
+    "Co2 Emissions for: " + TableTitle;
 
   updateTableEnergy();
 }
@@ -878,6 +878,7 @@ var gridOptionsEnergy = {
   rowSelection: "multiple",
   onSelectionChanged: onSelectionChangedEnergy,
   headerHeight: 23,
+  onRowClicked: onrowClickedEnergy,
 };
 
 function getSelectedRowsEnergy() {
@@ -885,6 +886,34 @@ function getSelectedRowsEnergy() {
   var selectedData = selectedNodes.map(function (node) {
     return node.data;
   });
+}
+
+function onrowClickedEnergy() {
+  var selectedRows = gridOptionsEnergy.api.getSelectedRows();
+  var selectedRowsArray = [];
+
+  selectedRows.forEach(function (selectedRow, index) {
+    var number = parseInt(
+      selectedRow.jobName.slice(selectedRow.jobName.length - 1)
+    );
+
+    selectedRowsArray.push(number);
+  });
+
+  var event = new CustomEvent("changePageFromTable", {
+    detail: selectedRowsArray[0],
+  });
+
+  var selects = document.getElementsByClassName("link selectedButton");
+  for (var i = 0; i < selects.length; i++) selects[i].className = "link";
+
+  document.getElementById(
+    "buttonPage" + selectedRowsArray[0].toString()
+  ).className = "link selectedButton";
+
+  document.dispatchEvent(event);
+
+  //Dispatch on change page event
 }
 
 function onSelectionChangedEnergy() {
@@ -1113,10 +1142,10 @@ function DeleteJobFromArray(pageToDelete) {
   }
 
   document.getElementById("tableEnergyTitle").innerHTML =
-    "Energy Consumption for Jobs: " + TableTitleEnergy;
+    "Energy Consumption for: " + TableTitleEnergy;
 
   document.getElementById("tableCoTitle").innerHTML =
-    "Co2 Emissions for Jobs: " + TableTitleEnergy;
+    "Co2 Emissions for: " + TableTitleEnergy;
 
   //Set row datas to zero
 

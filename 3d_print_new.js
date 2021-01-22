@@ -108,6 +108,15 @@ document.addEventListener("changePage", function (e) {
   //Else, do nothing (accessing a job thats just being created)
 });
 
+document.addEventListener("changePageFromTable", function (e) {
+  //Set Delete Job enabled
+  SetDeleteJobActive();
+
+  update_button_onSubmit();
+  SetFormValues(jobsArray[e.detail - 1].formValues);
+  SetExclamationTexts(jobsArray[e.detail - 1].formValues);
+});
+
 document.addEventListener("selectionChangedCo2", WaitForDataAndShowGraphCo2);
 
 document.addEventListener(
