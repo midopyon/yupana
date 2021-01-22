@@ -1079,55 +1079,50 @@ document
 function set_end_life_3dprint(sourceValues) {
   let textbox = document.querySelector("#end_life_textbox_3dprint");
   _3dprint_end_life_exclamation.classList.remove("invisible");
-  let text = document.createDocumentFragment();
+  textbox.innerHTML = "";
 
   var tempEOL = sourceValues.eol_3dprint;
   var tempMaterial = sourceValues.material_3dprint;
 
-  if (tempEOL == "idk") {
-    text.appendChild(
-      document.createTextNode(
-        "Since you didn't specify an end of life type, we assume your material will end up in the landfill."
-      )
-    );
-    text.appendChild(document.createElement("BR"));
-    tempEOL = "landfill";
-  }
+  textDivRecycle = document.createElement("div");
+  textDivRecycle.innerHTML = "";
+  textDivRecycle.style.cssText = "display: inline-block;";
+
   if (tempEOL == "recycle_bin") {
-    text.appendChild(
-      document.createTextNode(
-        "Recycling reduces the need for extracting, refining and processing raw materials all of which create substantial air and water pollution. Recycling allows the waste to become the raw material for a new material with lower embodied energy than a primary manufactured one. However, the recycling process still generates CO2 emissions which can be avoided by using compostable materials. We only analyzed the cost of transporting the waste to a recycling facility."
-      )
-    );
-  } else if (tempEOL == "incineration") {
-    text.appendChild(
-      document.createTextNode(
-        "Even though the incineration process generates energy bonus because of the burning process, it still creates about 8000% more CO2 emissions than when the waste is recycled. We analyzed the cost of transporting the waste to a garbage facility and the energy and CO2 emissions generated from burning the waste."
-      )
-    );
-  } else if (tempEOL == "landfill") {
-    if (tempMaterial == "PLA") {
-      text.appendChild(
-        document.createTextNode(
-          "If PLA ends up in the landfill, it breaks down anaerobically to release methane, a greenhouse gas that is about 30 times more potent than carbon dioxide and that contributes to climate change (2). Sending your waste to recycling reduces the need for extracting, refining and processing raw materials all of which create substantial air and water pollution. Recycling allows the waste to become the raw material for a new material with lower embodied energy than a primary manufactured one. 20 % of total US methane emissions come from landfills. We only analyzed the cost of transporting the waste to a landfill."
-        )
-      );
-    } else if (tempMaterial == "ABS") {
-      text.appendChild(
-        document.createTextNode(
-          "If ABS ends up in the landfill, it becomes a potential source of microplastics. Landfills can impact on air, water and land quality. Sending your waste to recycling reduces the need for extracting, refining and processing raw materials all of which create substantial air and water pollution. Recycling allows the waste to become the raw material for a new material with lower embodied energy than a primary manufactured one. We only analyzed the cost of transporting the waste to a landfill."
-        )
-      );
-    } else if (tempMaterial == "Nylon") {
-      text.appendChild(
-        document.createTextNode(
-          "If Nylon ends up in the landfill, it becomes a potential source of microplastics. Landfills can impact on air, water and land quality. Sending your waste to recycling reduces the need for extracting, refining and processing raw materials all of which create substantial air and water pollution. Recycling allows the waste to become the raw material for a new material with lower embodied energy than a primary manufactured one. We only analyzed the cost of transporting the waste to a landfill."
-        )
-      );
-    }
+    textDivRecycle.innerHTML =
+      "Pros:\r\n- Recycling reduces the need for extracting, refining and processing raw materials all of which create substantial air and water pollution.\r\n- It allows the waste to become the raw material for a new material with lower embodied energy than a virgin one.\r\n<br/><span class='innerRedText'>Cons:\r\n- The recycling process in an industrial facility generates CO2 emissions.\r\n<br/>Suggestion:\r\n- Look for alternative materials that are either compostable or biodegradable in natural conditions.\r\n<br/></span><span class='innerSmallerText'>*We only analyzed the cost of transporting the waste to a recycling facility.\r\n</span>";
   }
-  textbox.innerHTML = "";
-  textbox.appendChild(text);
+  if (tempEOL == "landfill" || tempEOL == "idk") {
+    var tempText;
+
+    if (tempMaterial == "PLA") {
+      tempText =
+        "- PLA that ends up in the landfill breaks down anaerobically to release methane, a greenhouse gas that is about 30 times more potent than carbon dioxide and contributes to climate change.\r\n- 20% of total US. methane emissions come from landfills.<br/>\r\nSuggestion:\r\n- Send your waste to a recycling facility to reduce the need for extracting, refining and processing raw materials all of which create substantial air and water pollution.\r\n- Recycling allows the waste to become the raw material for a new material with lower embodied energy than virgin material.\r\n";
+    } else if (tempMaterial == "ABS") {
+      tempText =
+        "- ABS that ends up in the landfill becomes a potential source of microplastics.\r\n- Landfills impact the air, water, and land quality.\r\n<br/>Suggestion:\r\n- Send your waste to a recycling facility to reduce the need for extracting, refining and processing raw materials all of which create substantial air and water pollution.\r\n - Recycling allows the waste to become the raw material for a new material with lower embodied energy than virgin material.\r\n";
+    } else if (tempMaterial == "Nylon") {
+      tempText =
+        "- Nylon that ends up in the landfill becomes a potential source of microplastics.\r\n- Landfills impact the air, water, and land quality.\r\n<br/>Suggestion:\r\n- Send your waste to a recycling facility to reduce the need for extracting, refining and processing raw materials all of which create substantial air and water pollution.\r\n - Recycling allows the waste to become the raw material for a new material with lower embodied energy than virgin material.\r\n";
+    }
+
+    if (tempEOL == "idk") {
+      textDivRecycle.innerHTML =
+        "We analyzed the cost of transporting the waste to a landfill area.\r\n<br/><span class='innerRedText'>Cons:\r\n- We assumed your material ended up in the landfill.\r\n" +
+        tempText +
+        "</span>";
+    } else {
+      textDivRecycle.innerHTML =
+        "We analyzed the cost of transporting the waste to a landfill area.\r\n<br/><span class='innerRedText'>Cons:\r\n" +
+        tempText +
+        "</span>";
+    }
+  } else if (tempEOL == "incineration") {
+    textDivRecycle.innerHTML =
+      "We analyzed the cost of transporting the waste to a garbage facility and the energy and CO2 emissions generated from burning the waste.\r\n<br/>Pros:\r\n- The incineration process generates an energy bonus because of the burning process.\r\n<br/><span class='innerRedText'>Cons:\r\n- It creates about 8000% more CO2 emissions than recycling. </span>";
+  }
+
+  textbox.appendChild(textDivRecycle);
 }
 
 let _3dprint_end_life_exclamation = document.querySelector(

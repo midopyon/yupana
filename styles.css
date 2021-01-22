@@ -431,3 +431,7 @@ div.ag-theme-alpine div.ag-row {
 .innerBoldText {
   font-weight: bold;
 }
+
+.innerSmallerText {
+  font-size: 0.8em;
+}
