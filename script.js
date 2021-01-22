@@ -666,109 +666,51 @@ function DrawGoogleChartsCo2(results) {
 
 ///
 
-function get_transport_text(location, shipment) {
-  let content = document.createDocumentFragment();
-  let text_location;
+function get_transport_location(location) {
+  var typeLocation;
+
   if (!isNaN(location)) {
     if (location < transportation_distances.local_avg) {
-      location = "Local";
+      typeLocation = "Local";
     } else if (location < transportation_distances.national_avg) {
-      location = "National";
+      typeLocation = "National";
     } else {
-      location = "International";
+      typeLocation = "International";
     }
-    content.appendChild(
-      document.createTextNode(
-        "We categorized the distance you entered into Local, National, or International based on how large it is."
-      )
-    );
-    content.appendChild(document.createElement("BR"));
-  }
-  if (location == "International") {
-    text_location = document.createTextNode(
-      "Materials that travel international distances have a 95% higher environmental impact than national and local manufactured materials. Longer transportation distances require more fuel and therefore generate more CO2 emissions."
-    );
-  } else if (location == "National") {
-    text_location = document.createTextNode(
-      "Materials that travel national distances have a 30% higher environmental impact than local manufactured materials. Longer transportation distances require more fuel and therefore generate more CO2 emissions."
-    );
-  } else if (location == "Local") {
-    text_location = document.createTextNode(
-      "Locally manufactured materials have the least environmental impact: 95% less than international and 30% less than national. Longer transportation distances require more fuel and therefore generate more CO2 emissions."
-    );
-  } else {
-    //idk
-    text_location = document.createTextNode(
-      "Since you didn't specify where your material was manufactured, we assume it travelled from China. Longer transportation distances require more fuel and therefore generate more CO2 emissions. See if you can find out where your materials are coming from and switch to local if possible."
-    );
   }
 
-  content.appendChild(text_location);
-  content.appendChild(document.createElement("BR"));
-
-  let text_shipment;
-  if (shipment == "By air") {
-    text_shipment = document.createTextNode(
-      "Airplanes have a 1000% more environmental impact related to energy than road transportation and they emit 700% more CO2. Switching to ocean or road transportation if possible uses less fuel and generates less CO2 emissions."
-    );
-  } else if (shipment == "By sea") {
-    text_shipment = document.createTextNode(
-      "Great choice! Ocean transportation has the least environmental impact when it's combined with local - road distances to ship a material. It impacts 700% less in energy and generates 730% less CO2 emissions than national transportation by road. Longer transportation distances require more fuel and therefore generate more CO2 emissions."
-    );
-  } else if (shipment == "By road") {
-    text_shipment = document.createTextNode(
-      "Using a 32 metric ton truck to travel national distances has 30% less environmental impact related to energy than using a 14 metric ton truck, and it emits 50% less CO2. A good combination of road shipping will always be to avoid xpress deliveries because they use a light goods vehicle that has a 115% more environmental impact related to energy than a 14 metric truck and it emits 63% more CO2."
-    );
-  } else {
-    text_shipment = document.createTextNode(
-      "Since you didn't specify a shipping method, we assumed: International - airplane, National - road, Local - road."
-    );
-  }
-  content.appendChild(text_shipment);
-  return content;
+  return typeLocation;
 }
 
 function get_electric_text(country) {
-  let content = document.createDocumentFragment();
-  content.appendChild(
-    document.createTextNode(
-      "The co2 consumption of electricity is based on the source of the electricity (ie coal, nuclear, hydro, etc.). Different regions use different blends of electricity sources.You can check with the energy providers in your region to ensure your energy source has the least environmental impact. For example, solar and wind have a much lower environmental impact than fossil fuel sources."
-    )
-  );
-  content.appendChild(document.createElement("BR"));
-  let text_location;
-  if (country_region[country] == "north america") {
-    text_location = document.createTextNode(
-      "In 2019, about 63% of the electricity generation was from fossil fuels-coal, natural gas, petroleum, and other gases. About 20% was from nuclear energy, and about 18% was from renewable energy sources."
-    );
+  let countryText = "";
+
+  if (country == "United States") {
+    countryText =
+      "<span class='innerRedText'>- USA: 63% fossil fuels-coal, natural gas, petroleum; 20% nuclear energy, and 18% renewable energy.</span>\r\n";
+  } else if (country_region[country] == "north america") {
+    countryText = "";
   } else if (country_region[country] == "latin america") {
-    text_location = document.createTextNode(
-      "In 2015, fossil fuel remains the most important source of energy in Latin America, with a share of around 75%, 16% bioenergy,  8% hydropower, 1% geothermal, and 1% originated from solar and wind energy (IEA, 2015)."
-    );
+    countryText =
+      "<span class='innerRedText'>- Latin America: 75% fossil fuel, 16% bioenergy,  8% hydropower, 1% geothermal, and 1% solar and wind energy.</span>\r\n";
   } else if (country_region[country] == "europe") {
-    text_location = document.createTextNode(
-      "In 2018, about 45.5 % of the net electricity generated in the EU came from combustible fuels (such as natural gas, coal and oil), while a quarter (25.8 %) came from nuclear power stations."
-    );
+    countryText =
+      "<span class='innerRedText'>- European Union: 45.5% natural gas, coal, and oil; 25.8% nuclear power.</span>\r\n";
   } else if (country_region[country] == "middle east") {
-    text_location = document.createTextNode("");
+    countryText = "";
   } else if (country_region[country] == "africa") {
-    text_location = document.createTextNode("");
+    countryText = "";
   } else if (country_region[country] == "south asia") {
-    text_location = document.createTextNode(
-      "Many South Asian countries depend on a single source to provide more than 50% of total electricity generation including India (Coal - 67.9%), Nepal (Hydropower - 99.9%), Bangladesh (Natural gas - 91.5%) and Sri Lanka (Oil - 50.2%)."
-    );
+    countryText =
+      "<span class='innerRedText'>- South Asian: India (Coal – 67.9%), Nepal (Hydropower – 99.9%), Bangladesh (Natural gas – 91.5%), and Sri Lanka (Oil – 50.2%).</span>\r\n";
   } else if (country_region[country] == "north asia") {
-    text_location = document.createTextNode(
-      "In 2015, the energy consumption in Northeast Asia was 2.6 billion tons of coal equivalent, accounting for 14% of the global total; the total electricity consumption was 3.3 PWh, accounting for 16 % of the global total. In 2016, the total CO2 emissions in China, Japan and the ROK reached 34 4 % for the global total."
-    );
+    countryText =
+      "<span class='innerRedText'>- Northern Asian: In 2015, the energy consumption was 2.6 billion tons of coal equivalent, accounting for 14% of the global total; the total electricity consumption was 3.3 PWh, accounting for 16 % of the global total. In 2016, the total CO2 emissions in China, Japan, and the ROK reached 34.4% of the global total.</span>\r\n";
   } else {
     console.log("error");
-    text_location = document.createTextNode("");
   }
 
-  content.appendChild(text_location);
-  content.appendChild(document.createElement("BR"));
-  return content;
+  return countryText;
 }
 
 var columnDefsEnergy = [

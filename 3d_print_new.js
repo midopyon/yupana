@@ -794,47 +794,41 @@ function getAndAddUpSelectedJobsCo2() {
 
 //Setting Manufacturing Text
 function set_manu_3dprint(sourceValues) {
-  let text;
   let textbox = document.querySelector("#manufacturing_textbox_3dprint");
 
   var tempMaterial = sourceValues.material_3dprint;
   var tempIsRecycled = sourceValues.isRecycled;
 
   _3dprint_manu_exclamation.classList.remove("invisible");
-  //remove if prev value was good
-  textbox.classList.remove("good");
+
   _3dprint_manu_exclamation.classList.remove("good");
 
+  textDiv = document.createElement("div");
+  textDiv.style.cssText = "display: inline-block;";
+
   if (tempMaterial == "PLA" && tempIsRecycled) {
-    textbox.classList.add("good");
     _3dprint_manu_exclamation.classList.add("good");
-    text = document.createTextNode(
-      "PLA has a lower environmental impact than ABS and Nylon. PLA recycled uses 46% less energy and emits 54% less CO2 than PLA manufactured for the first time."
-    );
+    textDiv.innerHTML =
+      "Pros:\r\n- Lower environmental impact compared to ABS and Nylon.\r\n- It uses 46% less energy than Standard (virgin) PLA when manufactured .\r\n- It emits 54% less CO2 than Standard (virgin) PLA when manufactured.";
   } else if (tempMaterial == "PLA") {
-    text = document.createTextNode(
-      "PLA has a lower environmental impact than ABS and Nylon. However, PLA recycled uses 46% less energy and emits 54% less CO2 than PLA manufactured for the first time. Next time, ask your provider for PLA recycled to reduce your environmental impact in this phase."
-    );
+    textDiv.innerHTML =
+      "Pros:\r\n- Lower environmental impact compared to ABS and Nylon.\r\n<span class='innerRedText'>Cons:\r\n-  It uses <span class='innerBoldText'>46% more energy</span> than Recycled PLA when manufactured.\r\n-  It emits <span class='innerBoldText'>54% more CO2</span> than Recycled PLA when manufactured.\r\nSuggestion:\r\n- Switch to Recycled PLA filament.</span>";
   } else if (tempMaterial == "ABS" && tempIsRecycled) {
-    text = document.createTextNode(
-      "ABS has a higher environmental impact than PLA. However, ABS recycled uses 59% less energy and emits 40% less CO2 than ABS manufactured for the first time. Next time, ask your provider for ABS recycled or PLA recycled to reduce your environmental impact in this phase."
-    );
+    textDiv.innerHTML =
+      "Pros:\r\n- Lower environmental impact compared to Standard (virgin) ABS and Nylon.\r\n- It uses <span class='innerBoldText'>60% less energy</span> than Standard (virgin) ABS when manufactured.\r\n- It emits <span class='innerBoldText'>41% less CO2</span> than Standard (virgin) ABS when manufactured.\r\n<span class='innerRedText'>Cons:\r\n-  It uses <span class='innerBoldText'>27% more energy</span>  than Recycled PLA when manufactured.\r\n-  It emits <span class='innerBoldText'>27% more CO2</span>  than Recycled PLA when manufactured.\r\nSuggestion:\r\n- Switch to Recycled PLA filament.</span>";
   } else if (tempMaterial == "ABS") {
-    text = document.createTextNode(
-      "ABS primary manufacturing has a higher environmental impact than ABS recycled and PLA. ABS uses 41% more energy and emits 60% more CO2 than ABS recycled. Next time, ask your provider for ABS recycled or PLA recycled to reduce your environmental impact in this phase."
-    );
+    textDiv.innerHTML =
+      "Pros:\r\n- Lower environmental impact compared to Nylon.\r\n<span class='innerRedText'>Cons:\r\n-  It uses <span class='innerBoldText'>60% more energy</span>  than Recycled ABS when manufactured.\r\n-  It emits <span class='innerBoldText'>41% more CO2</span>  than Recycled ABS when manufactured.\r\nSuggestion:\r\n- Switch to Recycled ABS or Recycled PLA filament.</span> ";
   } else if (tempMaterial == "Nylon" && tempIsRecycled) {
-    text = document.createTextNode(
-      "Nylon has a higher environmental impact than ABS and PLA. However, Nylon recycled uses 69% less energy and emits 74.5% less CO2 than Nylon manufactured for the first time. Next time, ask your provider for Nylon recycled, ABS recycled or PLA recycled to reduce your environmental impact in this phase."
-    );
+    textDiv.innerHTML =
+      "Pros:\r\n- Lower environmental impact compared to recycled ABS.\r\n- It uses <span class='innerBoldText'>69% less energy</span>  than Standard (virgin) Nylon when manufactured.\r\n- It emits <span class='innerBoldText'>75% less CO2</span>  than Standard (virgin) Nylon when manufactured.";
   } else {
     //reg nylon
-    text = document.createTextNode(
-      "Nylon primary manufacturing has a higher environmental impact than Nylon recycled, ABS or PLA. Nylon uses 31% more energy and emits 16.5% more CO2 than Nylon recycled. Next time, ask your provider for Nylon recycled, ABS recycled or PLA recycled to reduce your environmental impact in this phase."
-    );
+    textDiv.innerHTML =
+      "<span class='innerRedText'>Cons:\r\n- Higher environmental impact compared to Standard (virgin) ABS and PLA.\r\n-  It uses <span class='innerBoldText'>31% more energy</span>  than Recycled Nylon when manufactured.\r\n-  It emits <span class='innerBoldText'>17% more CO2</span>  than Recycled Nylon when manufactured.\r\nSuggestion:\r\n- Switch to Recycled Nylon, ABS, or PLA filaments.</span>";
   }
   textbox.innerHTML = "";
-  textbox.appendChild(text);
+  textbox.appendChild(textDiv);
 }
 
 // Defining Functionalities of Exclamation, text box and close button
@@ -873,23 +867,125 @@ function set_transport_3dprint(sourceValues) {
 
   let textbox = document.querySelector("#transport_textbox_3dprint");
   _3dprint_transport_exclamation.classList.remove("invisible");
+  _3dprint_transport_exclamation.classList.remove("good");
 
-  if (tempLocation == "Local") {
-    textbox.classList.add("good");
-    _3dprint_transport_exclamation.classList.add("good");
-  } else {
-    textbox.classList.remove("good");
-    _3dprint_transport_exclamation.classList.remove("good");
+  // Set Location Type text
+
+  if (tempLocationType != "region") {
+    tempLocation = get_transport_location(tempDistance);
   }
 
-  let text;
-  if (tempLocationType == "region") {
-    text = get_transport_text(tempLocationType, tempShipment);
-  } else {
-    text = get_transport_text(tempDistance, tempShipment);
-  }
+  textDivPros = document.createElement("div");
+  textDivPros.innerHTML = "";
+  textDivPros.style.cssText = "display: inline-block;";
+
+  textDivCons = document.createElement("div");
+  textDivCons.innerHTML = "";
+  textDivCons.style.cssText = "display: inline-block;";
+
+  textDivSug = document.createElement("div");
+  textDivSug.innerHTML = "";
+  textDivSug.style.cssText = "display: inline-block;";
+
   textbox.innerHTML = "";
-  textbox.appendChild(text);
+
+  switch (tempLocation) {
+    case "International":
+      textDivCons.innerHTML +=
+        "- International: <span class='innerBoldText'>95% higher</span>  environmental impact than national and local distances. Therefore, more fuel consumption and CO2 emissions.\r\n";
+      textDivSug.innerHTML += "- Use locally manufactured material.\r\n";
+      break;
+
+    case "National":
+      textDivCons.innerHTML +=
+        "- National: <span class='innerBoldText'>30% higher</span>  environmental impact than local distances. Therefore, more fuel consumption and CO2 emissions.\r\n";
+      textDivSug.innerHTML += "- Use locally manufactured material.\r\n";
+      break;
+
+    case "Local":
+      textDivPros.innerHTML +=
+        "- Local distances have <span class='innerBoldText'>95% and 30% lower</span>  environmental impact than international and national distances respectively.\r\n- Shorter distances require less fuel and therefore generate less CO2 emissions.\r\n";
+
+      break;
+    case "IDK":
+      textDivCons.innerHTML +=
+        "- We assumed your material traveled from China. Therefore, more fuel consumption and CO2 emissions.\r\n";
+      textDivSug.innerHTML +=
+        "- Find out where your materials are coming from.\r\n- Use locally manufactured material.\r\n";
+
+      break;
+  }
+
+  // Set Shipping Text
+
+  switch (tempShipment) {
+    case "By air":
+      textDivCons.innerHTML +=
+        "- Airplanes consume <span class='innerBoldText'>1000% more energy</span> and emit <span class='innerBoldText'>700% more CO2</span> than road transportation.\r\n";
+      textDivSug.innerHTML += "- Switch to ocean or road shipping.\r\n";
+
+      break;
+    case "By sea":
+      textDivPros.innerHTML +=
+        "- Ocean shipping has a lower environmental impact compared to air and road shipping.\r\n- It uses <span class='innerBoldText'>700% less energy</span> and emits <span class='innerBoldText'>730% less CO2</span> than road shipping for national distances.";
+
+      break;
+    case "By road":
+      textDivSug.innerHTML +=
+        "- Avoid express delivery.\r\n- Light goods vehicles use <span class='innerBoldText'>115% more energy</span> and emit <span class='innerBoldText'>63% more CO2</span> than trucks.\r\n- A small truck uses <span class='innerBoldText'>30% more energy</span> and emits <span class='innerBoldText'>50% more CO2</span> than a big truck.";
+
+      break;
+    case "I don't know":
+      if (tempLocation == "IDK") {
+        textDivCons.innerHTML =
+          "- We assumed your material traveled from China, by airplane. Therefore, more fuel consumption and CO2 emissions.\r\n";
+        textDivSug.innerHTML =
+          "- Find out where your materials are coming from.\r\n- Use locally manufactured material.\r\n";
+      } else if (tempLocation == "International") {
+        textDivCons.innerHTML +=
+          "- We assumed your material traveled from China, by airplane. Therefore, more fuel consumption and CO2 emissions.\r\n";
+      } else if (tempLocation == "National") {
+        textDivCons.innerHTML +=
+          "- We assumed your material was transported from 300km away by road.\r\n";
+      } else {
+        textDivCons.innerHTML +=
+          "- We assumed your material was transported from 100km away by road.\r\n";
+      }
+
+      break;
+  }
+
+  if (textDivPros.innerHTML != "") {
+    _3dprint_transport_exclamation.classList.add("good");
+    textDivPros.innerHTML = "Pros:\r\n" + textDivPros.innerHTML + "<br/>";
+    textbox.appendChild(textDivPros);
+  }
+
+  if (textDivCons.innerHTML != "") {
+    _3dprint_transport_exclamation.classList.remove("good");
+
+    if (textDivPros.innerHTML != "") {
+      textDivCons.innerHTML =
+        "<br/><span class='innerRedText'>Cons:\r\n" +
+        textDivCons.innerHTML +
+        "</span>";
+    } else {
+      textDivCons.innerHTML =
+        "<span class='innerRedText'>Cons:\r\n" +
+        textDivCons.innerHTML +
+        "</span>";
+    }
+
+    textbox.appendChild(textDivCons);
+  }
+
+  if (textDivSug.innerHTML != "") {
+    textDivSug.innerHTML =
+      "<br/><span class='innerRedText'>Suggestion:\r\n" +
+      textDivSug.innerHTML +
+      "</span>";
+    textbox.appendChild(textDivSug);
+  }
 }
 
 // Defining Functionalities of Exclamation, text box and close button
@@ -911,38 +1007,52 @@ document
       .parentElement.classList.add("invisible");
   });
 
-// Setting transportation text
+// Setting fabrication text
 
 function set_fabrication_3dprint(sourceValues) {
   var tempMachine = sourceValues.machine_3dprint;
   var tempCountry = sourceValues.country_3dprint;
   let textbox = document.querySelector("#fabrication_textbox_3dprint");
   _3dprint_fabrication_exclamation.classList.remove("invisible");
-  let text = get_electric_text(tempCountry);
+
+  textbox.innerHTML = "";
+
+  textDivCountry = document.createElement("div");
+  textDivCountry.innerHTML = "";
+  textDivCountry.style.cssText = "display: inline-block;";
+
+  textDivMachine = document.createElement("div");
+  textDivMachine.innerHTML = "";
+  textDivMachine.style.cssText = "display: inline-block;";
+
+  let textCountry = get_electric_text(tempCountry);
+  textDivCountry.innerHTML = textCountry;
 
   var tempMachine = sourceValues.machine_3dprint;
 
   if (tempMachine == "makerbot") {
-    textbox.classList.add("good");
     _3dprint_fabrication_exclamation.classList.add("good");
-    text.appendChild(
-      document.createTextNode(
-        "Makerbot Replicator+ is the best choice, using half as much power than Ultimaker 2 Extended in the molding process. You can save energy by reducing print time by adjusting the 3D print speed to 50 mm/s average, changing the infill density to 10-15% and reducing idle time by turning off the machine when not in use"
-      )
-    );
+    textDivMachine.innerHTML =
+      "Pros:\r\n- Makerbot Replicator+ uses half as much power as Ultimaker 2 Extended in the molding process.\r\n\r\n<span class='innerRedText'>Suggestions:\r\n- Reduce printing time by adjusting printing speed to 50 mm/s average.\r\n- Change infill density to 10-15%.\r\n- Turn off the machine when not in use.\r\n- 3D print in series.\r\n- Edit the firmware to turn off the motors during stand-by time.</span>";
   } else {
     //ultimaker
-    textbox.classList.remove("good");
     _3dprint_fabrication_exclamation.classList.remove("good");
-    text.appendChild(
-      document.createTextNode(
-        "Ultimaker 2 Extended uses twice as much power than Makerbot Replicator+ in the molding process. You can save energy by reducing print time by adjusting the 3D print speed to 50 mm/s average, changing the infill density to 10-15% and reducing idle time by turning off the machine when not in use."
-      )
-    );
+    textDivMachine.innerHTML =
+      "<span class='innerRedText'>Cons:\r\n- Ultimaker 2 Extended uses twice as much power as Makerbot Replicator+ in the molding process.\r\n\r\nSuggestions:\r\n- Reduce printing time by adjusting printing speed to 50 mm/s average.\r\n- Change infill density to 10-15%.\r\n- Turn off the machine when not in use.\r\n- 3D print in series.\r\n- Edit the firmware to turn off the motors during stand-by time.</span>";
   }
 
-  textbox.innerHTML = "";
-  textbox.appendChild(text);
+  textDivCountry.innerHTML =
+    "Electricity Mix:\r\n- The lab location determines the source of the electricity used to run the machines.\r\n- The CO2 emissions depend on the blends of electricity sources.\r\n- From worst to best sources: coal, nuclear power, hydroelectric power, solar photovoltaics, geothermal power, and Concentrated Solar Power (CSP).\r\n<br/>" +
+    textDivCountry.innerHTML +
+    "<br/>";
+
+  textbox.appendChild(textDivCountry);
+
+  textDivMachine.innerHTML =
+    "Energy efficiency:\r\n- Energy consumption of machines varies widely depending on printer type, part geometry, machine utilization rate (idle, stand by, and printing time), print set-up, and material.\r\n<br/>" +
+    textDivMachine.innerHTML;
+
+  textbox.appendChild(textDivMachine);
 }
 
 // Defining Functionalities of Exclamation, text box and close button

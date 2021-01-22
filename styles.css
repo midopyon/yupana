@@ -207,7 +207,6 @@ label input {
 }
 
 .textbox {
-  color: red;
   position: absolute;
   left: 100%;
   top: 0;
@@ -217,10 +216,7 @@ label input {
   width: 80%;
   background: #e9eff8;
   font-size: 0.85em;
-}
-
-.textbox .good {
-  color: #3b4456;
+  white-space: pre-line;
 }
 
 .exclamation.good {
@@ -426,4 +422,12 @@ div.ag-theme-alpine div.ag-row {
 
 .ag-header-cell-label {
   justify-content: center;
+}
+
+.innerRedText {
+  color: #f00;
+}
+
+.innerBoldText {
+  font-weight: bold;
 }
