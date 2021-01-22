@@ -105,24 +105,20 @@ label input {
   padding-left: 5em;
 }
 
+.gray_container {
+  padding: 20px;
+  padding-bottom: 35px;
+  background-color: whitesmoke;
+}
+
 .bottomRowflex {
-  position: relative;
-  padding: 0;
-  margin: 1;
   display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
+  justify-content: space-between;
+  padding-top: 10px;
 }
 
 .col_leftButtons {
-  flex: 0 0 50%;
-}
-
-.col_rightButtons {
-  position: relative;
-  left: 60px;
-  flex: 1;
+  float: left;
 }
 
 .subcol_addJob {
@@ -132,9 +128,7 @@ label input {
 }
 
 .subcol_delJob {
-  flex: 1 1 0px;
-  display: inline-block;
-  margin-right: 5px;
+  float: right;
 }
 
 .col_leftGraph {
@@ -147,16 +141,10 @@ label input {
   left: -150px;
 }
 
-.col_pagination {
-  display: flex;
-  margin: 1px;
-  padding: 5px;
-}
-
 .col_clearAllbutton {
-  position: absolute;
-  top: 0;
-  right: 0;
+  flex: 1 1 0px;
+  display: inline-block;
+  margin-right: 5px;
 }
 
 #state_laser,
@@ -191,22 +179,18 @@ label input {
 
 .rawHeader {
   background-color: rgb(123, 124, 231);
-  justify-content: center;
 }
 
 .transpHeader {
   background-color: rgb(230, 189, 242);
-  justify-content: center;
 }
 
 .digHeader {
   background-color: rgb(249, 116, 148);
-  justify-content: center;
 }
 
 .endHeader {
   background-color: rgb(253, 159, 130);
-  justify-content: center;
 }
 
 .question {
@@ -274,10 +258,6 @@ button {
 
 button[type="submit"] {
   background: #e9eff8;
-}
-
-button[type="next"] {
-  float: right;
 }
 
 button:hover {
@@ -442,4 +422,8 @@ p2 {
 
 div.ag-theme-alpine div.ag-row {
   font-size: 12px !important;
+}
+
+.ag-header-cell-label {
+  justify-content: center;
 }

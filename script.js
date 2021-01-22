@@ -16,6 +16,12 @@ maxEnergyValue.transp = 0;
 maxEnergyValue.digFab = 0;
 maxEnergyValue.endLife = 0;
 
+let maxCo2Value = new Object();
+maxCo2Value.rawMat = 0;
+maxCo2Value.transp = 0;
+maxCo2Value.digFab = 0;
+maxCo2Value.endLife = 0;
+
 let hasJobStackEmpty = true;
 let isUpdating = false;
 let isDeleteJobHidden = true;
@@ -25,6 +31,9 @@ let region_3dprint = document.getElementById("region_input_3dprint");
 let distance_3dprint = document.getElementById("distance_input_3dprint");
 let addjob_3dprint = document.getElementById("buttonAddJob");
 let deljob_3dprint = document.getElementById("buttonDelJob");
+
+let titleEnergy = document.getElementById("EnergyWrapper");
+let titleCo2 = document.getElementById("Co2Wrapper");
 
 let _3dprint_country_select = document.getElementById("country_3dprint");
 let _3dprint_state_select = document.getElementById("state_3dprint");
@@ -144,6 +153,11 @@ function reset_form() {
   maxEnergyValue.digFab = 0;
   maxEnergyValue.endLife = 0;
 
+  maxCo2Value.rawMat = 0;
+  maxCo2Value.transp = 0;
+  maxCo2Value.digFab = 0;
+  maxCo2Value.endLife = 0;
+
   return false;
 }
 
@@ -177,6 +191,16 @@ function ShowDeleteJobButton() {
 function HideDeleteJobButton() {
   deljob_3dprint.classList.add("invisible");
   isDeleteJobHidden = true;
+}
+
+function ShowTableTitles() {
+  titleEnergy.classList.remove("invisible");
+  titleCo2.classList.remove("invisible");
+}
+
+function HideTableTitles() {
+  titleEnergy.classList.add("invisible");
+  titleCo2.classList.add("invisible");
 }
 
 function SetDeleteJobActive() {
@@ -497,7 +521,6 @@ function DrawGoogleChartsEnergy(results) {
   var data = google.visualization.arrayToDataTable(dataArray);
 
   let arr = Object.values(maxEnergyValue);
-  console.log("fromgoogle" + arr.toString());
 
   var materialOptions = {
     width: 520,
@@ -589,6 +612,8 @@ function DrawGoogleChartsCo2(results) {
 
   var data = google.visualization.arrayToDataTable(dataArray);
 
+  let arr2 = Object.values(maxCo2Value);
+
   var materialOptions = {
     width: 520,
     height: 400,
@@ -614,7 +639,7 @@ function DrawGoogleChartsCo2(results) {
       },
       viewWindow: {
         min: 0,
-        max: 150,
+        max: Math.ceil(Math.max(...arr2) / 20) * 20,
       },
       title: "\nCO2 (kg CO2/kg)",
       titleTextStyle: {
@@ -763,7 +788,7 @@ var columnDefsEnergy = [
     suppressMovable: true,
   },
   {
-    headerName: "DG",
+    headerName: "DF",
     field: "digFab",
     headerClass: "digHeader",
     valueFormatter: (params) => params.data.digFab.toFixed(2),
@@ -797,6 +822,24 @@ function addRowEnergy(job, Results) {
   maxEnergyValue.endLife += data.endLife;
 
   rowDataEnergy.push(data);
+
+  //set Table titles
+
+  let TableTitle = "";
+
+  for (i = 0; i < latestPage; i++) {
+    if (TableTitle == "") {
+      TableTitle += "J" + (i + 1);
+    } else {
+      TableTitle += ", J" + (i + 1);
+    }
+  }
+
+  document.getElementById("tableEnergyTitle").innerHTML =
+    "Energy Consumption for Jobs: " + TableTitle;
+
+  document.getElementById("tableCoTitle").innerHTML =
+    "Co2 Emissions for Jobs: " + TableTitle;
 
   updateTableEnergy();
 }
@@ -895,7 +938,7 @@ var columnDefsCo2 = [
     suppressMovable: true,
   },
   {
-    headerName: "DG",
+    headerName: "DF",
     field: "digFab",
     headerClass: "digHeader",
     valueFormatter: (params) => params.data.digFab.toFixed(2),
@@ -923,6 +966,11 @@ function addRowCo2(job, Results) {
     endLife: Results.end_life,
   };
 
+  maxCo2Value.rawMat += data.rawMat;
+  maxCo2Value.transp += data.transp;
+  maxCo2Value.digFab += data.digFab;
+  maxCo2Value.endLife += data.endLife;
+
   rowDataCo2.push(data);
   updateTableCo2();
 }
@@ -938,6 +986,19 @@ function updateRowCo2(job, Results) {
   };
 
   rowDataCo2[job - 1] = data;
+
+  maxCo2Value.rawMat = 0;
+  maxCo2Value.transp = 0;
+  maxCo2Value.digFab = 0;
+  maxCo2Value.endLife = 0;
+
+  rowDataCo2.forEach(function (row, index) {
+    maxCo2Value.rawMat += row.rawMat;
+    maxCo2Value.transp += row.transp;
+    maxCo2Value.digFab += row.digFab;
+    maxCo2Value.endLife += row.endLife;
+  });
+
   updateTableCo2();
 }
 
@@ -1039,6 +1100,24 @@ function DeleteJobFromArray(pageToDelete) {
 
   // Load Table again with new values
 
+  //Set new titles
+
+  let TableTitleEnergy = "";
+
+  for (i = 0; i < latestPage; i++) {
+    if (TableTitleEnergy == "") {
+      TableTitleEnergy += "J" + (i + 1);
+    } else {
+      TableTitleEnergy += ", J" + (i + 1);
+    }
+  }
+
+  document.getElementById("tableEnergyTitle").innerHTML =
+    "Energy Consumption for Jobs: " + TableTitleEnergy;
+
+  document.getElementById("tableCoTitle").innerHTML =
+    "Co2 Emissions for Jobs: " + TableTitleEnergy;
+
   //Set row datas to zero
 
   rowDataEnergy = [];
@@ -1050,6 +1129,11 @@ function DeleteJobFromArray(pageToDelete) {
   maxEnergyValue.transp = 0;
   maxEnergyValue.digFab = 0;
   maxEnergyValue.endLife = 0;
+
+  maxCo2Value.rawMat = 0;
+  maxCo2Value.transp = 0;
+  maxCo2Value.digFab = 0;
+  maxCo2Value.endLife = 0;
 
   jobsArray.forEach(function (job, index) {
     let dataEnergy = {
@@ -1072,6 +1156,11 @@ function DeleteJobFromArray(pageToDelete) {
     maxEnergyValue.transp += dataEnergy.transp;
     maxEnergyValue.digFab += dataEnergy.digFab;
     maxEnergyValue.endLife += dataEnergy.endLife;
+
+    maxCo2Value.rawMat += dataCo2.rawMat;
+    maxCo2Value.transp += dataCo2.transp;
+    maxCo2Value.digFab += dataCo2.digFab;
+    maxCo2Value.endLife += dataCo2.endLife;
 
     rowDataEnergy.push(dataEnergy);
     rowDataCo2.push(dataCo2);

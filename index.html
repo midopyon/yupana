@@ -113,7 +113,7 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col_form">
-          <article id="Compare_Mode">
+          <div class="gray_container">
             <article id="_3D_Printing">
               <div class="manufacturing">
                 <button
@@ -429,36 +429,32 @@
                   >
                 </div>
                 <!--      </select>-->
-
-                <div class="flex">
-                  <div class="col_leftButtons">
-                    <button id="btn_calculate" type="submit">Calculate</button>
-                  </div>
-
-                  <div class="col_rightButtons">
-                  <div class="subcol_delJob invisible" id="buttonDelJob"><button id="btn_delJob" type="next">- Delete Job</button></div><div class="subcol_addJob invisible" id="buttonAddJob"><button id="btn_addJob" type="next">Add Job +</button></div>
-                  </div>
+              </div>
+              <div style = "padding-top: 10px;">
+                <div class="col_leftButtons">
+                  <button id="btn_calculate" type="submit">Calculate</button>
+                </div>
+                <div class="subcol_delJob invisible" id="buttonDelJob">
+                  <button id="btn_delJob" type="next">- Delete Job</button>
                 </div>
               </div>
-              </p>
-
-              <div class="bottomRowflex">
-                <div class="col_pagination">
-                  <ul id="NumbersList" style="list-style: none;">
-                  </ul>
-                </div>
-
-                <div class="col_clearAllbutton">
-                  <button id="btn_clear_3dprint" type="reset">Clear all</button>
-                </div>
-              </div>
-
-              <!-- <div>
-                <button id="btn_helper">Helper</button>
-              </div> -->
-
+            </p>
             </article>
-          </article>
+          </div>
+
+            <div class="bottomRowflex">
+              <div></div>
+              <div class="col_pagination">
+                <ul id="NumbersList" style="list-style: none;">
+                </ul>
+              </div>
+              <div class="col_rightButtons">
+                <div class="subcol_addJob invisible" id="buttonAddJob"><button id="btn_addJob" type="next">Add Job +</button></div><div class="col_clearAllbutton"><button id="btn_clear_3dprint" type="reset">Clear all</button></div>              </div>
+            </div>
+
+            <div>
+              <button id="btn_helper">Helper</button>
+            </div>
         </div>
         <div class="col_graph">
           <div class="flex">
@@ -468,6 +464,9 @@
             <div class = "col_rightTable">
               <br />
               <br />
+              <div class = "tableEnergyTitles invisible" id = "EnergyWrapper">
+                <h5 id = "tableEnergyTitle" style = "font-weight: bold;"></h5>
+              </div>
               <div id="myGridEnergy" style="height: 250px; width:400px;" class="ag-theme-alpine"></div>
             </div>
           </div>
@@ -482,6 +481,9 @@
             <div class = "col_rightTable">
               <br />
               <br />
+              <div class = "tableCo2Titles invisible" id = "Co2Wrapper">
+                <h5 id = "tableCoTitle"  style = "font-weight: bold;"></h5>
+              </div>
               <div id="myGridCo2" style="height: 250px; width:400px;" class="ag-theme-alpine"></div>
             </div>
           </div>

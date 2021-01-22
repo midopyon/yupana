@@ -79,10 +79,10 @@ var recycled = false;
 // var machine_3dprint_radios = 'makerbot'
 var first = true;
 
-// //HELPER DEBUG
-// document.getElementById("btn_helper").addEventListener("click", function () {
-//   SetFormValues(TESTSOURCEVALUE);
-// });
+//HELPER DEBUG
+document.getElementById("btn_helper").addEventListener("click", function () {
+  SetFormValues(TESTSOURCEVALUE);
+});
 
 // Add an event listener
 document.addEventListener("changePage", function (e) {
@@ -701,6 +701,7 @@ function start_the_magic_calculate_mode() {
     new agGrid.Grid(gridDivCo2, gridOptionsCo2);
 
     ShowAddJobButton();
+    ShowTableTitles();
 
     jobsArray.push(Object3DPrint);
 
