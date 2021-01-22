@@ -15,6 +15,7 @@ maxEnergyValue.rawMat = 0;
 maxEnergyValue.transp = 0;
 maxEnergyValue.digFab = 0;
 maxEnergyValue.endLife = 0;
+let minEnergyValueEndLife = 0;
 
 let maxCo2Value = new Object();
 maxCo2Value.rawMat = 0;
@@ -25,6 +26,10 @@ maxCo2Value.endLife = 0;
 let hasJobStackEmpty = true;
 let isUpdating = false;
 let isDeleteJobHidden = true;
+
+let CurrentlySelectedJobsTitleCO2 = "";
+let CurrentlySelectedJobsTitleEnergy = "";
+
 // **** Loading Form Elements
 
 let region_3dprint = document.getElementById("region_input_3dprint");
@@ -157,6 +162,8 @@ function reset_form() {
   maxCo2Value.transp = 0;
   maxCo2Value.digFab = 0;
   maxCo2Value.endLife = 0;
+
+  minEnergyValueEndLife = 0;
 
   return false;
 }
@@ -522,11 +529,15 @@ function DrawGoogleChartsEnergy(results) {
 
   let arr = Object.values(maxEnergyValue);
 
+  let minTable = minEnergyValueEndLife;
+
+  console.log("MINTABLE" + minTable);
+
   var materialOptions = {
     width: 520,
     height: 400,
     colors: ["#837BE7", "#E6BDF2", "#F97494", "#FD9F82"],
-    title: "Energy Consumption\n ",
+    title: "Energy Consumption:  " + CurrentlySelectedJobsTitleEnergy + "\n ",
     titleTextStyle: {
       color: "#3b4456",
       fontSize: 18,
@@ -545,7 +556,7 @@ function DrawGoogleChartsEnergy(results) {
         //italic: true
       },
       viewWindow: {
-        min: -20,
+        min: minTable,
         max: Math.ceil(Math.max(...arr) / 50) * 50,
       },
       title: "\nEnergy (MJ)",
@@ -618,7 +629,7 @@ function DrawGoogleChartsCo2(results) {
     width: 520,
     height: 400,
     colors: ["#837BE7", "#E6BDF2", "#F97494", "#FD9F82"],
-    title: "CO2 Emissions\n ",
+    title: "CO\u2082 Emissions:  " + CurrentlySelectedJobsTitleCO2 + "\n ",
     titleTextStyle: {
       color: "#3b4456",
       fontSize: 18,
@@ -641,7 +652,7 @@ function DrawGoogleChartsCo2(results) {
         min: 0,
         max: Math.ceil(Math.max(...arr2) / 20) * 20,
       },
-      title: "\nCO2 (kg CO2/kg)",
+      title: "\nCO\u2082 (kg CO\u2082/kg)",
       titleTextStyle: {
         fontSize: 12,
       },
@@ -705,7 +716,7 @@ function get_electric_text(country) {
       "<span class='innerRedText'>- South Asian: India (Coal – 67.9%), Nepal (Hydropower – 99.9%), Bangladesh (Natural gas – 91.5%), and Sri Lanka (Oil – 50.2%).</span>\r\n";
   } else if (country_region[country] == "north asia") {
     countryText =
-      "<span class='innerRedText'>- Northern Asian: In 2015, the energy consumption was 2.6 billion tons of coal equivalent, accounting for 14% of the global total; the total electricity consumption was 3.3 PWh, accounting for 16 % of the global total. In 2016, the total CO2 emissions in China, Japan, and the ROK reached 34.4% of the global total.</span>\r\n";
+      "<span class='innerRedText'>- Northern Asian: In 2015, the energy consumption was 2.6 billion tons of coal equivalent, accounting for 14% of the global total; the total electricity consumption was 3.3 PWh, accounting for 16 % of the global total. In 2016, the total CO<sub>2</sub> emissions in China, Japan, and the ROK reached 34.4% of the global total.</span>\r\n";
   } else {
     console.log("error");
   }
@@ -763,6 +774,14 @@ function addRowEnergy(job, Results) {
   maxEnergyValue.digFab += data.digFab;
   maxEnergyValue.endLife += data.endLife;
 
+  if (data.endLife < minEnergyValueEndLife) {
+    minEnergyValueEndLife = data.endLife;
+  }
+
+  if (maxEnergyValue.endLife < minEnergyValueEndLife) {
+    minEnergyValueEndLife = maxEnergyValue.endLife;
+  }
+
   rowDataEnergy.push(data);
 
   //set Table titles
@@ -778,10 +797,10 @@ function addRowEnergy(job, Results) {
   }
 
   document.getElementById("tableEnergyTitle").innerHTML =
-    "Energy Consumption for: " + TableTitle;
+    "Job History: " + TableTitle;
 
   document.getElementById("tableCoTitle").innerHTML =
-    "Co2 Emissions for: " + TableTitle;
+    "Job History: " + TableTitle;
 
   updateTableEnergy();
 }
@@ -802,13 +821,22 @@ function updateRowEnergy(job, Results) {
   maxEnergyValue.transp = 0;
   maxEnergyValue.digFab = 0;
   maxEnergyValue.endLife = 0;
+  minEnergyValueEndLife = 0;
 
   rowDataEnergy.forEach(function (row, index) {
     maxEnergyValue.rawMat += row.rawMat;
     maxEnergyValue.transp += row.transp;
     maxEnergyValue.digFab += row.digFab;
     maxEnergyValue.endLife += row.endLife;
+
+    if (data.endLife < minEnergyValueEndLife) {
+      minEnergyValueEndLife = data.endLife;
+    }
   });
+
+  if (maxCo2Value.endLife < minEnergyValueEndLife) {
+    minEnergyValueEndLife = maxCo2Value.endLife;
+  }
 
   updateTableEnergy();
 }
@@ -1084,10 +1112,10 @@ function DeleteJobFromArray(pageToDelete) {
   }
 
   document.getElementById("tableEnergyTitle").innerHTML =
-    "Energy Consumption for: " + TableTitleEnergy;
+    "Job History: " + TableTitleEnergy;
 
   document.getElementById("tableCoTitle").innerHTML =
-    "Co2 Emissions for: " + TableTitleEnergy;
+    "Job History: " + TableTitleEnergy;
 
   //Set row datas to zero
 
@@ -1106,6 +1134,8 @@ function DeleteJobFromArray(pageToDelete) {
   maxCo2Value.digFab = 0;
   maxCo2Value.endLife = 0;
 
+  minEnergyValueEndLife = 0;
+
   jobsArray.forEach(function (job, index) {
     let dataEnergy = {
       jobName: "J" + (index + 1).toString(),
@@ -1123,6 +1153,10 @@ function DeleteJobFromArray(pageToDelete) {
       endLife: job.resultsEnergy.end_life,
     };
 
+    if (dataEnergy.endLife < minEnergyValueEndLife) {
+      minEnergyValueEndLife = dataEnergy.endLife;
+    }
+
     maxEnergyValue.rawMat += dataEnergy.rawMat;
     maxEnergyValue.transp += dataEnergy.transp;
     maxEnergyValue.digFab += dataEnergy.digFab;
@@ -1136,6 +1170,10 @@ function DeleteJobFromArray(pageToDelete) {
     rowDataEnergy.push(dataEnergy);
     rowDataCo2.push(dataCo2);
   });
+
+  if (maxEnergyValue.endLife < minEnergyValueEndLife) {
+    minEnergyValueEndLife = maxEnergyValue.endLife;
+  }
 
   //update tables
 

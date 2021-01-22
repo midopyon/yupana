@@ -748,12 +748,16 @@ function getAndAddUpSelectedJobsEnergy() {
     end_life: 0,
   };
 
+  CurrentlySelectedJobsTitleEnergy = "";
+
   jobsArray.forEach(function (job, index) {
     if (selectedJobsEnergy.includes(index + 1)) {
       if (selectedJobsSum.name == "") {
         selectedJobsSum.name += "Job " + (index + 1);
+        CurrentlySelectedJobsTitleEnergy += "J" + (index + 1);
       } else {
         selectedJobsSum.name += ", Job " + (index + 1);
+        CurrentlySelectedJobsTitleEnergy += ", J" + (index + 1);
       }
 
       selectedJobsSum.mat_manufacturing += job.resultsEnergy.mat_manufacturing;
@@ -775,12 +779,16 @@ function getAndAddUpSelectedJobsCo2() {
     end_life: 0,
   };
 
+  CurrentlySelectedJobsTitleCO2 = "";
+
   jobsArray.forEach(function (job, index) {
     if (selectedJobsCo2.includes(index + 1)) {
       if (selectedJobsSum.name == "") {
         selectedJobsSum.name += "Job " + (index + 1);
+        CurrentlySelectedJobsTitleCO2 += "J" + (index + 1);
       } else {
         selectedJobsSum.name += ", Job " + (index + 1);
+        CurrentlySelectedJobsTitleCO2 += ", J" + (index + 1);
       }
       selectedJobsSum.mat_manufacturing += job.resultsCo2.mat_manufacturing;
       selectedJobsSum.transportation += job.resultsCo2.transportation;
@@ -809,23 +817,23 @@ function set_manu_3dprint(sourceValues) {
   if (tempMaterial == "PLA" && tempIsRecycled) {
     _3dprint_manu_exclamation.classList.add("good");
     textDiv.innerHTML =
-      "Pros:\r\n- Lower environmental impact compared to ABS and Nylon.\r\n- It uses 46% less energy than Standard (virgin) PLA when manufactured .\r\n- It emits 54% less CO2 than Standard (virgin) PLA when manufactured.";
+      "Pros:\r\n- Lower environmental impact compared to ABS and Nylon.\r\n- It uses 46% less energy than Standard (virgin) PLA when manufactured .\r\n- It emits 54% less CO<sub>2</sub> than Standard (virgin) PLA when manufactured.";
   } else if (tempMaterial == "PLA") {
     textDiv.innerHTML =
-      "Pros:\r\n- Lower environmental impact compared to ABS and Nylon.\r\n<span class='innerRedText'>Cons:\r\n-  It uses <span class='innerBoldText'>46% more energy</span> than Recycled PLA when manufactured.\r\n-  It emits <span class='innerBoldText'>54% more CO2</span> than Recycled PLA when manufactured.\r\nSuggestion:\r\n- Switch to Recycled PLA filament.</span>";
+      "Pros:\r\n- Lower environmental impact compared to ABS and Nylon.\r\n<span class='innerRedText'>Cons:\r\n-  It uses <span class='innerBoldText'>46% more energy</span> than Recycled PLA when manufactured.\r\n-  It emits <span class='innerBoldText'>54% more CO<sub>2</sub></span> than Recycled PLA when manufactured.\r\nSuggestion:\r\n- Switch to Recycled PLA filament.</span>";
   } else if (tempMaterial == "ABS" && tempIsRecycled) {
     textDiv.innerHTML =
-      "Pros:\r\n- Lower environmental impact compared to Standard (virgin) ABS and Nylon.\r\n- It uses <span class='innerBoldText'>60% less energy</span> than Standard (virgin) ABS when manufactured.\r\n- It emits <span class='innerBoldText'>41% less CO2</span> than Standard (virgin) ABS when manufactured.\r\n<span class='innerRedText'>Cons:\r\n-  It uses <span class='innerBoldText'>27% more energy</span>  than Recycled PLA when manufactured.\r\n-  It emits <span class='innerBoldText'>27% more CO2</span>  than Recycled PLA when manufactured.\r\nSuggestion:\r\n- Switch to Recycled PLA filament.</span>";
+      "Pros:\r\n- Lower environmental impact compared to Standard (virgin) ABS and Nylon.\r\n- It uses <span class='innerBoldText'>60% less energy</span> than Standard (virgin) ABS when manufactured.\r\n- It emits <span class='innerBoldText'>41% less CO<sub>2</sub></span> than Standard (virgin) ABS when manufactured.\r\n<span class='innerRedText'>Cons:\r\n-  It uses <span class='innerBoldText'>27% more energy</span>  than Recycled PLA when manufactured.\r\n-  It emits <span class='innerBoldText'>27% more CO<sub>2</sub></span>  than Recycled PLA when manufactured.\r\nSuggestion:\r\n- Switch to Recycled PLA filament.</span>";
   } else if (tempMaterial == "ABS") {
     textDiv.innerHTML =
-      "Pros:\r\n- Lower environmental impact compared to Nylon.\r\n<span class='innerRedText'>Cons:\r\n-  It uses <span class='innerBoldText'>60% more energy</span>  than Recycled ABS when manufactured.\r\n-  It emits <span class='innerBoldText'>41% more CO2</span>  than Recycled ABS when manufactured.\r\nSuggestion:\r\n- Switch to Recycled ABS or Recycled PLA filament.</span> ";
+      "Pros:\r\n- Lower environmental impact compared to Nylon.\r\n<span class='innerRedText'>Cons:\r\n-  It uses <span class='innerBoldText'>60% more energy</span>  than Recycled ABS when manufactured.\r\n-  It emits <span class='innerBoldText'>41% more CO<sub>2</sub></span>  than Recycled ABS when manufactured.\r\nSuggestion:\r\n- Switch to Recycled ABS or Recycled PLA filament.</span> ";
   } else if (tempMaterial == "Nylon" && tempIsRecycled) {
     textDiv.innerHTML =
-      "Pros:\r\n- Lower environmental impact compared to recycled ABS.\r\n- It uses <span class='innerBoldText'>69% less energy</span>  than Standard (virgin) Nylon when manufactured.\r\n- It emits <span class='innerBoldText'>75% less CO2</span>  than Standard (virgin) Nylon when manufactured.";
+      "Pros:\r\n- Lower environmental impact compared to recycled ABS.\r\n- It uses <span class='innerBoldText'>69% less energy</span>  than Standard (virgin) Nylon when manufactured.\r\n- It emits <span class='innerBoldText'>75% less CO<sub>2</sub></span>  than Standard (virgin) Nylon when manufactured.";
   } else {
     //reg nylon
     textDiv.innerHTML =
-      "<span class='innerRedText'>Cons:\r\n- Higher environmental impact compared to Standard (virgin) ABS and PLA.\r\n-  It uses <span class='innerBoldText'>31% more energy</span>  than Recycled Nylon when manufactured.\r\n-  It emits <span class='innerBoldText'>17% more CO2</span>  than Recycled Nylon when manufactured.\r\nSuggestion:\r\n- Switch to Recycled Nylon, ABS, or PLA filaments.</span>";
+      "<span class='innerRedText'>Cons:\r\n- Higher environmental impact compared to Standard (virgin) ABS and PLA.\r\n-  It uses <span class='innerBoldText'>31% more energy</span>  than Recycled Nylon when manufactured.\r\n-  It emits <span class='innerBoldText'>17% more CO<sub>2</sub></span>  than Recycled Nylon when manufactured.\r\nSuggestion:\r\n- Switch to Recycled Nylon, ABS, or PLA filaments.</span>";
   }
   textbox.innerHTML = "";
   textbox.appendChild(textDiv);
@@ -892,24 +900,24 @@ function set_transport_3dprint(sourceValues) {
   switch (tempLocation) {
     case "International":
       textDivCons.innerHTML +=
-        "- International: <span class='innerBoldText'>95% higher</span>  environmental impact than national and local distances. Therefore, more fuel consumption and CO2 emissions.\r\n";
+        "- International: <span class='innerBoldText'>95% higher</span>  environmental impact than national and local distances. Therefore, more fuel consumption and CO<sub>2</sub> emissions.\r\n";
       textDivSug.innerHTML += "- Use locally manufactured material.\r\n";
       break;
 
     case "National":
       textDivCons.innerHTML +=
-        "- National: <span class='innerBoldText'>30% higher</span>  environmental impact than local distances. Therefore, more fuel consumption and CO2 emissions.\r\n";
+        "- National: <span class='innerBoldText'>30% higher</span>  environmental impact than local distances. Therefore, more fuel consumption and CO<sub>2</sub> emissions.\r\n";
       textDivSug.innerHTML += "- Use locally manufactured material.\r\n";
       break;
 
     case "Local":
       textDivPros.innerHTML +=
-        "- Local distances have <span class='innerBoldText'>95% and 30% lower</span>  environmental impact than international and national distances respectively.\r\n- Shorter distances require less fuel and therefore generate less CO2 emissions.\r\n";
+        "- Local distances have <span class='innerBoldText'>95% and 30% lower</span>  environmental impact than international and national distances respectively.\r\n- Shorter distances require less fuel and therefore generate less CO<sub>2</sub> emissions.\r\n";
 
       break;
     case "IDK":
       textDivCons.innerHTML +=
-        "- We assumed your material traveled from China. Therefore, more fuel consumption and CO2 emissions.\r\n";
+        "- We assumed your material traveled from China. Therefore, more fuel consumption and CO<sub>2</sub> emissions.\r\n";
       textDivSug.innerHTML +=
         "- Find out where your materials are coming from.\r\n- Use locally manufactured material.\r\n";
 
@@ -921,29 +929,29 @@ function set_transport_3dprint(sourceValues) {
   switch (tempShipment) {
     case "By air":
       textDivCons.innerHTML +=
-        "- Airplanes consume <span class='innerBoldText'>1000% more energy</span> and emit <span class='innerBoldText'>700% more CO2</span> than road transportation.\r\n";
+        "- Airplanes consume <span class='innerBoldText'>1000% more energy</span> and emit <span class='innerBoldText'>700% more CO<sub>2</sub></span> than road transportation.\r\n";
       textDivSug.innerHTML += "- Switch to ocean or road shipping.\r\n";
 
       break;
     case "By sea":
       textDivPros.innerHTML +=
-        "- Ocean shipping has a lower environmental impact compared to air and road shipping.\r\n- It uses <span class='innerBoldText'>700% less energy</span> and emits <span class='innerBoldText'>730% less CO2</span> than road shipping for national distances.";
+        "- Ocean shipping has a lower environmental impact compared to air and road shipping.\r\n- It uses <span class='innerBoldText'>700% less energy</span> and emits <span class='innerBoldText'>730% less CO<sub>2</sub></span> than road shipping for national distances.";
 
       break;
     case "By road":
       textDivSug.innerHTML +=
-        "- Avoid express delivery.\r\n- Light goods vehicles use <span class='innerBoldText'>115% more energy</span> and emit <span class='innerBoldText'>63% more CO2</span> than trucks.\r\n- A small truck uses <span class='innerBoldText'>30% more energy</span> and emits <span class='innerBoldText'>50% more CO2</span> than a big truck.";
+        "- Avoid express delivery.\r\n- Light goods vehicles use <span class='innerBoldText'>115% more energy</span> and emit <span class='innerBoldText'>63% more CO<sub>2</sub></span> than trucks.\r\n- A small truck uses <span class='innerBoldText'>30% more energy</span> and emits <span class='innerBoldText'>50% more CO<sub>2</sub></span> than a big truck.";
 
       break;
     case "I don't know":
       if (tempLocation == "IDK") {
         textDivCons.innerHTML =
-          "- We assumed your material traveled from China, by airplane. Therefore, more fuel consumption and CO2 emissions.\r\n";
+          "- We assumed your material traveled from China, by airplane. Therefore, more fuel consumption and CO<sub>2</sub> emissions.\r\n";
         textDivSug.innerHTML =
           "- Find out where your materials are coming from.\r\n- Use locally manufactured material.\r\n";
       } else if (tempLocation == "International") {
         textDivCons.innerHTML +=
-          "- We assumed your material traveled from China, by airplane. Therefore, more fuel consumption and CO2 emissions.\r\n";
+          "- We assumed your material traveled from China, by airplane. Therefore, more fuel consumption and CO<sub>2</sub> emissions.\r\n";
       } else if (tempLocation == "National") {
         textDivCons.innerHTML +=
           "- We assumed your material was transported from 300km away by road.\r\n";
@@ -1042,7 +1050,7 @@ function set_fabrication_3dprint(sourceValues) {
   }
 
   textDivCountry.innerHTML =
-    "Electricity Mix:\r\n- The lab location determines the source of the electricity used to run the machines.\r\n- The CO2 emissions depend on the blends of electricity sources.\r\n- From worst to best sources: coal, nuclear power, hydroelectric power, solar photovoltaics, geothermal power, and Concentrated Solar Power (CSP).\r\n<br/>" +
+    "Electricity Mix:\r\n- The lab location determines the source of the electricity used to run the machines.\r\n- The CO<sub>2</sub> emissions depend on the blends of electricity sources.\r\n- From worst to best sources: coal, nuclear power, hydroelectric power, solar photovoltaics, geothermal power, and Concentrated Solar Power (CSP).\r\n<br/>" +
     textDivCountry.innerHTML +
     "<br/>";
 
@@ -1090,7 +1098,7 @@ function set_end_life_3dprint(sourceValues) {
 
   if (tempEOL == "recycle_bin") {
     textDivRecycle.innerHTML =
-      "Pros:\r\n- Recycling reduces the need for extracting, refining and processing raw materials all of which create substantial air and water pollution.\r\n- It allows the waste to become the raw material for a new material with lower embodied energy than a virgin one.\r\n<br/><span class='innerRedText'>Cons:\r\n- The recycling process in an industrial facility generates CO2 emissions.\r\n<br/>Suggestion:\r\n- Look for alternative materials that are either compostable or biodegradable in natural conditions.\r\n<br/></span><span class='innerSmallerText'>*We only analyzed the cost of transporting the waste to a recycling facility.\r\n</span>";
+      "Pros:\r\n- Recycling reduces the need for extracting, refining and processing raw materials all of which create substantial air and water pollution.\r\n- It allows the waste to become the raw material for a new material with lower embodied energy than a virgin one.\r\n<br/><span class='innerRedText'>Cons:\r\n- The recycling process in an industrial facility generates CO<sub>2</sub> emissions.\r\n<br/>Suggestion:\r\n- Look for alternative materials that are either compostable or biodegradable in natural conditions.\r\n<br/></span><span class='innerSmallerText'>*We only analyzed the cost of transporting the waste to a recycling facility.\r\n</span>";
   }
   if (tempEOL == "landfill" || tempEOL == "idk") {
     var tempText;
@@ -1119,7 +1127,7 @@ function set_end_life_3dprint(sourceValues) {
     }
   } else if (tempEOL == "incineration") {
     textDivRecycle.innerHTML =
-      "We analyzed the cost of transporting the waste to a garbage facility and the energy and CO2 emissions generated from burning the waste.\r\n<br/>Pros:\r\n- The incineration process generates an energy bonus because of the burning process.\r\n<br/><span class='innerRedText'>Cons:\r\n- It creates about 8000% more CO2 emissions than recycling. </span>";
+      "We analyzed the cost of transporting the waste to a garbage facility and the energy and CO<sub>2</sub> emissions generated from burning the waste.\r\n<br/>Pros:\r\n- The incineration process generates an energy bonus because of the burning process.\r\n<br/><span class='innerRedText'>Cons:\r\n- It creates about 8000% more CO<sub>2</sub> emissions than recycling. </span>";
   }
 
   textbox.appendChild(textDivRecycle);
