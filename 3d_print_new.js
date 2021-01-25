@@ -2,18 +2,18 @@ let jobsArray = [];
 
 const TESTSOURCEVALUE = {
   material_3dprint: "PLA",
-  location_3dprint: "region",
-  distance_3dprint: 345.5,
+  location_3dprint: "distance",
+  distance_3dprint: 17353,
   where_3dprint: "International",
   shipment_3dprint: "By sea",
-  country_3dprint: "Armenia",
-  machine_3dprint: "makerbot",
-  weight_3dprint: 100,
+  country_3dprint: "Peru",
+  machine_3dprint: "ultimaker",
+  weight_3dprint: 654.88,
   supportFieldType: "Input",
-  supportInput_3dprint: 100,
-  time_3dprint: 3,
+  supportInput_3dprint: 41.12,
+  time_3dprint: 2053,
   iteration_3dprint: 1,
-  eol_3dprint: "recycle_bin",
+  eol_3dprint: "landfill",
 };
 
 function Form_Values(

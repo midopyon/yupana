@@ -650,7 +650,7 @@ function DrawGoogleChartsCo2(results) {
       },
       viewWindow: {
         min: 0,
-        max: Math.ceil(Math.max(...arr2) / 20) * 20,
+        max: Math.ceil(Math.max(...arr2) / 10) * 10,
       },
       title: "\nCO\u2082 (kg CO\u2082/kg)",
       titleTextStyle: {
