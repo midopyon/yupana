@@ -1,9 +1,6 @@
 "use strict";
 
-let results_energy_ar = [];
-let results_co2_ar = [];
-
-let original = {};
+///3DPRINT
 
 let selectedJobsEnergy = [];
 let selectedJobsCo2 = [];
@@ -30,7 +27,49 @@ let isDeleteJobHidden = true;
 let CurrentlySelectedJobsTitleCO2 = "";
 let CurrentlySelectedJobsTitleEnergy = "";
 
-// **** Loading Form Elements
+///LASER
+
+let selectedJobsEnergy_l = [];
+let selectedJobsCo2_l = [];
+
+let latestPage_l = 0;
+let selectedPage_l = 1;
+let maxEnergyValue_l = new Object();
+maxEnergyValue_l.rawMat = 0;
+maxEnergyValue_l.transp = 0;
+maxEnergyValue_l.digFab = 0;
+maxEnergyValue_l.endLife = 0;
+let minEnergyValueEndLife_l = 0;
+
+let maxCo2Value_l = new Object();
+maxCo2Value_l.rawMat = 0;
+maxCo2Value_l.transp = 0;
+maxCo2Value_l.digFab = 0;
+maxCo2Value_l.endLife = 0;
+
+let hasJobStackEmpty_l = true;
+let isUpdating_l = false;
+let isDeleteJobHidden_l = true;
+
+let CurrentlySelectedJobsTitleCO2_l = "";
+let CurrentlySelectedJobsTitleEnergy_l = "";
+
+const Printing = document.getElementById("Printing");
+const print = document.getElementById("_3D_Printing");
+const Cutting = document.getElementById("Cutting");
+const cut = document.getElementById("Laser_Cutting");
+
+Printing.addEventListener("click", function () {
+  print.setAttribute("class", "visible");
+  cut.setAttribute("class", "invisible");
+});
+
+Cutting.addEventListener("click", function () {
+  print.setAttribute("class", "invisible");
+  cut.setAttribute("class", "visible");
+});
+
+// **** Loading Form Elements 3D PRINT
 
 let region_3dprint = document.getElementById("region_input_3dprint");
 let distance_3dprint = document.getElementById("distance_input_3dprint");
@@ -851,13 +890,6 @@ var gridOptionsEnergy = {
   onRowClicked: onrowClickedEnergy,
 };
 
-function getSelectedRowsEnergy() {
-  var selectedNodes = gridOptionsEnergy.api.getSelectedNodes();
-  var selectedData = selectedNodes.map(function (node) {
-    return node.data;
-  });
-}
-
 function onrowClickedEnergy() {
   var selectedRows = gridOptionsEnergy.api.getSelectedRows();
   var selectedRowsArray = [];
@@ -1179,4 +1211,962 @@ function DeleteJobFromArray(pageToDelete) {
 
   updateTableCo2();
   updateTableEnergy();
+}
+
+/// LASER FUNCTIONS
+
+// **** Loading Form Elements laser
+
+let region_laser = document.getElementById("region_input_laser");
+let distance_laser = document.getElementById("distance_input_laser");
+let addjob_laser = document.getElementById("buttonAddJob_l");
+let deljob_laser = document.getElementById("buttonDelJob_l");
+
+let titleEnergyLaser = document.getElementById("EnergyWrapper_L");
+let titleCo2Laser = document.getElementById("Co2Wrapper_L");
+
+let laser_country_select = document.getElementById("country_laser");
+let laser_state_select = document.getElementById("state_laser");
+
+let area_length = document.getElementById("area_length");
+let area_area = document.getElementById("area_area");
+
+let waste_field = document.getElementById("waste_field");
+let waste_slider = document.getElementById("waste_slider");
+var wasteSliderObj = document.getElementById("waste_laser");
+
+// **** Setting button actions
+
+document
+  .getElementById("btn_clear_laser")
+  .addEventListener("click", function () {
+    var w = confirm("Are you sure you want to clear ALL jobs?");
+    if (w == true) {
+      //Reset form
+      reset_form_laser();
+    } else {
+      //nothing
+    }
+  });
+
+document
+  .getElementById("region_radio_laser")
+  .addEventListener("click", ShowRegionFormLaser);
+document
+  .getElementById("distance_radio_laser")
+  .addEventListener("click", ShowDistanceFormLaser);
+
+document.getElementById("btn_addJob_l").addEventListener("click", function () {
+  document.querySelectorAll(".exclamationLaser").forEach((item, i) => {
+    item.classList.add("invisible");
+  });
+
+  createNewPageNumberLaser();
+  update_button_onNewJob_laser();
+
+  if (!isDeleteJobHidden_l) {
+    SetDeleteJobInactiveLaser();
+  }
+});
+
+document.getElementById("btn_delJob_l").addEventListener("click", function () {
+  var r = confirm(
+    "Are you sure you want to delete Job #" + selectedPage_l + " ?"
+  );
+  if (r == true) {
+    //Delete Job
+    DeleteJobFromArrayLaser(selectedPage_l);
+  } else {
+    //nothing
+  }
+});
+
+laser_country_select.addEventListener("change", CheckIfUSLaser);
+
+document.getElementById("Waste_Area").addEventListener("click", ShowWasteField);
+document
+  .getElementById("Waste_Percent")
+  .addEventListener("click", ShowWasteSlider);
+
+document
+  .getElementById("area_length")
+  .addEventListener("click", ShowAreaLength);
+document.getElementById("area_area").addEventListener("click", ShowAreaArea);
+
+// Defining Functions called on form action
+
+function reset_form_laser() {
+  HideDeleteJobButtonLaser();
+  HideAddJobButtonLaser();
+
+  // clearing inputs
+  //TODO: diff between input 3d and input laser
+  var inputs = document.getElementsByTagName("input");
+  for (var i = 0; i < inputs.length; i++) {
+    if (inputs[i].classList.contains("field_selector")) {
+      continue; //skip clearing this value
+    }
+    switch (inputs[i].type) {
+      // case 'hidden':
+      case "text":
+        inputs[i].value = "";
+        break;
+      case "radio":
+      case "checkbox":
+        inputs[i].checked = false;
+    }
+  }
+
+  // clearing selects
+  var selects = document.getElementsByTagName("select");
+  for (var i = 0; i < selects.length; i++) selects[i].selectedIndex = 0;
+
+  // clearing textarea
+  var text = document.getElementsByTagName("textarea");
+  for (var i = 0; i < text.length; i++) text[i].innerHTML = "";
+
+  document.getElementById("btn_calculate_l").textContent = "Calculate";
+  document.getElementById("chart_div_energy_L").innerHTML = "";
+  document.getElementById("chart_div_co2_L").innerHTML = "";
+  document.getElementById("myGridEnergy_L").innerHTML = "";
+  document.getElementById("myGridCo2_L").innerHTML = "";
+  document.getElementById("NumbersList_l").innerHTML = "";
+
+  document.querySelectorAll(".exclamationLaser").forEach((item, i) => {
+    item.classList.add("invisible");
+  });
+
+  //clear array
+  rowDataEnergy_l = [];
+  rowDataCo2_l = [];
+  selectedJobsEnergy_l = [];
+  selectedJobsCo2_l = [];
+  jobsArray_L = [];
+
+  latestPage_l = 0;
+  selectedPage_l = 1;
+  hasJobStackEmpty_l = true;
+  isUpdating_l = false;
+  isDeleteJobHidden_l = true;
+
+  maxEnergyValue_l.rawMat = 0;
+  maxEnergyValue_l.transp = 0;
+  maxEnergyValue_l.digFab = 0;
+  maxEnergyValue_l.endLife = 0;
+
+  maxCo2Value_l.rawMat = 0;
+  maxCo2Value_l.transp = 0;
+  maxCo2Value_l.digFab = 0;
+  maxCo2Value_l.endLife = 0;
+
+  minEnergyValueEndLife_l = 0;
+
+  return false;
+}
+
+function ShowRegionFormLaser() {
+  region_laser.classList.remove("invisible");
+  distance_laser.classList.add("invisible");
+}
+
+function ShowDistanceFormLaser() {
+  distance_laser.classList.remove("invisible");
+  region_laser.classList.add("invisible");
+}
+
+function ShowAddJobButtonLaser() {
+  createNewPageNumberLaser();
+  addjob_laser.classList.remove("invisible");
+  update_button_onSubmit_Laser();
+
+  hasJobStackEmpty_l = false;
+}
+
+function HideAddJobButtonLaser() {
+  addjob_laser.classList.add("invisible");
+}
+
+function ShowDeleteJobButtonLaser() {
+  deljob_laser.classList.remove("invisible");
+  isDeleteJobHidden_l = false;
+}
+
+function HideDeleteJobButtonLaser() {
+  deljob_laser.classList.add("invisible");
+  isDeleteJobHidden_l = true;
+}
+
+function ShowTableTitlesLaser() {
+  titleEnergyLaser.classList.remove("invisible");
+  titleCo2Laser.classList.remove("invisible");
+}
+
+function HideTableTitlesLaser() {
+  titleEnergyLaser.classList.add("invisible");
+  titleCo2Laser.classList.add("invisible");
+}
+
+function SetDeleteJobActiveLaser() {
+  document.getElementById("btn_delJob_l").disabled = false;
+}
+
+function SetDeleteJobInactiveLaser() {
+  document.getElementById("btn_delJob_l").disabled = true;
+}
+
+function CheckIfUSLaser() {
+  if (laser_country_select.value == "United States") {
+    laser_state_select.classList.remove("invisible");
+  } else {
+    laser_state_select.classList.add("invisible");
+  }
+}
+
+function ShowWasteField() {
+  waste_field.classList.remove("invisible");
+  waste_slider.classList.add("invisible");
+}
+
+function ShowWasteSlider() {
+  waste_slider.classList.remove("invisible");
+  waste_field.classList.add("invisible");
+}
+
+function ShowAreaLength() {
+  area_length.classList.remove("invisible");
+  area_area.classList.add("invisible");
+}
+
+function ShowAreaArea() {
+  area_length.classList.add("invisible");
+  area_area.classList.remove("invisible");
+}
+
+wasteSliderObj.onchange = function () {
+  document.getElementById("Waste_laser_display").innerHTML =
+    wasteSliderObj.value;
+};
+
+function update_button_onSubmit_Laser() {
+  isUpdating_l = true;
+  document.getElementById("btn_calculate_l").textContent = "Update Values";
+}
+
+function update_button_onNewJob_Laser() {
+  isUpdating_l = false;
+  document.getElementById("btn_calculate_l").textContent = "Calculate";
+}
+
+//Page creator script
+
+function createNewPageNumberLaser() {
+  var ul = document.getElementById("NumbersList_l");
+
+  latestPage_l++;
+  selectedPage_l = latestPage_l;
+  let tempCurrPage = selectedPage_l;
+
+  var selects = document.getElementsByClassName("link selectedButtonLaser");
+  for (var i = 0; i < selects.length; i++) selects[i].className = "link";
+
+  var li = document.createElement("li");
+
+  var button = document.createElement("button");
+  button.innerHTML = latestPage_l.toString();
+  button.className = "link selectedButtonLaser";
+  button.setAttribute("id", "buttonPageLaser" + latestPage_l.toString());
+
+  li.appendChild(button);
+  li.setAttribute("id", "listItemLaser" + latestPage_l.toString());
+  ul.appendChild(li);
+
+  document
+    .getElementById("buttonPageLaser" + latestPage_l.toString())
+    .addEventListener("click", function () {
+      selectedPage_l = tempCurrPage;
+      // Create the event
+      var event = new CustomEvent("changePageLaser", {
+        detail: selectedPage_l,
+      });
+
+      var selects = document.getElementsByClassName("link selectedButtonLaser");
+      for (var i = 0; i < selects.length; i++) selects[i].className = "link";
+
+      this.className = "link selectedButtonLaser";
+
+      // Dispatch/Trigger/Fire the event
+      document.dispatchEvent(event);
+    });
+}
+
+// Defining functions called by an external script
+
+function DrawGoogleChartsEnergyLaser(results) {
+  var chartDiv = document.getElementById("chart_div_energy_L");
+
+  let dataArray = [
+    [
+      "Prototyping Material",
+      "Raw Material Processing (RM)",
+      {
+        role: "annotation",
+      },
+      "Transportation (T)",
+      {
+        role: "annotation",
+      },
+      "Digital Fabrication (DF)",
+      {
+        role: "annotation",
+      },
+      "End of Life (EL)",
+      {
+        role: "annotation",
+      },
+    ],
+  ];
+
+  dataArray.push([
+    results.name,
+    results.mat_manufacturing,
+    results.mat_manufacturing,
+    results.transportation,
+    results.transportation,
+    results.fabrication,
+    results.fabrication,
+    results.end_life,
+    results.end_life,
+  ]);
+
+  var data = google.visualization.arrayToDataTable(dataArray);
+
+  let arr = Object.values(maxEnergyValue_l);
+
+  let minTable = minEnergyValueEndLife_l;
+
+  var materialOptions = {
+    width: 520,
+    height: 400,
+    colors: ["#837BE7", "#E6BDF2", "#F97494", "#FD9F82"],
+    title: "Energy Consumption:  " + CurrentlySelectedJobsTitleEnergy_l + "\n ",
+    titleTextStyle: {
+      color: "#3b4456",
+      fontSize: 18,
+      fontName: "Open Sans",
+      bold: true,
+      //italic: true
+    },
+    chartArea: { left: 80, width: "60%", height: "40%" },
+    vAxis: {
+      format: "short",
+      textStyle: {
+        //color: '#01579b',
+        fontSize: 12,
+        //fontName: 'Helvetica',
+        //bold: true,
+        //italic: true
+      },
+      viewWindow: {
+        min: minTable,
+        max: Math.ceil(Math.max(...arr) / 50) * 50,
+      },
+      title: "\nEnergy (MJ)",
+      titleTextStyle: {
+        fontSize: 12,
+      },
+    },
+    hAxis: {
+      textStyle: {
+        //color: '#01579b',
+        fontSize: 12,
+        //fontName: 'Arial',
+        //bold: true,
+        //italic: true
+      },
+    },
+    legend: { position: "top", maxLines: 3, textStyle: { fontSize: 11 } },
+  };
+
+  var view = new google.visualization.DataView(data);
+  var chart = new google.visualization.ColumnChart(chartDiv);
+
+  chart.draw(view, materialOptions);
+}
+
+////
+
+function DrawGoogleChartsCo2Laser(results) {
+  var chartDiv = document.getElementById("chart_div_co2_L");
+
+  let dataArray = [
+    [
+      "Prototyping Material",
+      "Raw Material Processing (RM)",
+      {
+        role: "annotation",
+      },
+      "Transportation (T)",
+      {
+        role: "annotation",
+      },
+      "Digital Fabrication (DF)",
+      {
+        role: "annotation",
+      },
+      "End of Life (EL)",
+      {
+        role: "annotation",
+      },
+    ],
+  ];
+
+  dataArray.push([
+    results.name,
+    results.mat_manufacturing,
+    results.mat_manufacturing,
+    results.transportation,
+    results.transportation,
+    results.fabrication,
+    results.fabrication,
+    results.end_life,
+    results.end_life,
+  ]);
+
+  var data = google.visualization.arrayToDataTable(dataArray);
+
+  let arr2 = Object.values(maxCo2Value_l);
+
+  var materialOptions = {
+    width: 520,
+    height: 400,
+    colors: ["#837BE7", "#E6BDF2", "#F97494", "#FD9F82"],
+    title: "CO\u2082 Emissions:  " + CurrentlySelectedJobsTitleCO2_l + "\n ",
+    titleTextStyle: {
+      color: "#3b4456",
+      fontSize: 18,
+      fontName: "Open Sans",
+      bold: true,
+      //italic: true
+    },
+    chartArea: { left: 80, width: "60%", height: "40%" },
+
+    vAxis: {
+      format: "short",
+      textStyle: {
+        //color: '#01579b',
+        fontSize: 12,
+        //fontName: 'Helvetica',
+        //bold: true,
+        //italic: true
+      },
+      viewWindow: {
+        min: 0,
+        max: Math.ceil(Math.max(...arr2) / 10) * 10,
+      },
+      title: "\nCO\u2082 (kg CO\u2082/kg)",
+      titleTextStyle: {
+        fontSize: 12,
+      },
+    },
+    hAxis: {
+      textStyle: {
+        //color: '#01579b',
+        fontSize: 12,
+        //fontName: 'Arial',
+        //bold: true,
+        //italic: true
+      },
+    },
+    legend: { position: "top", maxLines: 3, textStyle: { fontSize: 11 } },
+  };
+
+  var view = new google.visualization.DataView(data);
+  var chart = new google.visualization.ColumnChart(chartDiv);
+
+  chart.draw(view, materialOptions);
+}
+
+///
+
+function get_electric_text_laser(country) {
+  let countryText = "";
+
+  if (country == "United States") {
+    countryText =
+      "<span class='innerRedText'>- USA: 63% fossil fuels-coal, natural gas, petroleum; 20% nuclear energy, and 18% renewable energy.</span>\r\n";
+  } else if (country_region[country] == "north america") {
+    countryText = "";
+  } else if (country_region[country] == "latin america") {
+    countryText =
+      "<span class='innerRedText'>- Latin America: 75% fossil fuel, 16% bioenergy,  8% hydropower, 1% geothermal, and 1% solar and wind energy.</span>\r\n";
+  } else if (country_region[country] == "europe") {
+    countryText =
+      "<span class='innerRedText'>- European Union: 45.5% natural gas, coal, and oil; 25.8% nuclear power.</span>\r\n";
+  } else if (country_region[country] == "middle east") {
+    countryText = "";
+  } else if (country_region[country] == "africa") {
+    countryText = "";
+  } else if (country_region[country] == "south asia") {
+    countryText =
+      "<span class='innerRedText'>- South Asian: India (Coal – 67.9%), Nepal (Hydropower – 99.9%), Bangladesh (Natural gas – 91.5%), and Sri Lanka (Oil – 50.2%).</span>\r\n";
+  } else if (country_region[country] == "north asia") {
+    countryText =
+      "<span class='innerRedText'>- Northern Asian: In 2015, the energy consumption was 2.6 billion tons of coal equivalent, accounting for 14% of the global total; the total electricity consumption was 3.3 PWh, accounting for 16 % of the global total. In 2016, the total CO<sub>2</sub> emissions in China, Japan, and the ROK reached 34.4% of the global total.</span>\r\n";
+  } else {
+    console.log("error");
+  }
+
+  return countryText;
+}
+
+var columnDefsEnergyLaser = [
+  { headerName: "", field: "jobName", checkboxSelection: true },
+  {
+    headerName: "RM",
+    field: "rawMat",
+    headerClass: "rawHeader",
+    valueFormatter: (params) => params.data.rawMat.toFixed(2),
+    suppressMovable: true,
+  },
+  {
+    headerName: "T",
+    field: "transp",
+    headerClass: "transpHeader",
+    valueFormatter: (params) => params.data.transp.toFixed(2),
+    suppressMovable: true,
+  },
+  {
+    headerName: "DF",
+    field: "digFab",
+    headerClass: "digHeader",
+    valueFormatter: (params) => params.data.digFab.toFixed(2),
+    suppressMovable: true,
+  },
+  {
+    headerName: "EL",
+    field: "endLife",
+    headerClass: "endHeader",
+    valueFormatter: (params) => params.data.endLife.toFixed(2),
+    suppressMovable: true,
+  },
+];
+
+// specify the data
+var rowDataEnergy_l = [];
+
+//add row
+function addRowEnergyLaser(job, Results) {
+  let data = {
+    jobName: "J" + job.toString(),
+    rawMat: Results.mat_manufacturing,
+    transp: Results.transportation,
+    digFab: Results.fabrication,
+    endLife: Results.end_life,
+  };
+
+  maxEnergyValue_l.rawMat += data.rawMat;
+  maxEnergyValue_l.transp += data.transp;
+  maxEnergyValue_l.digFab += data.digFab;
+  maxEnergyValue_l.endLife += data.endLife;
+
+  if (data.endLife < minEnergyValueEndLife_l) {
+    minEnergyValueEndLife_l = data.endLife;
+  }
+
+  if (maxEnergyValue_l.endLife < minEnergyValueEndLife_l) {
+    minEnergyValueEndLife_l = maxEnergyValue_l.endLife;
+  }
+
+  rowDataEnergy_l.push(data);
+
+  //set Table titles
+
+  let TableTitle = "";
+
+  for (i = 0; i < latestPage_l; i++) {
+    if (TableTitle == "") {
+      TableTitle += "J" + (i + 1);
+    } else {
+      TableTitle += ", J" + (i + 1);
+    }
+  }
+
+  document.getElementById("tableEnergyTitle_L").innerHTML =
+    "Job History: " + TableTitle;
+
+  document.getElementById("tableCoTitle_L").innerHTML =
+    "Job History: " + TableTitle;
+
+  updateTableEnergyLaser();
+}
+
+//add row
+function updateRowEnergyLaser(job, Results) {
+  let data = {
+    jobName: "J" + job.toString(),
+    rawMat: Results.mat_manufacturing,
+    transp: Results.transportation,
+    digFab: Results.fabrication,
+    endLife: Results.end_life,
+  };
+
+  rowDataEnergy_l[job - 1] = data;
+
+  maxEnergyValue_l.rawMat = 0;
+  maxEnergyValue_l.transp = 0;
+  maxEnergyValue_l.digFab = 0;
+  maxEnergyValue_l.endLife = 0;
+  minEnergyValueEndLife_l = 0;
+
+  rowDataEnergy_l.forEach(function (row, index) {
+    maxEnergyValue_l.rawMat += row.rawMat;
+    maxEnergyValue_l.transp += row.transp;
+    maxEnergyValue_l.digFab += row.digFab;
+    maxEnergyValue_l.endLife += row.endLife;
+
+    if (data.endLife < minEnergyValueEndLife_l) {
+      minEnergyValueEndLife_l = data.endLife;
+    }
+  });
+
+  if (maxCo2Value_l.endLife < minEnergyValueEndLife_l) {
+    minEnergyValueEndLife_l = maxCo2Value_l.endLife;
+  }
+
+  updateTableEnergyLaser();
+}
+
+// let the grid know which columns and what data to use
+var gridOptionsEnergy_l = {
+  columnDefs: columnDefsEnergyLaser,
+  rowData: rowDataEnergy_l,
+  rowSelection: "multiple",
+  onSelectionChanged: onSelectionChangedEnergyLaser,
+  headerHeight: 23,
+  onRowClicked: onrowClickedEnergyLaser,
+};
+
+function onrowClickedEnergyLaser() {
+  var selectedRows = gridOptionsEnergy_l.api.getSelectedRows();
+  var selectedRowsArray = [];
+
+  selectedRows.forEach(function (selectedRow, index) {
+    var number = parseInt(
+      selectedRow.jobName.slice(selectedRow.jobName.length - 1)
+    );
+
+    selectedRowsArray.push(number);
+  });
+
+  var event = new CustomEvent("changePageFromTableLaser", {
+    detail: selectedRowsArray[0],
+  });
+
+  var selects = document.getElementsByClassName("link selectedButtonLaser");
+  for (var i = 0; i < selects.length; i++) selects[i].className = "link";
+
+  document.getElementById(
+    "buttonPageLaser" + selectedRowsArray[0].toString()
+  ).className = "link selectedButtonLaser";
+
+  document.dispatchEvent(event);
+
+  //Dispatch on change page event
+}
+
+function onSelectionChangedEnergyLaser() {
+  var selectedRows = gridOptionsEnergy_l.api.getSelectedRows();
+  var selectedRowsArray = [];
+  var maxToShow = 5;
+
+  selectedRows.forEach(function (selectedRow, index) {
+    if (index >= maxToShow) {
+      return;
+    }
+
+    var number = parseInt(
+      selectedRow.jobName.slice(selectedRow.jobName.length - 1)
+    );
+
+    selectedRowsArray.push(number);
+  });
+
+  selectedJobsEnergy_l = selectedRowsArray;
+
+  var event = new CustomEvent("selectionChangedEnergyLaser", {});
+
+  // Dispatch/Trigger/Fire the event
+  document.dispatchEvent(event);
+}
+
+function updateTableEnergyLaser() {
+  gridOptionsEnergy_l.api.setRowData(rowDataEnergy_l);
+  gridOptionsEnergy_l.api.selectAll();
+  gridOptionsEnergy_l.api.sizeColumnsToFit();
+  gridOptionsEnergy_l.api.refreshCells();
+}
+
+//CO2
+
+var columnDefsCo2Laser = [
+  { headerName: "", field: "jobName", checkboxSelection: true },
+  {
+    headerName: "RM",
+    field: "rawMat",
+    headerClass: "rawHeader",
+    valueFormatter: (params) => params.data.rawMat.toFixed(2),
+    suppressMovable: true,
+  },
+  {
+    headerName: "T",
+    field: "transp",
+    headerClass: "transpHeader",
+    valueFormatter: (params) => params.data.transp.toFixed(2),
+    suppressMovable: true,
+  },
+  {
+    headerName: "DF",
+    field: "digFab",
+    headerClass: "digHeader",
+    valueFormatter: (params) => params.data.digFab.toFixed(2),
+    suppressMovable: true,
+  },
+  {
+    headerName: "EL",
+    field: "endLife",
+    headerClass: "endHeader",
+    valueFormatter: (params) => params.data.endLife.toFixed(2),
+    suppressMovable: true,
+  },
+];
+
+// specify the data
+var rowDataCo2_l = [];
+
+//add row
+function addRowCo2Laser(job, Results) {
+  let data = {
+    jobName: "J" + job.toString(),
+    rawMat: Results.mat_manufacturing,
+    transp: Results.transportation,
+    digFab: Results.fabrication,
+    endLife: Results.end_life,
+  };
+
+  maxCo2Value_l.rawMat += data.rawMat;
+  maxCo2Value_l.transp += data.transp;
+  maxCo2Value_l.digFab += data.digFab;
+  maxCo2Value_l.endLife += data.endLife;
+
+  rowDataCo2_l.push(data);
+  updateTableCo2Laser();
+}
+
+//add row
+function updateRowCo2Laser(job, Results) {
+  let data = {
+    jobName: "J" + job.toString(),
+    rawMat: Results.mat_manufacturing,
+    transp: Results.transportation,
+    digFab: Results.fabrication,
+    endLife: Results.end_life,
+  };
+
+  rowDataCo2_l[job - 1] = data;
+
+  maxCo2Value_l.rawMat = 0;
+  maxCo2Value_l.transp = 0;
+  maxCo2Value_l.digFab = 0;
+  maxCo2Value_l.endLife = 0;
+
+  rowDataCo2_l.forEach(function (row, index) {
+    maxCo2Value_l.rawMat += row.rawMat;
+    maxCo2Value_l.transp += row.transp;
+    maxCo2Value_l.digFab += row.digFab;
+    maxCo2Value_l.endLife += row.endLife;
+  });
+
+  updateTableCo2Laser();
+}
+
+// let the grid know which columns and what data to use
+var gridOptionsCo2_l = {
+  columnDefs: columnDefsCo2Laser,
+  rowData: rowDataCo2_l,
+  rowSelection: "multiple",
+  onSelectionChanged: onSelectionChangedCo2Laser,
+  headerHeight: 23,
+};
+
+function getSelectedRowsCo2Laser() {
+  var selectedNodes = gridOptionsCo2_l.api.getSelectedNodes();
+  var selectedData = selectedNodes.map(function (node) {
+    return node.data;
+  });
+}
+
+function onSelectionChangedCo2Laser() {
+  var selectedRows = gridOptionsCo2_l.api.getSelectedRows();
+  var selectedRowsArray = [];
+  var maxToShow = 5;
+
+  selectedRows.forEach(function (selectedRow, index) {
+    if (index >= maxToShow) {
+      return;
+    }
+
+    var number = parseInt(
+      selectedRow.jobName.slice(selectedRow.jobName.length - 1)
+    );
+
+    selectedRowsArray.push(number);
+  });
+
+  selectedJobsCo2_l = selectedRowsArray;
+
+  var event = new CustomEvent("selectionChangedCo2Laser", {});
+
+  // Dispatch/Trigger/Fire the event
+  document.dispatchEvent(event);
+}
+
+function updateTableCo2Laser() {
+  gridOptionsCo2_l.api.setRowData(rowDataCo2_l);
+  gridOptionsCo2_l.api.selectAll();
+  gridOptionsCo2_l.api.sizeColumnsToFit();
+  gridOptionsCo2_l.api.refreshCells();
+}
+
+function DeleteJobFromArrayLaser(pageToDelete) {
+  var tempJobArray = [];
+
+  jobsArray_L.forEach(function (job, index) {
+    if (index + 1 == pageToDelete) {
+      //Don't save Because you're erasing!!
+    } else {
+      tempJobArray.push(job);
+    }
+  });
+
+  //Set jobsArray to tempJobArray
+  jobsArray_L.length = 0;
+  jobsArray_L = tempJobArray;
+
+  // Update Latest Page
+  latestPage_l = tempJobArray.length;
+
+  // Update Selected Page (to page to Delete)
+  if (pageToDelete == latestPage_l + 1) {
+    selectedPage_l = latestPage_l;
+  } else {
+    selectedPage_l = pageToDelete;
+  }
+
+  //Set Form Values and Exclamation Marks
+
+  SetFormValuesLaser(jobsArray_L[selectedPage_l - 1].formValues);
+  SetExclamationTextsLaser(jobsArray_L[selectedPage_l - 1].formValues);
+
+  // If it has just one element, hide Delete Job Button
+
+  if (tempJobArray.length == 1) {
+    HideDeleteJobButtonLaser();
+  }
+
+  // Change buttons to match size of array
+
+  var elem = document.getElementById(
+    "listItemLaser" + (latestPage_l + 1).toString()
+  );
+  elem.remove();
+
+  // Set selectedPage_l as Selected Button
+  var currentButton = document.getElementById(
+    "buttonPageLaser" + selectedPage_l.toString()
+  );
+
+  currentButton.className = "link selectedButtonLaser";
+
+  // Load Table again with new values
+
+  //Set new titles
+
+  let TableTitleEnergy = "";
+
+  for (i = 0; i < latestPage_l; i++) {
+    if (TableTitleEnergy == "") {
+      TableTitleEnergy += "J" + (i + 1);
+    } else {
+      TableTitleEnergy += ", J" + (i + 1);
+    }
+  }
+
+  document.getElementById("tableEnergyTitle_L").innerHTML =
+    "Job History: " + TableTitleEnergy;
+
+  document.getElementById("tableCoTitle_L").innerHTML =
+    "Job History: " + TableTitleEnergy;
+
+  //Set row datas to zero
+
+  rowDataEnergy_l = [];
+  rowDataCo2_l = [];
+
+  //iterate through jobArray and add row foreach value
+
+  maxEnergyValue_l.rawMat = 0;
+  maxEnergyValue_l.transp = 0;
+  maxEnergyValue_l.digFab = 0;
+  maxEnergyValue_l.endLife = 0;
+
+  maxCo2Value_l.rawMat = 0;
+  maxCo2Value_l.transp = 0;
+  maxCo2Value_l.digFab = 0;
+  maxCo2Value_l.endLife = 0;
+
+  minEnergyValueEndLife_l = 0;
+
+  jobsArray_L.forEach(function (job, index) {
+    let dataEnergy = {
+      jobName: "J" + (index + 1).toString(),
+      rawMat: job.resultsEnergy.mat_manufacturing,
+      transp: job.resultsEnergy.transportation,
+      digFab: job.resultsEnergy.fabrication,
+      endLife: job.resultsEnergy.end_life,
+    };
+
+    let dataCo2 = {
+      jobName: "J" + (index + 1).toString(),
+      rawMat: job.resultsEnergy.mat_manufacturing,
+      transp: job.resultsEnergy.transportation,
+      digFab: job.resultsEnergy.fabrication,
+      endLife: job.resultsEnergy.end_life,
+    };
+
+    if (dataEnergy.endLife < minEnergyValueEndLife_l) {
+      minEnergyValueEndLife_l = dataEnergy.endLife;
+    }
+
+    maxEnergyValue_l.rawMat += dataEnergy.rawMat;
+    maxEnergyValue_l.transp += dataEnergy.transp;
+    maxEnergyValue_l.digFab += dataEnergy.digFab;
+    maxEnergyValue_l.endLife += dataEnergy.endLife;
+
+    maxCo2Value_l.rawMat += dataCo2.rawMat;
+    maxCo2Value_l.transp += dataCo2.transp;
+    maxCo2Value_l.digFab += dataCo2.digFab;
+    maxCo2Value_l.endLife += dataCo2.endLife;
+
+    rowDataEnergy_l.push(dataEnergy);
+    rowDataCo2_l.push(dataCo2);
+  });
+
+  if (maxEnergyValue_l.endLife < minEnergyValueEndLife_l) {
+    minEnergyValueEndLife_l = maxEnergyValue_l.endLife;
+  }
+
+  //update tables
+
+  updateTableCo2Laser();
+  updateTableEnergyLaser();
 }

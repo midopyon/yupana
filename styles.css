@@ -206,6 +206,15 @@ label input {
   color: red;
 }
 
+.exclamationLaser {
+  border: 1px solid red;
+  padding: 0 7px;
+  position: absolute;
+  right: 0.5em;
+  top: 0.5em;
+  color: red;
+}
+
 .textbox {
   position: absolute;
   left: 100%;
@@ -267,6 +276,11 @@ button.link {
 }
 
 .selectedButton {
+  text-decoration: underline;
+  pointer-events: none;
+}
+
+.selectedButtonLaser {
   text-decoration: underline;
   pointer-events: none;
 }

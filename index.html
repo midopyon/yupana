@@ -104,17 +104,19 @@
       <p>Choose your digital fabrication technique *</p>
       <div>
         <label class="radio_button" id="Printing"
-          ><input type="radio" value="change" name="change2" checked />&nbsp 3D
+          ><input type="radio" value="change" name="change2">&nbsp 3D
           Printing</label
         >
+        <label class="radio_button" id="Cutting"><input type="radio" value="change" name="change">&nbsp Laser
+          Cutting</label>
       </div>
     </div>
 
     <div class="container-fluid">
+      <article id="_3D_Printing" class="invisible">
       <div class="row">
         <div class="col_form">
           <div class="gray_container">
-            <article id="_3D_Printing">
               <div class="manufacturing">
                 <button
                   id="manufacturing_exclamation_3dprint"
@@ -418,7 +420,6 @@
                       name="end_of_life_radio_button"
                     />&nbsp Incineration</label
                   >
-                  <!--      <label class="radio_button"><Input type="radio" value="compost_bin" name="end_of_life_radio_button" onchange="refresh_user_input()">&nbsp Compost bin</label>-->
                   <label class="radio_button"
                     ><input
                       id="idk_checkbox"
@@ -439,7 +440,6 @@
                 </div>
               </div>
             </p>
-            </article>
           </div>
 
             <div class="bottomRowflex">
@@ -487,6 +487,240 @@
           </div>
         </div>
       </div>
+      </article>
+      <article id="Laser_Cutting" class="invisible">
+        <div class="row">
+          <div class="col_form">
+            <div class="gray_container">
+              <div class="manufacturing">
+                <button id="manufacturing_exclamation_laser" class="exclamationLaser invisible">!</button>
+                <div class="textbox invisible">
+                  <button id="x_manufacturing_laser">X</button>
+                  <div id="manufacturing_textbox_laser"></div>
+                </div>
+                <h3>Raw Material Processing Phase</h3>
+                <div class="question">
+                  <label for="material_lasercut">
+                    <h5>Which material will you use for prototyping? *</h5>
+                  </label>
+                  <select id="material_lasercut" class="dropdown input-field" name="opt">
+                    <option>choose</option>
+                    <option value="Acrylic">Acrylic</option>
+                    <option value="MDF">MDF</option>
+                    <option value="Cardboard">Cardboard/Matboard</option>
+                    <option value="Cardboard_recycled">Cardboard/Matboard Recycled</option>
+                    <option value="Mycelium">Mycelium</option>
+                  </select>
+                </div>
+              </div>
+    
+              <div class="transportation">
+                <button id="transport_exclamation_laser" class="exclamationLaser invisible">!</button>
+                <div class="textbox invisible">
+                  <button id="x_transport_laser">X</button>
+                  <div id="transport_textbox_laser"></div>
+                </div>
+                <h3>Transportation Phase</h3>
+                <div class="question">
+                  <h5>Where is your material manufactured? * </h5>
+                  <div class="flex">
+                    <label class="radio_button first" id="region_radio_laser">
+                      <input id="region_radio_laser_checkbox" class="field_selector" type="radio" value="region" name="location_laser">&nbsp By Region
+                    </label>
+                    <label class="radio_button" id="distance_radio_laser">
+                      <input id="distance_radio_laser_checkbox" class="field_selector" type="radio" value="distance" name="location_laser">&nbsp By Distance (km)
+                    </label>
+                  </div>
+                  <div id="region_input_laser" class="invisible">
+                    <label for="where_lasercut">
+                      <h6>e.g. local= same state; national= same country; international= outside country</h6>
+                    </label>
+                    <select id="where_lasercut" class="dropdown input-field" name="opt">
+                      <option>choose</option>
+                      <option value="International">International</option>
+                      <option value="National">National</option>
+                      <option value="Local">Local</option>
+                      <option value="I don't know">I don't know</option>
+                    </select>
+                  </div>
+                  <div id="distance_input_laser" class="invisible">
+                    <label for="_laser_distance_input">
+                      <h6>e.g. distance from your lab</h6>
+                    </label>
+                    <p><input type="text" id="_laser_distance_input" class="input-field" placeholder="Type a number" required>&nbsp(km)</p>
+                  </div>
+                </div>
+                <div class="question">
+                  <label for="shipment_lasercut">
+                    <h5>Which method of shipment was used to deliver the material to your lab? *</h5>
+                  </label>
+                  <select id="shipment_lasercut" class="dropdown input-field" name="opt">
+                    <option>choose</option>
+                    <option value="By air">By air</option>
+                    <option value="By sea">By sea</option>
+                    <option value="By road">By road</option>
+                    <option value="I don't know">I don't know</option>
+                  </select>
+                </div>
+              </div>
+    
+              <div class="fabrication">
+                <button id="fabrication_exclamation_laser" class="exclamationLaser invisible">!</button>
+                <div class="textbox invisible">
+                  <button id="x_fabrication_laser">X</button>
+                  <div id="fabrication_textbox_laser"></div>
+                </div>
+                <h3>Digital Fabrication Phase</h3>
+                <div class="question">
+                  <label for="country_laser">
+                    <h5>Lab location * </h5>
+                    <h6>This determines the source of electricity for your machine</h6>
+                  </label>
+                  <input placeholder="choose" list="countries" id="country_laser" name="Countries" class="input-field" />
+                  <input placeholder="choose" list="states" id="state_laser" name="States" class="invisible input-field" />
+                </div>
+                <div class="question">
+                  <label for="machine_lasercut">
+                    <h5> Choose your machine's model *</h5>
+                  </label>
+                  <select id="machine_lasercut" class="Laser_input input-field" name="opt">
+                    <option>choose</option>
+                    <option value="Trotec">Trotec: Speedy 400</option>
+                    <option value="Epilog">Epilog: Fusion Pro 32</option>
+                    <option value="Universal">Universal: PLS6.75</option>
+                  </select>
+                </div>
+                <div class="question">
+                  <label id="mat_thickness_label">
+                    <h5>What's your material thickness? *</h5>
+                  </label>
+                  <p><input type="text" id="mat_thickness_input_lasercut" class="input-field" placeholder="Type a number" required>&nbspmm</p>
+                </div>
+                <div class="question">
+                  <h5>Total area of cut material *</h5>
+                  <img id="laser_img" src="images/lasercut_area.svg" alt="Header">
+                  <div class="flex">
+                    <label class="radio_button first" id="Area">
+                      <input class="field_selector" type="radio" value="area" name="area">&nbsp Area (m2)
+                    </label>
+                    <label class="radio_button" id="Length">
+                      <input class="field_selector" type="radio" value="length" name="area">&nbsp Length x Width
+                      (m)
+                    </label>
+                  </div>
+                  <p class="invisible" id="area_length">Length: <input type="text" id="length_input_lasercut" class="input-field" style="width:60px;" placeholder="Number" required>&nbspm x Width: <input type="text" id="width_input_lasercut"
+                      class="input-field" style="width:60px;" placeholder="Number" required>&nbspm
+                  </p>
+                  <p class="invisible" id="area_area"><input type="text" id="area_input_lasercut" class="input-field" placeholder="Type a number" required>&nbsp(m2)</p>
+                </div>
+                <div class="question">
+                  <h5>Waste *</h5>
+                  <p>
+                    <label class="radio_button" id="Waste_Area">
+                      <input class="field_selector" type="radio" value="waste_area" name="waste">&nbsp Waste Area (m2)
+                    </label>
+                    <label class="radio_button" id="Waste_Percent">
+                      <input class="field_selector" type="radio" value="waste_percent" name="waste">&nbsp Percentage
+                      (%)
+                    </label>
+                  </p>
+                  <p class="slidecontainer invisible" id="waste_slider">
+                    <input type="range" min="0" max="100" value="50" class="slider" id="waste_laser">
+                    <p2 class="displayslider" id="Waste_laser_display">50</p2>
+                  </p>
+                  <p class="invisible" id="waste_field"><input type="text" id="waste_laser_area" class="input-field" placeholder="Type a number" required>&nbsp(m2)</p>
+                </div>
+                <div class="question">
+                  <label id="time_label" for="time">
+                    <h5>Cutting time (min) * </h5>
+                    <h6> e.g. 14.5 instead of 14,5</h6>
+                  </label>
+                  <p><input type="text" id="time" class="input-field" placeholder="Type a number" required>&nbspmin</p>
+                </div>
+                <div class="question">
+                  <label id="Iterations_label" for="laser_iteration">
+                    <h5># Iteration (e.g.1,2,3,...) *</h5>
+                  </label>
+                  <input type="text" id="laser_iteration" class="input-field" placeholder="Type a number" required>
+                </div>
+              </div>
+    
+              <div class="end_life">
+                <button id="end_life_exclamation_laser" class="exclamationLaser invisible">!</button>
+                <div class="textbox invisible">
+                  <button id="x_end_life_laser">X</button>
+                  <div id="end_life_textbox_laser"></div>
+                </div>
+                <h3>End of Life Phase</h3>
+                <div class="question">
+                  <h5>Where do you dispose your leftovers, waste or unused prototypes? *</h5>
+                  <label class="radio_button invisible" id="recycling_checkbox_laser"><input type="radio" value="recycling" name="end_life_lasercut">&nbsp Recycling
+                    bin</label>
+                  <label class="radio_button" id="landfill_checkbox_laser"><Input type="radio" value="landfill" name="end_life_lasercut">&nbsp General
+                    waste/landfill</label>
+                  <label class="radio_button" id="incineration_checkbox_laser"><Input type="radio" value="incineration" name="end_life_lasercut">&nbsp Incineration</label>
+                  <!--      <p><label class="radio_button"><Input type="radio" value="change" name="change">&nbsp Compost bin</label></p>-->
+                  <label class="radio_button" id="idk_checkbox_laser"><Input type="radio" value="idk" name="end_life_lasercut">&nbsp I don't
+                    know</label>
+                </div>
+              </div>
+                <div style = "padding-top: 10px;">
+                  <div class="col_leftButtons">
+                    <button id="btn_calculate_l" type="submit">Calculate</button>
+                  </div>
+                  <div class="subcol_delJob invisible" id="buttonDelJob_l">
+                    <button id="btn_delJob_l" type="next">- Delete Job</button>
+                  </div>
+                </div>
+              </p>
+            </div>
+  
+              <div class="bottomRowflex">
+                <div></div>
+                <div class="col_pagination">
+                  <ul id="NumbersList_l" style="list-style: none;">
+                  </ul>
+                </div>
+                <div class="col_rightButtons">
+                  <div class="subcol_addJob invisible" id="buttonAddJob_l"><button id="btn_addJob_l" type="next">Add Job +</button></div><div class="col_clearAllbutton"><button id="btn_clear_laser" type="reset">Clear all</button></div>              </div>
+              </div>
+  
+              <div>
+                <button id="btn_helper_l">Helper22</button>
+              </div>
+          </div>
+          <div class="col_graph">
+            <div class="flex">
+              <div class="col_leftGraph">
+                <div id="chart_div_energy_L" style="display: block; margin: 0 auto;"></div>
+              </div>
+              <div class = "col_rightTable">
+                <div class = "tableEnergyTitles invisible" id = "EnergyWrapper_L">
+                  <h5 id = "tableEnergyTitle_L" style = "font-weight: bold; font-size: 18px !important;"></h5>
+                </div>
+                <br />
+                <div id="myGridEnergy_L" style="height: 250px; width:400px;" class="ag-theme-alpine"></div>
+              </div>
+            </div>
+            <br />
+            <br />
+            <br />
+            <br />
+            <div class="flex">
+              <div class="col_leftGraph">
+                <div id="chart_div_co2_L" style="display: block; margin: 0 auto;"></div>
+              </div>
+              <div class = "col_rightTable">
+                <div class = "tableCo2Titles invisible" id = "Co2Wrapper_L">
+                  <h5 id = "tableCoTitle_L"  style = "font-weight: bold; font-size: 18px !important;"></h5>
+                </div>
+                <br />
+                <div id="myGridCo2_L" style="height: 250px; width:400px;" class="ag-theme-alpine"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
     </div>
 
     <datalist id="countries">
@@ -735,6 +969,7 @@
     <script src="operation_constants.js"></script>
     <script src="script.js"></script>
     <script src="3d_print_new.js"></script>
+    <script src="laser_new.js"></script>
     <script src="https://unpkg.com/ag-grid-community/dist/ag-grid-community.min.js"></script>
   </body>
 </html>

@@ -58,27 +58,6 @@ function Object_3dprint(formValues, resultsEnergy, resultsCo2) {
   this.resultsCo2 = resultsCo2;
 }
 
-var _3dprint_weight = null;
-var _3dprint_support = null;
-var _3dprint_prototyping_weight = null;
-var _3dprint_prototyping_waste = null;
-var _3dprint_iteration = null;
-var _3dprint_time = null;
-var _3dprint_location_type = null;
-var _3dprint_location = null;
-var _3dprint_shipment = null;
-var _3dprint_distance = null;
-var _3dprint_material = null;
-var _3dprint_machine = null;
-var _3dprint_end_life = null;
-var _3dprint_electric = null;
-var _3dprint_country = null;
-var recycled = false;
-// var material = 'PLA'
-// var _3dprint_end_life= 'recycle_bin'
-// var machine_3dprint_radios = 'makerbot'
-var first = true;
-
 //HELPER DEBUG
 document.getElementById("btn_helper").addEventListener("click", function () {
   SetFormValues(TESTSOURCEVALUE);
