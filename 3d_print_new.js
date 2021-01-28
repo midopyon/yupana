@@ -1164,17 +1164,22 @@ function set_end_life_3dprint(sourceValues) {
 
     SetInfoText("eol", tempText, true);
   } else if (tempEOL == "incineration") {
+    sugCounter = 0;
     TooltipTxt +=
       "We analyzed the cost of transporting the waste to a garbage facility and the energy and CO<sub>2</sub> emissions generated from burning the waste.<br><br/>Pros:<br>- The incineration process generates an energy bonus because of the burning process.<br><br/><span class='innerRedText'>Cons:<br>- It creates about 8000% more CO<sub>2</sub> emissions than recycling. </span>";
     SetInfoText("eol", TooltipTxt, true);
   }
 
-  textDivSug.innerHTML =
-    "<br/><span class='innerRedText'>Suggestion:\r\n" +
-    textDivSug.innerHTML +
-    "</span>";
-  textbox.appendChild(textDivSug);
-  WarningEOL3d.setContent("You have " + sugCounter + " suggestion(s).");
+  if (sugCounter != 0) {
+    textDivSug.innerHTML =
+      "<br/><span class='innerRedText'>Suggestion:\r\n" +
+      textDivSug.innerHTML +
+      "</span>";
+    textbox.appendChild(textDivSug);
+    WarningEOL3d.setContent("You have " + sugCounter + " suggestion(s).");
+  } else {
+    document.getElementById("warningEOL3D").classList.add("invisible");
+  }
 }
 
 let warningEOL3D = document.querySelector("#warningEOL3D");
