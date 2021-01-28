@@ -41,6 +41,7 @@ h3 {
 h5 {
   font-weight: normal;
   font-size: 1rem;
+  display: inline;
 }
 
 h6 {
@@ -230,8 +231,9 @@ label input {
   margin-left: 1rem;
   z-index: 2;
   width: 80%;
+  height: auto;
   background: #e9eff8;
-  font-size: 0.85em;
+  font-size: 1em;
   white-space: pre-line;
 }
 
@@ -280,15 +282,22 @@ button:hover {
 button.link {
   background: none;
   border: none;
+  font-size: 1em;
 }
 
 .selectedButton {
+  color: #3b61dd;
   text-decoration: underline;
+  font-weight: bold;
+  font-size: 1.4em !important;
   pointer-events: none;
 }
 
 .selectedButtonLaser {
+  color: #3b61dd;
   text-decoration: underline;
+  font-weight: bold;
+  font-size: 1.4em !important;
   pointer-events: none;
 }
 
@@ -455,4 +464,23 @@ div.ag-theme-alpine div.ag-row {
 
 .innerSmallerText {
   font-size: 0.8em;
+}
+
+.clickableAwesomeFont3D {
+  cursor: pointer;
+  color: rgb(255, 38, 0);
+  position: absolute;
+  right: 0.5em;
+  top: 0.5em;
+}
+
+.iconArrows3D {
+  cursor: pointer;
+  color: rgb(0, 0, 0);
+}
+
+.hoverAwesomeFont3D {
+  color: rgb(0, 0, 0);
+  margin-left: 10px;
+  white-space: pre-line;
 }

@@ -1,4 +1,96 @@
-"use strict";
+("use strict");
+
+var WarningManu3d;
+var WarningTrans3d;
+var WarningDig3d;
+var WarningEOL3d;
+
+var isReadingManu3d = false;
+var isReadingTrans3d = false;
+var isReadingDig3d = false;
+var isReadingEol3d = false;
+
+var InfoMat3d;
+var InfoRegion3d;
+var InfoShip3d;
+var InfoLab3d;
+var InfoPrint3d;
+var InfoEOL3d;
+
+var suggestionsMat3d = "";
+var suggestionsTrans3d = "";
+var suggestionsDig3d = "";
+var suggestionsEol3d = "";
+
+$(document).ready(function () {
+  WarningManu3d = $("#warningManu3D").jBox("Tooltip", {});
+
+  WarningTrans3d = $("#warningTrans3D").jBox("Tooltip", {});
+
+  WarningDig3d = $("#warningDig3D").jBox("Tooltip", {});
+
+  WarningEOL3d = $("#warningEOL3D").jBox("Tooltip", {});
+
+  InfoMat3d = $("#infoManuMat3D").jBox("Tooltip", {
+    position: {
+      x: "right",
+      y: "center",
+    },
+    outside: "x", // Horizontal Tooltips need to change their outside position
+    maxWidth: 400,
+    height: "auto",
+  });
+
+  InfoRegion3d = $("#infoRegion3D").jBox("Tooltip", {
+    position: {
+      x: "right",
+      y: "center",
+    },
+    outside: "x", // Horizontal Tooltips need to change their outside position
+    maxWidth: 400,
+    height: "auto",
+  });
+
+  InfoShip3d = $("#infoShip3D").jBox("Tooltip", {
+    position: {
+      x: "right",
+      y: "center",
+    },
+    outside: "x", // Horizontal Tooltips need to change their outside position
+    maxWidth: 400,
+    height: "auto",
+  });
+
+  InfoLab3d = $("#infoLabLoc3D").jBox("Tooltip", {
+    position: {
+      x: "right",
+      y: "center",
+    },
+    outside: "x", // Horizontal Tooltips need to change their outside position
+    maxWidth: 400,
+    height: "auto",
+  });
+
+  InfoPrint3d = $("#infoPrinter3D").jBox("Tooltip", {
+    position: {
+      x: "right",
+      y: "center",
+    },
+    outside: "x", // Horizontal Tooltips need to change their outside position
+    maxWidth: 400,
+    height: "auto",
+  });
+
+  InfoEOL3d = $("#infoEOL3D").jBox("Tooltip", {
+    position: {
+      x: "right",
+      y: "center",
+    },
+    outside: "x", // Horizontal Tooltips need to change their outside position
+    maxWidth: 400,
+    height: "auto",
+  });
+});
 
 ///3DPRINT
 
@@ -108,12 +200,19 @@ document
   .addEventListener("click", ShowDistanceForm);
 
 document.getElementById("btn_addJob").addEventListener("click", function () {
-  document.querySelectorAll(".exclamation").forEach((item, i) => {
+  //change for WARNING
+
+  document.querySelectorAll(".clickableAwesomeFont3D").forEach((item, i) => {
+    item.classList.add("invisible");
+  });
+
+  document.querySelectorAll(".hoverAwesomeFont3D").forEach((item, i) => {
     item.classList.add("invisible");
   });
 
   createNewPageNumber();
   update_button_onNewJob();
+  
 
   if (!isDeleteJobHidden) {
     SetDeleteJobInactive();
@@ -178,6 +277,16 @@ function reset_form() {
   HideTableTitles();
 
   document.querySelectorAll(".exclamation").forEach((item, i) => {
+    item.classList.add("invisible");
+  });
+
+  //CHANGE FOR WARNING (RESET FORM)
+
+  document.querySelectorAll(".clickableAwesomeFont3D").forEach((item, i) => {
+    item.classList.add("invisible");
+  });
+
+  document.querySelectorAll(".hoverAwesomeFont3D").forEach((item, i) => {
     item.classList.add("invisible");
   });
 
@@ -297,6 +406,9 @@ function update_button_onNewJob() {
 function createNewPageNumber() {
   var ul = document.getElementById("NumbersList");
 
+  if (ul.innerHTML == ""){
+
+  }
   latestPage++;
   selectedPage = latestPage;
   let tempCurrPage = selectedPage;
@@ -736,25 +848,25 @@ function get_electric_text(country) {
 
   if (country == "United States") {
     countryText =
-      "<span class='innerRedText'>- USA: 63% fossil fuels-coal, natural gas, petroleum; 20% nuclear energy, and 18% renewable energy.</span>\r\n";
+      "<span class='innerRedText'>- USA: 63% fossil fuels-coal, natural gas, petroleum; 20% nuclear energy, and 18% renewable energy.</span>";
   } else if (country_region[country] == "north america") {
     countryText = "";
   } else if (country_region[country] == "latin america") {
     countryText =
-      "<span class='innerRedText'>- Latin America: 75% fossil fuel, 16% bioenergy,  8% hydropower, 1% geothermal, and 1% solar and wind energy.</span>\r\n";
+      "<span class='innerRedText'>- Latin America: 75% fossil fuel, 16% bioenergy,  8% hydropower, 1% geothermal, and 1% solar and wind energy.</span>";
   } else if (country_region[country] == "europe") {
     countryText =
-      "<span class='innerRedText'>- European Union: 45.5% natural gas, coal, and oil; 25.8% nuclear power.</span>\r\n";
+      "<span class='innerRedText'>- European Union: 45.5% natural gas, coal, and oil; 25.8% nuclear power.</span>";
   } else if (country_region[country] == "middle east") {
     countryText = "";
   } else if (country_region[country] == "africa") {
     countryText = "";
   } else if (country_region[country] == "south asia") {
     countryText =
-      "<span class='innerRedText'>- South Asian: India (Coal – 67.9%), Nepal (Hydropower – 99.9%), Bangladesh (Natural gas – 91.5%), and Sri Lanka (Oil – 50.2%).</span>\r\n";
+      "<span class='innerRedText'>- South Asian: India (Coal – 67.9%), Nepal (Hydropower – 99.9%), Bangladesh (Natural gas – 91.5%), and Sri Lanka (Oil – 50.2%).</span>";
   } else if (country_region[country] == "north asia") {
     countryText =
-      "<span class='innerRedText'>- Northern Asian: In 2015, the energy consumption was 2.6 billion tons of coal equivalent, accounting for 14% of the global total; the total electricity consumption was 3.3 PWh, accounting for 16 % of the global total. In 2016, the total CO<sub>2</sub> emissions in China, Japan, and the ROK reached 34.4% of the global total.</span>\r\n";
+      "<span class='innerRedText'>- Northern Asian: In 2015, the energy consumption was 2.6 billion tons of coal equivalent, accounting for 14% of the global total; the total electricity consumption was 3.3 PWh, accounting for 16 % of the global total. In 2016, the total CO<sub>2</sub> emissions in China, Japan, and the ROK reached 34.4% of the global total.</span>";
   } else {
     console.log("error");
   }
@@ -2172,4 +2284,52 @@ function DeleteJobFromArrayLaser(pageToDelete) {
 
   updateTableCo2Laser();
   updateTableEnergyLaser();
+}
+
+////
+
+function SetInfoText(infoName, text, isBad) {
+  switch (infoName) {
+    case "mat":
+      document.getElementById("infoManuMat3D").style.color = "black";
+      InfoMat3d.setContent(text);
+      if (isBad) {
+        document.getElementById("infoManuMat3D").style.color = "red";
+        WarningManu3d.setContent("You have 1 suggestion.");
+      }
+      break;
+    case "reg":
+      document.getElementById("infoRegion3D").style.color = "black";
+      InfoRegion3d.setContent(text);
+      if (isBad) {
+        document.getElementById("infoRegion3D").style.color = "red";
+      }
+      break;
+    case "ship":
+      document.getElementById("infoShip3D").style.color = "black";
+      InfoShip3d.setContent(text);
+      if (isBad) {
+        document.getElementById("infoShip3D").style.color = "red";
+      }
+      break;
+    case "lab":
+      InfoLab3d.setContent(text);
+      if (isBad) {
+        document.getElementById("infoLabLoc3D").style.color = "red";
+      }
+      break;
+    case "print":
+      document.getElementById("infoPrinter3D").style.color = "black";
+      InfoPrint3d.setContent(text);
+      if (isBad) {
+        document.getElementById("infoPrinter3D").style.color = "red";
+      }
+      break;
+    case "eol":
+      InfoEOL3d.setContent(text);
+      if (isBad) {
+        document.getElementById("infoEOL3D").style.color = "red";
+      }
+      break;
+  }
 }

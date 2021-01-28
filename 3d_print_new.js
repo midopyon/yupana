@@ -82,12 +82,23 @@ document.addEventListener("changePage", function (e) {
     document.querySelectorAll(".exclamation").forEach((item, i) => {
       item.classList.add("invisible");
     });
+
+    //ADD WARNING EXCLAMATION
+
+    document.querySelectorAll(".clickableAwesomeFont3D").forEach((item, i) => {
+      item.classList.add("invisible");
+    });
+
+    document.querySelectorAll(".hoverAwesomeFont3D").forEach((item, i) => {
+      item.classList.add("invisible");
+    });
   }
 
   //Else, do nothing (accessing a job thats just being created)
 });
 
 document.addEventListener("changePageFromTable", function (e) {
+  selectedPage = e;
   //Set Delete Job enabled
   SetDeleteJobActive();
 
@@ -682,6 +693,10 @@ function start_the_magic_calculate_mode() {
 
   //Save onto array
   if (hasJobStackEmpty) {
+    document.getElementById("pagJob").classList.remove("invisible");
+    document.getElementById("pagLeft").classList.remove("invisible");
+    document.getElementById("pagRight").classList.remove("invisible");
+
     var gridDivEnergy = document.querySelector("#myGridEnergy");
     var gridDivCo2 = document.querySelector("#myGridCo2");
 
@@ -786,48 +801,73 @@ function set_manu_3dprint(sourceValues) {
   var tempMaterial = sourceValues.material_3dprint;
   var tempIsRecycled = sourceValues.isRecycled;
 
-  _3dprint_manu_exclamation.classList.remove("invisible");
-
-  _3dprint_manu_exclamation.classList.remove("good");
+  warningManu3D.classList.remove("invisible");
+  document.getElementById("infoManuMat3D").classList.remove("invisible");
 
   textDiv = document.createElement("div");
+  textDiv.innerHTML = "";
   textDiv.style.cssText = "display: inline-block;";
+  var textTemp = "";
 
   if (tempMaterial == "PLA" && tempIsRecycled) {
-    _3dprint_manu_exclamation.classList.add("good");
-    textDiv.innerHTML =
-      "Pros:\r\n- Lower environmental impact compared to ABS and Nylon.\r\n- It uses 46% less energy than Standard (virgin) PLA when manufactured .\r\n- It emits 54% less CO<sub>2</sub> than Standard (virgin) PLA when manufactured.";
+    textTemp =
+      "Pros:<br>- Lower environmental impact compared to ABS and Nylon.<br>- It uses 46% less energy than Standard (virgin) PLA when manufactured .<br>- It emits 54% less CO<sub>2</sub> than Standard (virgin) PLA when manufactured.";
+    SetInfoText("mat", textTemp, false);
   } else if (tempMaterial == "PLA") {
     textDiv.innerHTML =
-      "Pros:\r\n- Lower environmental impact compared to ABS and Nylon.\r\n<span class='innerRedText'>Cons:\r\n-  It uses <span class='innerBoldText'>46% more energy</span> than Recycled PLA when manufactured.\r\n-  It emits <span class='innerBoldText'>54% more CO<sub>2</sub></span> than Recycled PLA when manufactured.\r\nSuggestion:\r\n- Switch to Recycled PLA filament.</span>";
+      "Suggestion:\r\n- Switch to Recycled PLA filament.</span>";
+    textTemp =
+      "Pros:<br>- Lower environmental impact compared to ABS and Nylon.<br><span class='innerRedText'>Cons:<br>-  It uses <span class='innerBoldText'>46% more energy</span> than Recycled PLA when manufactured.<br>-  It emits <span class='innerBoldText'>54% more CO<sub>2</sub></span> than Recycled PLA when manufactured.</span>";
+    SetInfoText("mat", textTemp, true);
   } else if (tempMaterial == "ABS" && tempIsRecycled) {
     textDiv.innerHTML =
-      "Pros:\r\n- Lower environmental impact compared to Standard (virgin) ABS and Nylon.\r\n- It uses <span class='innerBoldText'>60% less energy</span> than Standard (virgin) ABS when manufactured.\r\n- It emits <span class='innerBoldText'>41% less CO<sub>2</sub></span> than Standard (virgin) ABS when manufactured.\r\n<span class='innerRedText'>Cons:\r\n-  It uses <span class='innerBoldText'>27% more energy</span>  than Recycled PLA when manufactured.\r\n-  It emits <span class='innerBoldText'>27% more CO<sub>2</sub></span>  than Recycled PLA when manufactured.\r\nSuggestion:\r\n- Switch to Recycled PLA filament.</span>";
+      "<span class='innerRedText'>Suggestion:\r\n- Switch to Recycled PLA filament.</span>";
+    textTemp =
+      "Pros:<br>- Lower environmental impact compared to Standard (virgin) ABS and Nylon.<br>- It uses <span class='innerBoldText'>60% less energy</span> than Standard (virgin) ABS when manufactured.<br>- It emits <span class='innerBoldText'>41% less CO<sub>2</sub></span> than Standard (virgin) ABS when manufactured.<br><span class='innerRedText'>Cons:<br>-  It uses <span class='innerBoldText'>27% more energy</span>  than Recycled PLA when manufactured.<br>-  It emits <span class='innerBoldText'>27% more CO<sub>2</sub></span>  than Recycled PLA when manufactured.</span>";
+    SetInfoText("mat", textTemp, true);
   } else if (tempMaterial == "ABS") {
     textDiv.innerHTML =
-      "Pros:\r\n- Lower environmental impact compared to Nylon.\r\n<span class='innerRedText'>Cons:\r\n-  It uses <span class='innerBoldText'>60% more energy</span>  than Recycled ABS when manufactured.\r\n-  It emits <span class='innerBoldText'>41% more CO<sub>2</sub></span>  than Recycled ABS when manufactured.\r\nSuggestion:\r\n- Switch to Recycled ABS or Recycled PLA filament.</span> ";
+      "<span class='innerRedText'>\r\nSuggestion:\r\n- Switch to Recycled ABS or Recycled PLA filament.</span> ";
+    textTemp =
+      "Pros:<br>- Lower environmental impact compared to Nylon.<br><span class='innerRedText'>Cons:<br>-  It uses <span class='innerBoldText'>60% more energy</span>  than Recycled ABS when manufactured.\r\n-  It emits <span class='innerBoldText'>41% more CO<sub>2</sub></span>  than Recycled ABS when manufactured.</span>";
+    SetInfoText("mat", textTemp, true);
   } else if (tempMaterial == "Nylon" && tempIsRecycled) {
-    textDiv.innerHTML =
-      "Pros:\r\n- Lower environmental impact compared to recycled ABS.\r\n- It uses <span class='innerBoldText'>69% less energy</span>  than Standard (virgin) Nylon when manufactured.\r\n- It emits <span class='innerBoldText'>75% less CO<sub>2</sub></span>  than Standard (virgin) Nylon when manufactured.";
+    textTemp =
+      "Pros:<br>- Lower environmental impact compared to recycled ABS.<br>- It uses <span class='innerBoldText'>69% less energy</span>  than Standard (virgin) Nylon when manufactured.<br>- It emits <span class='innerBoldText'>75% less CO<sub>2</sub></span>  than Standard (virgin) Nylon when manufactured.";
+    SetInfoText("mat", textTemp, false);
   } else {
     //reg nylon
     textDiv.innerHTML =
-      "<span class='innerRedText'>Cons:\r\n- Higher environmental impact compared to Standard (virgin) ABS and PLA.\r\n-  It uses <span class='innerBoldText'>31% more energy</span>  than Recycled Nylon when manufactured.\r\n-  It emits <span class='innerBoldText'>17% more CO<sub>2</sub></span>  than Recycled Nylon when manufactured.\r\nSuggestion:\r\n- Switch to Recycled Nylon, ABS, or PLA filaments.</span>";
+      "<span class='innerRedText'>Suggestion:\r\n- Switch to Recycled Nylon, ABS, or PLA filaments.</span>";
+    textTemp =
+      "<span class='innerRedText'>Cons:<br>- Higher environmental impact compared to Standard (virgin) ABS and PLA.<br>-  It uses <span class='innerBoldText'>31% more energy</span>  than Recycled Nylon when manufactured.<br>-  It emits <span class='innerBoldText'>17% more CO<sub>2</sub></span>  than Recycled Nylon when manufactured.</span>";
+    SetInfoText("mat", textTemp, true);
   }
   textbox.innerHTML = "";
-  textbox.appendChild(textDiv);
+
+  if (textDiv.innerHTML == "") {
+    warningManu3D.classList.add("invisible");
+  } else {
+    textbox.appendChild(textDiv);
+  }
 }
 
 // Defining Functionalities of Exclamation, text box and close button
 
-let _3dprint_manu_exclamation = document.querySelector(
-  "#manufacturing_exclamation_3dprint"
-);
+let warningManu3D = document.querySelector("#warningManu3D");
 
-_3dprint_manu_exclamation.addEventListener("click", function () {
-  document
-    .querySelector("#manufacturing_textbox_3dprint")
-    .parentElement.classList.remove("invisible");
+warningManu3D.addEventListener("click", function () {
+  if (!isReadingManu3d) {
+    document
+      .querySelector("#manufacturing_textbox_3dprint")
+      .parentElement.classList.remove("invisible");
+    isReadingManu3d = true;
+  } else {
+    document
+      .querySelector("#manufacturing_textbox_3dprint")
+      .parentElement.classList.add("invisible");
+    isReadingManu3d = false;
+  }
 });
 
 document
@@ -853,22 +893,18 @@ function set_transport_3dprint(sourceValues) {
   }
 
   let textbox = document.querySelector("#transport_textbox_3dprint");
-  _3dprint_transport_exclamation.classList.remove("invisible");
-  _3dprint_transport_exclamation.classList.remove("good");
+  warningTrans3d.classList.remove("invisible");
+  document.getElementById("infoRegion3D").classList.remove("invisible");
+  document.getElementById("infoShip3D").classList.remove("invisible");
+
+  var textTemp = "";
+  var sugCounter = 0;
 
   // Set Location Type text
 
   if (tempLocationType != "region") {
     tempLocation = get_transport_location(tempDistance);
   }
-
-  textDivPros = document.createElement("div");
-  textDivPros.innerHTML = "";
-  textDivPros.style.cssText = "display: inline-block;";
-
-  textDivCons = document.createElement("div");
-  textDivCons.innerHTML = "";
-  textDivCons.style.cssText = "display: inline-block;";
 
   textDivSug = document.createElement("div");
   textDivSug.innerHTML = "";
@@ -878,28 +914,33 @@ function set_transport_3dprint(sourceValues) {
 
   switch (tempLocation) {
     case "International":
-      textDivCons.innerHTML +=
-        "- International: <span class='innerBoldText'>95% higher</span>  environmental impact than national and local distances. Therefore, more fuel consumption and CO<sub>2</sub> emissions.\r\n";
+      textTemp =
+        "<span class='innerRedText'>Cons:<br>- International: <span class='innerBoldText'>95% higher</span>  environmental impact than national and local distances. Therefore, more fuel consumption and CO<sub>2</sub> emissions.</span>";
+      SetInfoText("reg", textTemp, true);
       textDivSug.innerHTML += "- Use locally manufactured material.\r\n";
+      sugCounter++;
       break;
 
     case "National":
-      textDivCons.innerHTML +=
-        "- National: <span class='innerBoldText'>30% higher</span>  environmental impact than local distances. Therefore, more fuel consumption and CO<sub>2</sub> emissions.\r\n";
+      textTemp =
+        "<span class='innerRedText'>Cons:<br>- National: <span class='innerBoldText'>30% higher</span>  environmental impact than local distances. Therefore, more fuel consumption and CO<sub>2</sub> emissions.</span>";
       textDivSug.innerHTML += "- Use locally manufactured material.\r\n";
+      SetInfoText("reg", textTemp, true);
+      sugCounter++;
       break;
 
     case "Local":
-      textDivPros.innerHTML +=
-        "- Local distances have <span class='innerBoldText'>95% and 30% lower</span>  environmental impact than international and national distances respectively.\r\n- Shorter distances require less fuel and therefore generate less CO<sub>2</sub> emissions.\r\n";
-
+      textTemp =
+        "Pros:<br>- Local distances have <span class='innerBoldText'>95% and 30% lower</span>  environmental impact than international and national distances respectively.<br>- Shorter distances require less fuel and therefore generate less CO<sub>2</sub> emissions.";
+      SetInfoText("reg", textTemp, false);
       break;
     case "IDK":
-      textDivCons.innerHTML +=
-        "- We assumed your material traveled from China. Therefore, more fuel consumption and CO<sub>2</sub> emissions.\r\n";
+      textTemp =
+        "<span class='innerRedText'>Cons:<br>- We assumed your material traveled from China. Therefore, more fuel consumption and CO<sub>2</sub> emissions.</span>";
+      SetInfoText("reg", textTemp, true);
       textDivSug.innerHTML +=
         "- Find out where your materials are coming from.\r\n- Use locally manufactured material.\r\n";
-
+      sugCounter++;
       break;
   }
 
@@ -907,63 +948,48 @@ function set_transport_3dprint(sourceValues) {
 
   switch (tempShipment) {
     case "By air":
-      textDivCons.innerHTML +=
-        "- Airplanes consume <span class='innerBoldText'>1000% more energy</span> and emit <span class='innerBoldText'>700% more CO<sub>2</sub></span> than road transportation.\r\n";
+      textTemp =
+        "<span class='innerRedText'>Cons:<br>- Airplanes consume <span class='innerBoldText'>1000% more energy</span> and emit <span class='innerBoldText'>700% more CO<sub>2</sub></span> than road transportation.</span>";
+      SetInfoText("ship", textTemp, true);
       textDivSug.innerHTML += "- Switch to ocean or road shipping.\r\n";
-
+      sugCounter++;
       break;
     case "By sea":
-      textDivPros.innerHTML +=
-        "- Ocean shipping has a lower environmental impact compared to air and road shipping.\r\n- It uses <span class='innerBoldText'>700% less energy</span> and emits <span class='innerBoldText'>730% less CO<sub>2</sub></span> than road shipping for national distances.";
-
+      textTemp =
+        "Pros:<br>- Ocean shipping has a lower environmental impact compared to air and road shipping.<br>- It uses <span class='innerBoldText'>700% less energy</span> and emits <span class='innerBoldText'>730% less CO<sub>2</sub></span> than road shipping for national distances.";
+      SetInfoText("ship", textTemp, false);
       break;
     case "By road":
-      textDivSug.innerHTML +=
-        "- Avoid express delivery.\r\n- Light goods vehicles use <span class='innerBoldText'>115% more energy</span> and emit <span class='innerBoldText'>63% more CO<sub>2</sub></span> than trucks.\r\n- A small truck uses <span class='innerBoldText'>30% more energy</span> and emits <span class='innerBoldText'>50% more CO<sub>2</sub></span> than a big truck.";
-
+      textTemp =
+        "<span class='innerRedText'>Cons:<br>- Light goods vehicles use <span class='innerBoldText'>115% more energy</span> and emit <span class='innerBoldText'>63% more CO<sub>2</sub></span> than trucks.<br>- A small truck uses <span class='innerBoldText'>30% more energy</span> and emits <span class='innerBoldText'>50% more CO<sub>2</sub></span> than a big truck.</span>";
+      SetInfoText("ship", textTemp, false);
+      textDivSug.innerHTML += "- Avoid express delivery.\r\n";
+      sugCounter++;
       break;
+
     case "I don't know":
       if (tempLocation == "IDK") {
-        textDivCons.innerHTML =
-          "- We assumed your material traveled from China, by airplane. Therefore, more fuel consumption and CO<sub>2</sub> emissions.\r\n";
+        textTemp =
+          "<span class='innerRedText'>Cons:<br>- We assumed your material traveled from China, by airplane. Therefore, more fuel consumption and CO<sub>2</sub> emissions.</span>";
+        SetInfoText("ship", textTemp, true);
         textDivSug.innerHTML =
           "- Find out where your materials are coming from.\r\n- Use locally manufactured material.\r\n";
+        sugCounter++;
       } else if (tempLocation == "International") {
-        textDivCons.innerHTML +=
-          "- We assumed your material traveled from China, by airplane. Therefore, more fuel consumption and CO<sub>2</sub> emissions.\r\n";
+        textTemp =
+          "<span class='innerRedText'>Cons:<br>- We assumed your material traveled from China, by airplane. Therefore, more fuel consumption and CO<sub>2</sub> emissions.</span>";
+        SetInfoText("ship", textTemp, true);
       } else if (tempLocation == "National") {
-        textDivCons.innerHTML +=
-          "- We assumed your material was transported from 300km away by road.\r\n";
+        textTemp =
+          "<span class='innerRedText'>Cons:<br>- We assumed your material was transported from 300km away by road.</span>";
+        SetInfoText("ship", textTemp, true);
       } else {
-        textDivCons.innerHTML +=
-          "- We assumed your material was transported from 100km away by road.\r\n";
+        textTemp =
+          "<span class='innerRedText'>Cons:<br>- We assumed your material was transported from 100km away by road.</span>";
+        SetInfoText("ship", textTemp, true);
       }
 
       break;
-  }
-
-  if (textDivPros.innerHTML != "") {
-    _3dprint_transport_exclamation.classList.add("good");
-    textDivPros.innerHTML = "Pros:\r\n" + textDivPros.innerHTML + "<br/>";
-    textbox.appendChild(textDivPros);
-  }
-
-  if (textDivCons.innerHTML != "") {
-    _3dprint_transport_exclamation.classList.remove("good");
-
-    if (textDivPros.innerHTML != "") {
-      textDivCons.innerHTML =
-        "<br/><span class='innerRedText'>Cons:\r\n" +
-        textDivCons.innerHTML +
-        "</span>";
-    } else {
-      textDivCons.innerHTML =
-        "<span class='innerRedText'>Cons:\r\n" +
-        textDivCons.innerHTML +
-        "</span>";
-    }
-
-    textbox.appendChild(textDivCons);
   }
 
   if (textDivSug.innerHTML != "") {
@@ -972,18 +998,28 @@ function set_transport_3dprint(sourceValues) {
       textDivSug.innerHTML +
       "</span>";
     textbox.appendChild(textDivSug);
+    WarningTrans3d.setContent("You have " + sugCounter + " suggestion(s).");
+  } else {
+    document.getElementById("warningTrans3D").classList.add("invisible");
   }
 }
 
 // Defining Functionalities of Exclamation, text box and close button
 
-let _3dprint_transport_exclamation = document.querySelector(
-  "#transport_exclamation_3dprint"
-);
-_3dprint_transport_exclamation.addEventListener("click", function () {
-  document
-    .querySelector("#transport_textbox_3dprint")
-    .parentElement.classList.remove("invisible");
+let warningTrans3d = document.querySelector("#warningTrans3D");
+
+warningTrans3d.addEventListener("click", function () {
+  if (!isReadingTrans3d) {
+    document
+      .querySelector("#transport_textbox_3dprint")
+      .parentElement.classList.remove("invisible");
+    isReadingTrans3d = true;
+  } else {
+    document
+      .querySelector("#transport_textbox_3dprint")
+      .parentElement.classList.add("invisible");
+    isReadingTrans3d = false;
+  }
 });
 
 document
@@ -1000,57 +1036,68 @@ function set_fabrication_3dprint(sourceValues) {
   var tempMachine = sourceValues.machine_3dprint;
   var tempCountry = sourceValues.country_3dprint;
   let textbox = document.querySelector("#fabrication_textbox_3dprint");
-  _3dprint_fabrication_exclamation.classList.remove("invisible");
+
+  warningDig3D.classList.remove("invisible");
+  document.getElementById("infoLabLoc3D").classList.remove("invisible");
+  document.getElementById("infoPrinter3D").classList.remove("invisible");
 
   textbox.innerHTML = "";
-
-  textDivCountry = document.createElement("div");
-  textDivCountry.innerHTML = "";
-  textDivCountry.style.cssText = "display: inline-block;";
 
   textDivMachine = document.createElement("div");
   textDivMachine.innerHTML = "";
   textDivMachine.style.cssText = "display: inline-block;";
 
+  var textTemp = "";
+
   let textCountry = get_electric_text(tempCountry);
-  textDivCountry.innerHTML = textCountry;
+  textTemp =
+    "Electricity Mix:<br>- The lab location determines the source of the electricity used to run the machines.<br>- The CO<sub>2</sub> emissions depend on the blends of electricity sources.<br>- From worst to best sources: coal, nuclear power, hydroelectric power, solar photovoltaics, geothermal power, and Concentrated Solar Power (CSP).<br><br>" +
+    textCountry;
+  SetInfoText("lab", textTemp, true);
 
   var tempMachine = sourceValues.machine_3dprint;
 
   if (tempMachine == "makerbot") {
-    _3dprint_fabrication_exclamation.classList.add("good");
-    textDivMachine.innerHTML =
-      "Pros:\r\n- Makerbot Replicator+ uses half as much power as Ultimaker 2 Extended in the molding process.\r\n\r\n<span class='innerRedText'>Suggestions:\r\n- Reduce printing time by adjusting printing speed to 50 mm/s average.\r\n- Change infill density to 10-15%.\r\n- Turn off the machine when not in use.\r\n- 3D print in series.\r\n- Edit the firmware to turn off the motors during stand-by time.</span>";
+    textTemp =
+      "Pros:<br>- Makerbot Replicator+ uses half as much power as Ultimaker 2 Extended in the molding process.<br><br><span class='innerRedText'>";
+    SetInfoText("print", textTemp, false);
   } else {
     //ultimaker
-    _3dprint_fabrication_exclamation.classList.remove("good");
+    textTemp =
+      "<span class='innerRedText'>Cons:<br>- Ultimaker 2 Extended uses twice as much power as Makerbot Replicator+ in the molding process.<span>";
     textDivMachine.innerHTML =
-      "<span class='innerRedText'>Cons:\r\n- Ultimaker 2 Extended uses twice as much power as Makerbot Replicator+ in the molding process.\r\n\r\nSuggestions:\r\n- Reduce printing time by adjusting printing speed to 50 mm/s average.\r\n- Change infill density to 10-15%.\r\n- Turn off the machine when not in use.\r\n- 3D print in series.\r\n- Edit the firmware to turn off the motors during stand-by time.</span>";
+      "<span class='innerRedText'>Suggestions:\r\n- Reduce printing time by adjusting printing speed to 50 mm/s average.\r\n- Change infill density to 10-15%.\r\n- Turn off the machine when not in use.\r\n- 3D print in series.\r\n- Edit the firmware to turn off the motors during stand-by time.</span>";
   }
 
-  textDivCountry.innerHTML =
-    "Electricity Mix:\r\n- The lab location determines the source of the electricity used to run the machines.\r\n- The CO<sub>2</sub> emissions depend on the blends of electricity sources.\r\n- From worst to best sources: coal, nuclear power, hydroelectric power, solar photovoltaics, geothermal power, and Concentrated Solar Power (CSP).\r\n<br/>" +
-    textDivCountry.innerHTML +
-    "<br/>";
+  textTemp =
+    "Energy efficiency:<br>- Energy consumption of machines varies widely depending on printer type, part geometry, machine utilization rate (idle, stand by, and printing time), print set-up, and material.<br><br>" +
+    textTemp;
 
-  textbox.appendChild(textDivCountry);
-
-  textDivMachine.innerHTML =
-    "Energy efficiency:\r\n- Energy consumption of machines varies widely depending on printer type, part geometry, machine utilization rate (idle, stand by, and printing time), print set-up, and material.\r\n<br/>" +
-    textDivMachine.innerHTML;
-
+  if (tempMachine == "makerbot") {
+    SetInfoText("print", textTemp, false);
+  } else {
+    SetInfoText("print", textTemp, true);
+  }
+  WarningDig3d.setContent("You have 5 suggestions.");
   textbox.appendChild(textDivMachine);
 }
 
 // Defining Functionalities of Exclamation, text box and close button
 
-let _3dprint_fabrication_exclamation = document.querySelector(
-  "#fabrication_exclamation_3dprint"
-);
-_3dprint_fabrication_exclamation.addEventListener("click", function () {
-  document
-    .querySelector("#fabrication_textbox_3dprint")
-    .parentElement.classList.remove("invisible");
+let warningDig3D = document.querySelector("#warningDig3D");
+
+warningDig3D.addEventListener("click", function () {
+  if (!isReadingDig3d) {
+    document
+      .querySelector("#fabrication_textbox_3dprint")
+      .parentElement.classList.remove("invisible");
+    isReadingDig3d = true;
+  } else {
+    document
+      .querySelector("#fabrication_textbox_3dprint")
+      .parentElement.classList.add("invisible");
+    isReadingDig3d = false;
+  }
 });
 
 document
@@ -1065,60 +1112,78 @@ document
 
 function set_end_life_3dprint(sourceValues) {
   let textbox = document.querySelector("#end_life_textbox_3dprint");
-  _3dprint_end_life_exclamation.classList.remove("invisible");
+  warningEOL3D.classList.remove("invisible");
+  document.getElementById("infoEOL3D").classList.remove("invisible");
   textbox.innerHTML = "";
 
   var tempEOL = sourceValues.eol_3dprint;
   var tempMaterial = sourceValues.material_3dprint;
 
-  textDivRecycle = document.createElement("div");
-  textDivRecycle.innerHTML = "";
-  textDivRecycle.style.cssText = "display: inline-block;";
+  textDivSug = document.createElement("div");
+  textDivSug.innerHTML = "";
+  textDivSug.style.cssText = "display: inline-block;";
+  var TooltipTxt = "";
 
   if (tempEOL == "recycle_bin") {
-    textDivRecycle.innerHTML =
-      "Pros:\r\n- Recycling reduces the need for extracting, refining and processing raw materials all of which create substantial air and water pollution.\r\n- It allows the waste to become the raw material for a new material with lower embodied energy than a virgin one.\r\n<br/><span class='innerRedText'>Cons:\r\n- The recycling process in an industrial facility generates CO<sub>2</sub> emissions.\r\n<br/>Suggestion:\r\n- Look for alternative materials that are either compostable or biodegradable in natural conditions.\r\n<br/></span><span class='innerSmallerText'>*We only analyzed the cost of transporting the waste to a recycling facility.\r\n</span>";
+    TooltipTxt =
+      "Recycling:<br><br>Pros:<br>- Recycling reduces the need for extracting, refining and processing raw materials all of which create substantial air and water pollution.<br>- It allows the waste to become the raw material for a new material with lower embodied energy than a virgin one.<br><br/><span class='innerRedText'>Cons:<br>- The recycling process in an industrial facility generates CO<sub>2</sub> emissions.<br><br/></span><span class='innerSmallerText'>*We only analyzed the cost of transporting the waste to a recycling facility.<br></span>";
+    textDivSug.innerHTML =
+      "- Look for alternative materials that are either compostable or biodegradable in natural conditions.\r\n";
   }
   if (tempEOL == "landfill" || tempEOL == "idk") {
     var tempText;
 
     if (tempMaterial == "PLA") {
       tempText =
-        "- PLA that ends up in the landfill breaks down anaerobically to release methane, a greenhouse gas that is about 30 times more potent than carbon dioxide and contributes to climate change.\r\n- 20% of total US. methane emissions come from landfills.<br/>\r\nSuggestion:\r\n- Send your waste to a recycling facility to reduce the need for extracting, refining and processing raw materials all of which create substantial air and water pollution.\r\n- Recycling allows the waste to become the raw material for a new material with lower embodied energy than virgin material.\r\n";
+        "- PLA that ends up in the landfill breaks down anaerobically to release methane, a greenhouse gas that is about 30 times more potent than carbon dioxide and contributes to climate change.<br>- 20% of total US. methane emissions come from landfills.<br/>";
     } else if (tempMaterial == "ABS") {
       tempText =
-        "- ABS that ends up in the landfill becomes a potential source of microplastics.\r\n- Landfills impact the air, water, and land quality.\r\n<br/>Suggestion:\r\n- Send your waste to a recycling facility to reduce the need for extracting, refining and processing raw materials all of which create substantial air and water pollution.\r\n - Recycling allows the waste to become the raw material for a new material with lower embodied energy than virgin material.\r\n";
+        "- ABS that ends up in the landfill becomes a potential source of microplastics.<br>- Landfills impact the air, water, and land quality.<br>";
     } else if (tempMaterial == "Nylon") {
       tempText =
-        "- Nylon that ends up in the landfill becomes a potential source of microplastics.\r\n- Landfills impact the air, water, and land quality.\r\n<br/>Suggestion:\r\n- Send your waste to a recycling facility to reduce the need for extracting, refining and processing raw materials all of which create substantial air and water pollution.\r\n - Recycling allows the waste to become the raw material for a new material with lower embodied energy than virgin material.\r\n";
+        "- Nylon that ends up in the landfill becomes a potential source of microplastics.<br>- Landfills impact the air, water, and land quality. <br/>";
     }
 
+    textDivSug.innerHTML +=
+      "- Send your waste to a recycling facility to reduce the need for extracting, refining and processing raw materials all of which create substantial air and water pollution.\r\n- Recycling allows the waste to become the raw material for a new material with lower embodied energy than virgin material.\r\n";
+
     if (tempEOL == "idk") {
-      textDivRecycle.innerHTML =
-        "We analyzed the cost of transporting the waste to a landfill area.\r\n<br/><span class='innerRedText'>Cons:\r\n- We assumed your material ended up in the landfill.\r\n" +
+      tempText =
+        "We analyzed the cost of transporting the waste to a landfill area.<br><br><span class='innerRedText'>Cons:<br>- We assumed your material ended up in the landfill.<br>" +
         tempText +
         "</span>";
     } else {
-      textDivRecycle.innerHTML =
-        "We analyzed the cost of transporting the waste to a landfill area.\r\n<br/><span class='innerRedText'>Cons:\r\n" +
+      tempText =
+        "We analyzed the cost of transporting the waste to a landfill area.<br><br/><span class='innerRedText'>Cons:<br>" +
         tempText +
         "</span>";
     }
+
+    TooltipTxt = TooltipTxt + tempText;
+    SetInfoText("eol", TooltipTxt, true);
   } else if (tempEOL == "incineration") {
-    textDivRecycle.innerHTML =
-      "We analyzed the cost of transporting the waste to a garbage facility and the energy and CO<sub>2</sub> emissions generated from burning the waste.\r\n<br/>Pros:\r\n- The incineration process generates an energy bonus because of the burning process.\r\n<br/><span class='innerRedText'>Cons:\r\n- It creates about 8000% more CO<sub>2</sub> emissions than recycling. </span>";
+    TooltipTxt +=
+      "We analyzed the cost of transporting the waste to a garbage facility and the energy and CO<sub>2</sub> emissions generated from burning the waste.<br><br/>Pros:<br>- The incineration process generates an energy bonus because of the burning process.<br><br/><span class='innerRedText'>Cons:<br>- It creates about 8000% more CO<sub>2</sub> emissions than recycling. </span>";
+    SetInfoText("eol", TooltipTxt, true);
   }
 
-  textbox.appendChild(textDivRecycle);
+  textbox.appendChild(textDivSug);
 }
 
-let _3dprint_end_life_exclamation = document.querySelector(
-  "#end_life_exclamation_3dprint"
-);
-_3dprint_end_life_exclamation.addEventListener("click", function () {
-  document
-    .querySelector("#end_life_textbox_3dprint")
-    .parentElement.classList.remove("invisible");
+let warningEOL3D = document.querySelector("#warningEOL3D");
+
+warningEOL3D.addEventListener("click", function () {
+  if (!isReadingEol3d) {
+    document
+      .querySelector("#end_life_textbox_3dprint")
+      .parentElement.classList.remove("invisible");
+    isReadingEol3d = true;
+  } else {
+    document
+      .querySelector("#end_life_textbox_3dprint")
+      .parentElement.classList.add("invisible");
+    isReadingEol3d = false;
+  }
 });
 
 document
@@ -1128,3 +1193,55 @@ document
       .querySelector("#end_life_textbox_3dprint")
       .parentElement.classList.add("invisible");
   });
+
+//-- arrow nav -- //
+
+let leftNav3D = document.querySelector("#pagLeft");
+
+leftNav3D.addEventListener("click", function () {
+  console.log("peeji" + selectedPage);
+  let targetPage = selectedPage - 1;
+
+  if (targetPage != 0) {
+    console.log("yup");
+    selectedPage = targetPage;
+    SetDeleteJobActive();
+
+    var selects = document.getElementsByClassName("link selectedButton");
+    for (var i = 0; i < selects.length; i++) selects[i].className = "link";
+
+    document.getElementById("buttonPage" + targetPage.toString()).className =
+      "link selectedButton";
+
+    update_button_onSubmit();
+    SetFormValues(jobsArray[targetPage - 1].formValues);
+    SetExclamationTexts(jobsArray[targetPage - 1].formValues);
+  } else {
+    console.log("nope");
+  }
+});
+
+let rightNav3D = document.querySelector("#pagRight");
+
+rightNav3D.addEventListener("click", function () {
+  console.log("peeji" + selectedPage);
+  let targetPage = selectedPage + 1;
+
+  if (targetPage != latestPage + 1) {
+    console.log("yupr");
+    selectedPage = targetPage;
+    SetDeleteJobActive();
+
+    var selects = document.getElementsByClassName("link selectedButton");
+    for (var i = 0; i < selects.length; i++) selects[i].className = "link";
+
+    document.getElementById("buttonPage" + targetPage.toString()).className =
+      "link selectedButton";
+
+    update_button_onSubmit();
+    SetFormValues(jobsArray[targetPage - 1].formValues);
+    SetExclamationTexts(jobsArray[targetPage - 1].formValues);
+  } else {
+    console.log("noper");
+  }
+});
