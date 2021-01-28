@@ -175,6 +175,8 @@ function reset_form() {
   document.getElementById("myGridCo2").innerHTML = "";
   document.getElementById("NumbersList").innerHTML = "";
 
+  HideTableTitles();
+
   document.querySelectorAll(".exclamation").forEach((item, i) => {
     item.classList.add("invisible");
   });
@@ -495,7 +497,6 @@ function end_life_calculation(waste, type, incineration) {
         transportation_distances["local_recycling_avg"],
     };
   } else if (type == "incineration") {
-    console.log(JSON.stringify(incineration));
     results_end_life = {
       energy:
         (waste / 1000) *
@@ -569,8 +570,6 @@ function DrawGoogleChartsEnergy(results) {
   let arr = Object.values(maxEnergyValue);
 
   let minTable = minEnergyValueEndLife;
-
-  console.log("MINTABLE" + minTable);
 
   var materialOptions = {
     width: 520,
@@ -1228,6 +1227,9 @@ let titleCo2Laser = document.getElementById("Co2Wrapper_L");
 let laser_country_select = document.getElementById("country_laser");
 let laser_state_select = document.getElementById("state_laser");
 
+let area_select = document.getElementById("Area");
+let length_select = document.getElementById("Length");
+
 let area_length = document.getElementById("area_length");
 let area_area = document.getElementById("area_area");
 
@@ -1262,7 +1264,7 @@ document.getElementById("btn_addJob_l").addEventListener("click", function () {
   });
 
   createNewPageNumberLaser();
-  update_button_onNewJob_laser();
+  update_button_onNewJob_Laser();
 
   if (!isDeleteJobHidden_l) {
     SetDeleteJobInactiveLaser();
@@ -1288,10 +1290,8 @@ document
   .getElementById("Waste_Percent")
   .addEventListener("click", ShowWasteSlider);
 
-document
-  .getElementById("area_length")
-  .addEventListener("click", ShowAreaLength);
-document.getElementById("area_area").addEventListener("click", ShowAreaArea);
+document.getElementById("Length").addEventListener("click", ShowAreaLength);
+document.getElementById("Area").addEventListener("click", ShowAreaArea);
 
 // Defining Functions called on form action
 
@@ -1331,6 +1331,8 @@ function reset_form_laser() {
   document.getElementById("myGridEnergy_L").innerHTML = "";
   document.getElementById("myGridCo2_L").innerHTML = "";
   document.getElementById("NumbersList_l").innerHTML = "";
+
+  HideTableTitlesLaser();
 
   document.querySelectorAll(".exclamationLaser").forEach((item, i) => {
     item.classList.add("invisible");
@@ -1453,6 +1455,7 @@ function update_button_onSubmit_Laser() {
 }
 
 function update_button_onNewJob_Laser() {
+  console.log("updating");
   isUpdating_l = false;
   document.getElementById("btn_calculate_l").textContent = "Calculate";
 }

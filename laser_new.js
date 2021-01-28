@@ -10,10 +10,10 @@ const TESTSOURCEVALUE_L = {
   machine_laser: "Epilog",
   thick_laser: 5,
   areaType_laser: "LengthWidth",
-  width_laser: 100,
-  length_laser: 100,
+  width_laser: 1.2,
+  length_laser: 0.45,
   wasteFieldTypeLaser: "Input",
-  wasteInput_laser: 100,
+  wasteInput_laser: 0.3,
   time_laser: 3,
   iteration_laser: 1,
   eol_laser: "landfill",
@@ -243,7 +243,7 @@ function SaveFormValuesLaser() {
 }
 
 function SetFormValuesLaser(sourceValues) {
-  console.log("setting sourcevalues");
+  console.log("setting sourcevalues:" + JSON.stringify(sourceValues));
   //Set Value for Material
 
   if (sourceValues.isRecycled_laser) {
@@ -375,12 +375,16 @@ function SetFormValuesLaser(sourceValues) {
     sourceValues.iteration_laser;
 
   //Set End Of Life
-  switch (sourceValues.eol_3dprint) {
+  switch (sourceValues.eol_laser) {
     case "recycling":
+      document
+        .getElementById("RecycledHiddenLabel")
+        .classList.remove("invisible");
       document.getElementById("recycling_checkbox_laser").checked = true;
       break;
 
     case "landfill":
+      console.log("enter");
       document.getElementById("landfill_checkbox_laser").checked = true;
       break;
 
@@ -496,8 +500,8 @@ function CalculateLifecycleImpactLaser(sourceValues) {
   // Calculate End Life results
 
   var results_end_life = end_life_calculation(tempWasteWeight, tempEOL, {
-    energy: MACHINE_ENERGY_LASER[tempMachine].energy_incineration,
-    co2: MACHINE_ENERGY_LASER[tempMachine].co2_combustion,
+    energy: MATERIAL_LASER[tempMaterial].energy_incineration,
+    co2: MATERIAL_LASER[tempMaterial].co2_combustion,
   });
 
   // Join 4 results and return them

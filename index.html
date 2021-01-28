@@ -104,10 +104,10 @@
       <p>Choose your digital fabrication technique *</p>
       <div>
         <label class="radio_button" id="Printing"
-          ><input type="radio" value="change" name="change2">&nbsp 3D
+          ><Input type="radio" value="change" name="change">&nbsp 3D
           Printing</label
         >
-        <label class="radio_button" id="Cutting"><input type="radio" value="change" name="change">&nbsp Laser
+        <label class="radio_button" id="Cutting"><Input type="radio" value="change" name="change">&nbsp Laser
           Cutting</label>
       </div>
     </div>
@@ -601,7 +601,7 @@
                   <img id="laser_img" src="images/lasercut_area.svg" alt="Header">
                   <div class="flex">
                     <label class="radio_button first" id="Area">
-                      <input class="field_selector" type="radio" value="area" name="area">&nbsp Area (m2)
+                      <input class="field_selector" type="radio" value="area" name="area">&nbsp Area (m<sup>2</sup>)
                     </label>
                     <label class="radio_button" id="Length">
                       <input class="field_selector" type="radio" value="length" name="area">&nbsp Length x Width
@@ -611,13 +611,13 @@
                   <p class="invisible" id="area_length">Length: <input type="text" id="length_input_lasercut" class="input-field" style="width:60px;" placeholder="Number" required>&nbspm x Width: <input type="text" id="width_input_lasercut"
                       class="input-field" style="width:60px;" placeholder="Number" required>&nbspm
                   </p>
-                  <p class="invisible" id="area_area"><input type="text" id="area_input_lasercut" class="input-field" placeholder="Type a number" required>&nbsp(m2)</p>
+                  <p class="invisible" id="area_area"><input type="text" id="area_input_lasercut" class="input-field" placeholder="Type a number" required>&nbsp(m<sup>2</sup>)</p>
                 </div>
                 <div class="question">
                   <h5>Waste *</h5>
                   <p>
                     <label class="radio_button" id="Waste_Area">
-                      <input class="field_selector" type="radio" value="waste_area" name="waste">&nbsp Waste Area (m2)
+                      <input class="field_selector" type="radio" value="waste_area" name="waste">&nbsp Waste Area (m<sup>2</sup>)
                     </label>
                     <label class="radio_button" id="Waste_Percent">
                       <input class="field_selector" type="radio" value="waste_percent" name="waste">&nbsp Percentage
@@ -628,7 +628,7 @@
                     <input type="range" min="0" max="100" value="50" class="slider" id="waste_laser">
                     <p2 class="displayslider" id="Waste_laser_display">50</p2>
                   </p>
-                  <p class="invisible" id="waste_field"><input type="text" id="waste_laser_area" class="input-field" placeholder="Type a number" required>&nbsp(m2)</p>
+                  <p class="invisible" id="waste_field"><input type="text" id="waste_laser_area" class="input-field" placeholder="Type a number" required>&nbsp(m<sup>2</sup>)</p>
                 </div>
                 <div class="question">
                   <label id="time_label" for="time">
@@ -654,13 +654,13 @@
                 <h3>End of Life Phase</h3>
                 <div class="question">
                   <h5>Where do you dispose your leftovers, waste or unused prototypes? *</h5>
-                  <label class="radio_button invisible" id="recycling_checkbox_laser"><input type="radio" value="recycling" name="end_life_lasercut">&nbsp Recycling
+                  <label id="RecycledHiddenLabel"class="radio_button invisible"><input id="recycling_checkbox_laser" type="radio" value="recycling" name="end_life_lasercut">&nbsp Recycling
                     bin</label>
-                  <label class="radio_button" id="landfill_checkbox_laser"><Input type="radio" value="landfill" name="end_life_lasercut">&nbsp General
+                  <label class="radio_button""><Input id="landfill_checkbox_laser" type="radio" value="landfill" name="end_life_lasercut">&nbsp General
                     waste/landfill</label>
-                  <label class="radio_button" id="incineration_checkbox_laser"><Input type="radio" value="incineration" name="end_life_lasercut">&nbsp Incineration</label>
+                  <label class="radio_button"><Input id="incineration_checkbox_laser" type="radio" value="incineration" name="end_life_lasercut">&nbsp Incineration</label>
                   <!--      <p><label class="radio_button"><Input type="radio" value="change" name="change">&nbsp Compost bin</label></p>-->
-                  <label class="radio_button" id="idk_checkbox_laser"><Input type="radio" value="idk" name="end_life_lasercut">&nbsp I don't
+                  <label class="radio_button"><Input id="idk_checkbox_laser" type="radio" value="idk" name="end_life_lasercut">&nbsp I don't
                     know</label>
                 </div>
               </div>
@@ -691,7 +691,7 @@
           </div>
           <div class="col_graph">
             <div class="flex">
-              <div class="col_leftGraph">
+              <div class="col_leftGraphLaser">
                 <div id="chart_div_energy_L" style="display: block; margin: 0 auto;"></div>
               </div>
               <div class = "col_rightTable">
@@ -707,7 +707,7 @@
             <br />
             <br />
             <div class="flex">
-              <div class="col_leftGraph">
+              <div class="col_leftGraphLaser">
                 <div id="chart_div_co2_L" style="display: block; margin: 0 auto;"></div>
               </div>
               <div class = "col_rightTable">

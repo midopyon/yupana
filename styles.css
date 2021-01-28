@@ -135,6 +135,13 @@ label input {
   flex: 1 1 0px;
 }
 
+.col_leftGraphLaser {
+  position: relative;
+  flex: 1 1 0px;
+  left: -81px;
+  top: -18px;
+}
+
 .col_rightTable {
   position: relative;
   flex: 1 1 0px;
