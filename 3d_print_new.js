@@ -1122,15 +1122,18 @@ function set_end_life_3dprint(sourceValues) {
   textDivSug = document.createElement("div");
   textDivSug.innerHTML = "";
   textDivSug.style.cssText = "display: inline-block;";
+  var recycleText = "";
   var TooltipTxt = "";
+  var sugCounter = 0;
 
   if (tempEOL == "recycle_bin") {
-    TooltipTxt =
+    recycleText =
       "Recycling:<br><br>Pros:<br>- Recycling reduces the need for extracting, refining and processing raw materials all of which create substantial air and water pollution.<br>- It allows the waste to become the raw material for a new material with lower embodied energy than a virgin one.<br><br/><span class='innerRedText'>Cons:<br>- The recycling process in an industrial facility generates CO<sub>2</sub> emissions.<br><br/></span><span class='innerSmallerText'>*We only analyzed the cost of transporting the waste to a recycling facility.<br></span>";
     textDivSug.innerHTML =
       "- Look for alternative materials that are either compostable or biodegradable in natural conditions.\r\n";
-  }
-  if (tempEOL == "landfill" || tempEOL == "idk") {
+    sugCounter++;
+    SetInfoText("eol", recycleText, true);
+  } else if (tempEOL == "landfill" || tempEOL == "idk") {
     var tempText;
 
     if (tempMaterial == "PLA") {
@@ -1146,7 +1149,7 @@ function set_end_life_3dprint(sourceValues) {
 
     textDivSug.innerHTML +=
       "- Send your waste to a recycling facility to reduce the need for extracting, refining and processing raw materials all of which create substantial air and water pollution.\r\n- Recycling allows the waste to become the raw material for a new material with lower embodied energy than virgin material.\r\n";
-
+    sugCounter = sugCounter + 2;
     if (tempEOL == "idk") {
       tempText =
         "We analyzed the cost of transporting the waste to a landfill area.<br><br><span class='innerRedText'>Cons:<br>- We assumed your material ended up in the landfill.<br>" +
@@ -1159,15 +1162,19 @@ function set_end_life_3dprint(sourceValues) {
         "</span>";
     }
 
-    TooltipTxt = TooltipTxt + tempText;
-    SetInfoText("eol", TooltipTxt, true);
+    SetInfoText("eol", tempText, true);
   } else if (tempEOL == "incineration") {
     TooltipTxt +=
       "We analyzed the cost of transporting the waste to a garbage facility and the energy and CO<sub>2</sub> emissions generated from burning the waste.<br><br/>Pros:<br>- The incineration process generates an energy bonus because of the burning process.<br><br/><span class='innerRedText'>Cons:<br>- It creates about 8000% more CO<sub>2</sub> emissions than recycling. </span>";
     SetInfoText("eol", TooltipTxt, true);
   }
 
+  textDivSug.innerHTML =
+    "<br/><span class='innerRedText'>Suggestion:\r\n" +
+    textDivSug.innerHTML +
+    "</span>";
   textbox.appendChild(textDivSug);
+  WarningEOL3d.setContent("You have " + sugCounter + " suggestion(s).");
 }
 
 let warningEOL3D = document.querySelector("#warningEOL3D");
