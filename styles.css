@@ -234,7 +234,6 @@ label input {
   height: auto;
   background: #e9eff8;
   font-size: 1em;
-  white-space: pre-line;
 }
 
 .exclamation.good {
@@ -463,7 +462,7 @@ div.ag-theme-alpine div.ag-row {
 }
 
 .innerSmallerText {
-  font-size: 0.8em;
+  font-size: 0.7em;
 }
 
 .clickableAwesomeFont3D {
@@ -483,4 +482,8 @@ div.ag-theme-alpine div.ag-row {
   color: rgb(0, 0, 0);
   margin-left: 10px;
   white-space: pre-line;
+}
+
+.tooltipWrapper {
+  font-size: 0.8em;
 }

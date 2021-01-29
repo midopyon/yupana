@@ -212,7 +212,6 @@ document.getElementById("btn_addJob").addEventListener("click", function () {
 
   createNewPageNumber();
   update_button_onNewJob();
-  
 
   if (!isDeleteJobHidden) {
     SetDeleteJobInactive();
@@ -406,8 +405,7 @@ function update_button_onNewJob() {
 function createNewPageNumber() {
   var ul = document.getElementById("NumbersList");
 
-  if (ul.innerHTML == ""){
-
+  if (ul.innerHTML == "") {
   }
   latestPage++;
   selectedPage = latestPage;
@@ -707,7 +705,7 @@ function DrawGoogleChartsEnergy(results) {
       },
       viewWindow: {
         min: minTable,
-        max: Math.ceil(Math.max(...arr) / 50) * 50,
+        max: Math.ceil(Math.max(...arr) / 10) * 10,
       },
       title: "\nEnergy (MJ)",
       titleTextStyle: {
@@ -800,7 +798,7 @@ function DrawGoogleChartsCo2(results) {
       },
       viewWindow: {
         min: 0,
-        max: Math.ceil(Math.max(...arr2) / 10) * 10,
+        max: Math.ceil(Math.max(...arr2) / 1) * 1,
       },
       title: "\nCO\u2082 (kg CO\u2082/kg)",
       titleTextStyle: {
@@ -2289,6 +2287,7 @@ function DeleteJobFromArrayLaser(pageToDelete) {
 ////
 
 function SetInfoText(infoName, text, isBad) {
+  text = "<span class='tooltipWrapper'>" + text + "</span>";
   switch (infoName) {
     case "mat":
       document.getElementById("infoManuMat3D").style.color = "black";
