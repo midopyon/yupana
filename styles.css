@@ -273,6 +273,14 @@ button[type="submit"] {
   background: #e9eff8;
 }
 
+#btn_clear_3dprint,
+#btn_addJob,
+#btn_addJob_l,
+#btn_clear_laser {
+  background: #57595b;
+  color: white;
+}
+
 button:hover {
   /* text-decoration: underline; */
   border: 1px solid #3b4456;
@@ -462,7 +470,7 @@ div.ag-theme-alpine div.ag-row {
 }
 
 .innerSmallerText {
-  font-size: 0.7em;
+  font-size: 0.88em;
 }
 
 .clickableAwesomeFont3D {
@@ -485,5 +493,11 @@ div.ag-theme-alpine div.ag-row {
 }
 
 .tooltipWrapper {
-  font-size: 0.8em;
+  font-size: 0.93em;
+}
+
+.ag-cell {
+  border-right-color: black;
+  border-right-width: 1px;
+  border-right-style: solid;
 }

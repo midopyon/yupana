@@ -33,7 +33,8 @@
     ></script>
     <script src="https://kit.fontawesome.com/d6fe4a9ed6.js" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/StephanWagner/jBox@v1.2.1/dist/jBox.all.min.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/StephanWagner/jBox@v1.2.1/dist/jBox.all.min.js"></script>
 <link href="https://cdn.jsdelivr.net/gh/StephanWagner/jBox@v1.2.1/dist/jBox.all.min.css" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <br />
@@ -420,7 +421,7 @@
                   <button id="btn_calculate" type="submit">Calculate</button>
                 </div>
                 <div class="subcol_delJob invisible" id="buttonDelJob">
-                  <button id="btn_delJob" type="next">- Delete Job</button>
+                  <button id="btn_delJob" type="next" onclick="NoticeDeleted3D()" data-confirm="Are you sure you want to delete this job?">- Delete Job</button>
                 </div>
               </div>
             </p>
@@ -438,7 +439,7 @@
                 
               </div>
               <div class="col_rightButtons">
-                <div class="subcol_addJob invisible" id="buttonAddJob"><button id="btn_addJob" type="next">Add Job +</button></div><div class="col_clearAllbutton"><button id="btn_clear_3dprint" type="reset">Clear all</button></div>              </div>
+                <div class="subcol_addJob invisible" id="buttonAddJob"><button id="btn_addJob" type="next">Add Job +</button></div><div class="col_clearAllbutton"><button id="btn_clear_3dprint" type="reset" onclick="NoticeDeletedAll3D()" data-confirm="Are you sure you want to delete ALL jobs ?">Clear all</button></div>              </div>
             </div>
 
             <div>
@@ -586,7 +587,7 @@
                   <p><input type="text" id="mat_thickness_input_lasercut" class="input-field" placeholder="Type a number" required>&nbspmm</p>
                 </div>
                 <div class="question">
-                  <h5>Total area of cut material *</h5>
+                  <h5>Total area of cut material *</h5><br>
                   <img id="laser_img" src="images/lasercut_area.svg" alt="Header">
                   <div class="flex">
                     <label class="radio_button first" id="Area">
@@ -658,7 +659,7 @@
                     <button id="btn_calculate_l" type="submit">Calculate</button>
                   </div>
                   <div class="subcol_delJob invisible" id="buttonDelJob_l">
-                    <button id="btn_delJob_l" type="next">- Delete Job</button>
+                    <button id="btn_delJob_l" type="next" onclick="NoticeDeletedLaser()" data-confirm="Are you sure you want to delete this job?">- Delete Job</button>
                   </div>
                 </div>
               </p>
@@ -667,11 +668,15 @@
               <div class="bottomRowflex">
                 <div></div>
                 <div class="col_pagination">
-                  <ul id="NumbersList_l" style="list-style: none;">
+                  <ul id="PaginationList_l" style="list-style: none; align-items: baseline;">
+                    <li class ="invisible" id="pagJob_l">Job&nbsp&nbsp&nbsp</li>
+                    <li class ="iconArrows3D invisible" id="pagLeft_l"><i class="fas fa-chevron-left fa-sm"></i>&nbsp</li>
+                    <ul id="NumbersList_l" style="list-style: none; padding-inline-start: 0px; align-items: baseline;"></ul>
+                    <li class ="iconArrows3D invisible" id="pagRight_l">&nbsp<i class="fas fa-chevron-right fa-sm"></i></li>
                   </ul>
                 </div>
                 <div class="col_rightButtons">
-                  <div class="subcol_addJob invisible" id="buttonAddJob_l"><button id="btn_addJob_l" type="next">Add Job +</button></div><div class="col_clearAllbutton"><button id="btn_clear_laser" type="reset">Clear all</button></div>              </div>
+                  <div class="subcol_addJob invisible" id="buttonAddJob_l"><button id="btn_addJob_l" type="next">Add Job +</button></div><div class="col_clearAllbutton"><button id="btn_clear_laser" type="reset" onclick="NoticeDeletedAllLaser()" data-confirm="Are you sure you want to delete ALL jobs ?">Clear all</button></div>              </div>
               </div>
   
               <div>

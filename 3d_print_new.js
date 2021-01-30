@@ -995,7 +995,7 @@ function set_transport_3dprint(sourceValues) {
       textDivSug.innerHTML +
       "</span>";
     textbox.appendChild(textDivSug);
-    WarningTrans3d.setContent("You have " + sugCounter + " suggestion(s).");
+    WarningTrans3d.setContent("You have " + sugCounter + " suggestion(s)");
   } else {
     document.getElementById("warningTrans3D").classList.add("invisible");
   }
@@ -1048,7 +1048,7 @@ function set_fabrication_3dprint(sourceValues) {
 
   let textCountry = get_electric_text(tempCountry);
   textTemp =
-    "Electricity Mix:<br>- The lab location determines the source of the electricity used to run the machines.<br>- The CO<sub>2</sub> emissions depend on the blends of electricity sources.<br>- From worst to best sources: coal, nuclear power, hydroelectric power, solar photovoltaics, geothermal power, and Concentrated Solar Power (CSP).<br><br>" +
+    "Electricity Mix:<br>- The lab location determines the source of the electricity used to run the machines.<br>- The CO<sub>2</sub> emissions depend on the blends of electricity sources.<br>- From worst to best sources: coal, nuclear power, hydroelectric power, solar photovoltaics, geothermal power, and Concentrated Solar Power (CSP).<br>" +
     textCountry;
   SetInfoText("lab", textTemp, true);
 
@@ -1056,7 +1056,7 @@ function set_fabrication_3dprint(sourceValues) {
 
   if (tempMachine == "makerbot") {
     textTemp =
-      "Pros:<br>- Makerbot Replicator+ uses half as much power as Ultimaker 2 Extended in the molding process.<br><br><span class='innerRedText'>";
+      "Pros:<br>- Makerbot Replicator+ uses half as much power as Ultimaker 2 Extended in the molding process.<br><span class='innerRedText'>";
     SetInfoText("print", textTemp, false);
   } else {
     //ultimaker
@@ -1067,7 +1067,7 @@ function set_fabrication_3dprint(sourceValues) {
   }
 
   textTemp =
-    "Energy efficiency:<br>- Energy consumption of machines varies widely depending on printer type, part geometry, machine utilization rate (idle, stand by, and printing time), print set-up, and material.<br><br>" +
+    "Energy efficiency:<br>- Energy consumption of machines varies widely depending on printer type, part geometry, machine utilization rate (idle, stand by, and printing time), print set-up, and material.<br>" +
     textTemp;
 
   if (tempMachine == "makerbot") {
@@ -1075,7 +1075,7 @@ function set_fabrication_3dprint(sourceValues) {
   } else {
     SetInfoText("print", textTemp, true);
   }
-  WarningDig3d.setContent("You have 5 suggestions.");
+  WarningDig3d.setContent("You have 5 suggestions");
   textbox.appendChild(textDivMachine);
 }
 
@@ -1125,7 +1125,7 @@ function set_end_life_3dprint(sourceValues) {
 
   if (tempEOL == "recycle_bin") {
     recycleText =
-      "Recycling:<br><br>Pros:<br>- Recycling reduces the need for extracting, refining and processing raw materials all of which create substantial air and water pollution.<br>- It allows the waste to become the raw material for a new material with lower embodied energy than a virgin one.<br><br/><span class='innerRedText'>Cons:<br>- The recycling process in an industrial facility generates CO<sub>2</sub> emissions.<br><br/></span><span class='innerSmallerText'>*We only analyzed the cost of transporting the waste to a recycling facility.<br></span>";
+      "Pros:<br>- Recycling reduces the need for extracting, refining and processing raw materials all of which create substantial air and water pollution.<br>- It allows the waste to become the raw material for a new material with lower embodied energy than a virgin one.<br><br/><span class='innerRedText'>Cons:<br>- The recycling process in an industrial facility generates CO<sub>2</sub> emissions.<br><br/></span><span class='innerSmallerText'>*We only analyzed the cost of transporting the waste to a recycling facility.<br></span>";
     textDivSug.innerHTML =
       "- Look for alternative materials that are either compostable or biodegradable in natural conditions.<br>";
     sugCounter++;
@@ -1149,21 +1149,21 @@ function set_end_life_3dprint(sourceValues) {
     sugCounter = sugCounter + 2;
     if (tempEOL == "idk") {
       tempText =
-        "We analyzed the cost of transporting the waste to a landfill area.<br><br><span class='innerRedText'>Cons:<br>- We assumed your material ended up in the landfill.<br>" +
+        "<span class='innerRedText'>Cons:<br>- We assumed your material ended up in the landfill.<br>" +
         tempText +
-        "</span>";
+        "</span><span class='innerSmallerText'>*We analyzed the cost of transporting the waste to a landfill area.<br></span>";
     } else {
       tempText =
-        "We analyzed the cost of transporting the waste to a landfill area.<br><br/><span class='innerRedText'>Cons:<br>" +
+        "<span class='innerRedText'>Cons:<br>" +
         tempText +
-        "</span>";
+        "</span><span class='innerSmallerText'>*We analyzed the cost of transporting the waste to a landfill area.<br></span>";
     }
 
     SetInfoText("eol", tempText, true);
   } else if (tempEOL == "incineration") {
     sugCounter = 0;
-    TooltipTxt +=
-      "We analyzed the cost of transporting the waste to a garbage facility and the energy and CO<sub>2</sub> emissions generated from burning the waste.<br><br/>Pros:<br>- The incineration process generates an energy bonus because of the burning process.<br><br/><span class='innerRedText'>Cons:<br>- It creates about 8000% more CO<sub>2</sub> emissions than recycling. </span>";
+    TooltipTxt =
+      "Pros:<br>- The incineration process generates an energy bonus because of the burning process.<br><span class='innerRedText'>Cons:<br>- It creates about 8000% more CO<sub>2</sub> emissions than recycling.</span><br><span class='innerSmallerText'>*We analyzed the cost of transporting the waste to a garbage facility and the energy and CO<sub>2</sub> emissions generated from burning the waste.</span>";
     SetInfoText("eol", TooltipTxt, true);
   }
 
@@ -1173,7 +1173,7 @@ function set_end_life_3dprint(sourceValues) {
       textDivSug.innerHTML +
       "</span>";
     textbox.appendChild(textDivSug);
-    WarningEOL3d.setContent("You have " + sugCounter + " suggestion(s).");
+    WarningEOL3d.setContent("You have " + sugCounter + " suggestion(s)");
   } else {
     document.getElementById("warningEOL3D").classList.add("invisible");
   }

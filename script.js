@@ -23,6 +23,11 @@ var suggestionsDig3d = "";
 var suggestionsEol3d = "";
 
 $(document).ready(function () {
+  new jBox("Confirm", {
+    confirmButton: "Yes",
+    cancelButton: "No",
+  });
+
   WarningManu3d = $("#warningManu3D").jBox("Tooltip", {});
 
   WarningTrans3d = $("#warningTrans3D").jBox("Tooltip", {});
@@ -180,17 +185,17 @@ var SupportSlider = document.getElementById("_3dprint_support_slider");
 
 // **** Setting button actions
 
-document
-  .getElementById("btn_clear_3dprint")
-  .addEventListener("click", function () {
-    var w = confirm("Are you sure you want to clear ALL jobs?");
-    if (w == true) {
-      //Reset form
-      reset_form();
-    } else {
-      //nothing
-    }
-  });
+// document
+//   .getElementById("btn_clear_3dprint")
+//   .addEventListener("click", function () {
+//     var w = confirm("Are you sure you want to clear ALL jobs?");
+//     if (w == true) {
+//       //Reset form
+//       reset_form();
+//     } else {
+//       //nothing
+//     }
+//   });
 
 document
   .getElementById("region_radio_3dprint")
@@ -201,34 +206,37 @@ document
 
 document.getElementById("btn_addJob").addEventListener("click", function () {
   //change for WARNING
+  if (isUpdating) {
+    document.querySelectorAll(".clickableAwesomeFont3D").forEach((item, i) => {
+      item.classList.add("invisible");
+    });
 
-  document.querySelectorAll(".clickableAwesomeFont3D").forEach((item, i) => {
-    item.classList.add("invisible");
-  });
+    document.querySelectorAll(".hoverAwesomeFont3D").forEach((item, i) => {
+      item.classList.add("invisible");
+    });
 
-  document.querySelectorAll(".hoverAwesomeFont3D").forEach((item, i) => {
-    item.classList.add("invisible");
-  });
+    createNewPageNumber();
+    update_button_onNewJob();
 
-  createNewPageNumber();
-  update_button_onNewJob();
-
-  if (!isDeleteJobHidden) {
-    SetDeleteJobInactive();
-  }
-});
-
-document.getElementById("btn_delJob").addEventListener("click", function () {
-  var r = confirm(
-    "Are you sure you want to delete Job #" + selectedPage + " ?"
-  );
-  if (r == true) {
-    //Delete Job
-    DeleteJobFromArray(selectedPage);
+    if (!isDeleteJobHidden) {
+      SetDeleteJobInactive();
+    }
   } else {
-    //nothing
+    NoticeCalculate();
   }
 });
+
+// document.getElementById("btn_delJob").addEventListener("click", function () {
+//   var r = confirm(
+//     "Are you sure you want to delete Job #" + selectedPage + " ?"
+//   );
+//   if (r == true) {
+//     //Delete Job
+//     DeleteJobFromArray(selectedPage);
+//   } else {
+//     //nothing
+//   }
+// });
 
 _3dprint_country_select.addEventListener("change", CheckIfUS);
 
@@ -405,8 +413,6 @@ function update_button_onNewJob() {
 function createNewPageNumber() {
   var ul = document.getElementById("NumbersList");
 
-  if (ul.innerHTML == "") {
-  }
   latestPage++;
   selectedPage = latestPage;
   let tempCurrPage = selectedPage;
@@ -880,6 +886,13 @@ var columnDefsEnergy = [
     headerClass: "rawHeader",
     valueFormatter: (params) => params.data.rawMat.toFixed(2),
     suppressMovable: true,
+    cellStyle: {
+      border: "solid",
+      borderTopWidth: "0px",
+      borderRightWidth: "0.3px",
+      borderLeftWidth: "0.3px",
+      borderBottomWidth: "0px",
+    },
   },
   {
     headerName: "T",
@@ -887,6 +900,13 @@ var columnDefsEnergy = [
     headerClass: "transpHeader",
     valueFormatter: (params) => params.data.transp.toFixed(2),
     suppressMovable: true,
+    cellStyle: {
+      border: "solid",
+      borderTopWidth: "0px",
+      borderRightWidth: "0.3px",
+      borderLeftWidth: "0px",
+      borderBottomWidth: "0px",
+    },
   },
   {
     headerName: "DF",
@@ -894,6 +914,13 @@ var columnDefsEnergy = [
     headerClass: "digHeader",
     valueFormatter: (params) => params.data.digFab.toFixed(2),
     suppressMovable: true,
+    cellStyle: {
+      border: "solid",
+      borderTopWidth: "0px",
+      borderRightWidth: "0.3px",
+      borderLeftWidth: "0px",
+      borderBottomWidth: "0px",
+    },
   },
   {
     headerName: "EL",
@@ -1069,6 +1096,13 @@ var columnDefsCo2 = [
     headerClass: "rawHeader",
     valueFormatter: (params) => params.data.rawMat.toFixed(2),
     suppressMovable: true,
+    cellStyle: {
+      border: "solid",
+      borderTopWidth: "0px",
+      borderRightWidth: "0.3px",
+      borderLeftWidth: "0.3px",
+      borderBottomWidth: "0px",
+    },
   },
   {
     headerName: "T",
@@ -1076,6 +1110,13 @@ var columnDefsCo2 = [
     headerClass: "transpHeader",
     valueFormatter: (params) => params.data.transp.toFixed(2),
     suppressMovable: true,
+    cellStyle: {
+      border: "solid",
+      borderTopWidth: "0px",
+      borderRightWidth: "0.3px",
+      borderLeftWidth: "0px",
+      borderBottomWidth: "0px",
+    },
   },
   {
     headerName: "DF",
@@ -1083,6 +1124,13 @@ var columnDefsCo2 = [
     headerClass: "digHeader",
     valueFormatter: (params) => params.data.digFab.toFixed(2),
     suppressMovable: true,
+    cellStyle: {
+      border: "solid",
+      borderTopWidth: "0px",
+      borderRightWidth: "0.3px",
+      borderLeftWidth: "0px",
+      borderBottomWidth: "0px",
+    },
   },
   {
     headerName: "EL",
@@ -1149,7 +1197,36 @@ var gridOptionsCo2 = {
   rowSelection: "multiple",
   onSelectionChanged: onSelectionChangedCo2,
   headerHeight: 23,
+  onRowClicked: onrowClickedCo2,
 };
+
+function onrowClickedCo2() {
+  var selectedRows = gridOptionsCo2.api.getSelectedRows();
+  var selectedRowsArray = [];
+
+  selectedRows.forEach(function (selectedRow, index) {
+    var number = parseInt(
+      selectedRow.jobName.slice(selectedRow.jobName.length - 1)
+    );
+
+    selectedRowsArray.push(number);
+  });
+
+  var event = new CustomEvent("changePageFromTable", {
+    detail: selectedRowsArray[0],
+  });
+
+  var selects = document.getElementsByClassName("link selectedButton");
+  for (var i = 0; i < selects.length; i++) selects[i].className = "link";
+
+  document.getElementById(
+    "buttonPage" + selectedRowsArray[0].toString()
+  ).className = "link selectedButton";
+
+  document.dispatchEvent(event);
+
+  //Dispatch on change page event
+}
 
 function getSelectedRowsCo2() {
   var selectedNodes = gridOptionsCo2.api.getSelectedNodes();
@@ -1349,17 +1426,17 @@ var wasteSliderObj = document.getElementById("waste_laser");
 
 // **** Setting button actions
 
-document
-  .getElementById("btn_clear_laser")
-  .addEventListener("click", function () {
-    var w = confirm("Are you sure you want to clear ALL jobs?");
-    if (w == true) {
-      //Reset form
-      reset_form_laser();
-    } else {
-      //nothing
-    }
-  });
+// document
+//   .getElementById("btn_clear_laser")
+//   .addEventListener("click", function () {
+//     var w = confirm("Are you sure you want to clear ALL jobs?");
+//     if (w == true) {
+//       //Reset form
+//       reset_form_laser();
+//     } else {
+//       //nothing
+//     }
+//   });
 
 document
   .getElementById("region_radio_laser")
@@ -1369,29 +1446,33 @@ document
   .addEventListener("click", ShowDistanceFormLaser);
 
 document.getElementById("btn_addJob_l").addEventListener("click", function () {
-  document.querySelectorAll(".exclamationLaser").forEach((item, i) => {
-    item.classList.add("invisible");
-  });
+  if (isUpdating_l) {
+    document.querySelectorAll(".exclamationLaser").forEach((item, i) => {
+      item.classList.add("invisible");
+    });
 
-  createNewPageNumberLaser();
-  update_button_onNewJob_Laser();
+    createNewPageNumberLaser();
+    update_button_onNewJob_Laser();
 
-  if (!isDeleteJobHidden_l) {
-    SetDeleteJobInactiveLaser();
-  }
-});
-
-document.getElementById("btn_delJob_l").addEventListener("click", function () {
-  var r = confirm(
-    "Are you sure you want to delete Job #" + selectedPage_l + " ?"
-  );
-  if (r == true) {
-    //Delete Job
-    DeleteJobFromArrayLaser(selectedPage_l);
+    if (!isDeleteJobHidden_l) {
+      SetDeleteJobInactiveLaser();
+    }
   } else {
-    //nothing
+    NoticeCalculate();
   }
 });
+
+// document.getElementById("btn_delJob_l").addEventListener("click", function () {
+//   var r = confirm(
+//     "Are you sure you want to delete Job #" + selectedPage_l + " ?"
+//   );
+//   if (r == true) {
+//     //Delete Job
+//     DeleteJobFromArrayLaser(selectedPage_l);
+//   } else {
+//     //nothing
+//   }
+// });
 
 laser_country_select.addEventListener("change", CheckIfUSLaser);
 
@@ -1840,6 +1921,13 @@ var columnDefsEnergyLaser = [
     headerClass: "rawHeader",
     valueFormatter: (params) => params.data.rawMat.toFixed(2),
     suppressMovable: true,
+    cellStyle: {
+      border: "solid",
+      borderTopWidth: "0px",
+      borderRightWidth: "0.3px",
+      borderLeftWidth: "0.3px",
+      borderBottomWidth: "0px",
+    },
   },
   {
     headerName: "T",
@@ -1847,6 +1935,13 @@ var columnDefsEnergyLaser = [
     headerClass: "transpHeader",
     valueFormatter: (params) => params.data.transp.toFixed(2),
     suppressMovable: true,
+    cellStyle: {
+      border: "solid",
+      borderTopWidth: "0px",
+      borderRightWidth: "0.3px",
+      borderLeftWidth: "0px",
+      borderBottomWidth: "0px",
+    },
   },
   {
     headerName: "DF",
@@ -1854,6 +1949,13 @@ var columnDefsEnergyLaser = [
     headerClass: "digHeader",
     valueFormatter: (params) => params.data.digFab.toFixed(2),
     suppressMovable: true,
+    cellStyle: {
+      border: "solid",
+      borderTopWidth: "0px",
+      borderRightWidth: "0.3px",
+      borderLeftWidth: "0px",
+      borderBottomWidth: "0px",
+    },
   },
   {
     headerName: "EL",
@@ -2029,6 +2131,13 @@ var columnDefsCo2Laser = [
     headerClass: "rawHeader",
     valueFormatter: (params) => params.data.rawMat.toFixed(2),
     suppressMovable: true,
+    cellStyle: {
+      border: "solid",
+      borderTopWidth: "0px",
+      borderRightWidth: "0.3px",
+      borderLeftWidth: "0.3px",
+      borderBottomWidth: "0px",
+    },
   },
   {
     headerName: "T",
@@ -2036,6 +2145,13 @@ var columnDefsCo2Laser = [
     headerClass: "transpHeader",
     valueFormatter: (params) => params.data.transp.toFixed(2),
     suppressMovable: true,
+    cellStyle: {
+      border: "solid",
+      borderTopWidth: "0px",
+      borderRightWidth: "0.3px",
+      borderLeftWidth: "0px",
+      borderBottomWidth: "0px",
+    },
   },
   {
     headerName: "DF",
@@ -2043,6 +2159,13 @@ var columnDefsCo2Laser = [
     headerClass: "digHeader",
     valueFormatter: (params) => params.data.digFab.toFixed(2),
     suppressMovable: true,
+    cellStyle: {
+      border: "solid",
+      borderTopWidth: "0px",
+      borderRightWidth: "0.3px",
+      borderLeftWidth: "0px",
+      borderBottomWidth: "0px",
+    },
   },
   {
     headerName: "EL",
@@ -2294,7 +2417,7 @@ function SetInfoText(infoName, text, isBad) {
       InfoMat3d.setContent(text);
       if (isBad) {
         document.getElementById("infoManuMat3D").style.color = "red";
-        WarningManu3d.setContent("You have 1 suggestion.");
+        WarningManu3d.setContent("You have 1 suggestion");
       }
       break;
     case "reg":
@@ -2331,4 +2454,83 @@ function SetInfoText(infoName, text, isBad) {
       }
       break;
   }
+}
+
+function NoticeDeleted3D() {
+  new jBox("Notice", {
+    animation: "flip",
+    color: "red",
+    content: "Job deleted succesfully",
+    autoClose: 3000,
+    attributes: {
+      x: "left",
+      y: "bottom",
+    },
+    delayOnHover: !0,
+    showCountdown: !0,
+  });
+  DeleteJobFromArray(selectedPage);
+}
+
+function NoticeDeletedAll3D() {
+  new jBox("Notice", {
+    animation: "flip",
+    color: "red",
+    content: "All jobs deleted succesfully",
+    autoClose: 3000,
+    attributes: {
+      x: "left",
+      y: "bottom",
+    },
+    delayOnHover: !0,
+    showCountdown: !0,
+  });
+  reset_form();
+}
+
+function NoticeDeletedLaser() {
+  new jBox("Notice", {
+    animation: "flip",
+    color: "red",
+    content: "Job deleted succesfully",
+    autoClose: 3000,
+    attributes: {
+      x: "left",
+      y: "bottom",
+    },
+    delayOnHover: !0,
+    showCountdown: !0,
+  });
+  DeleteJobFromArrayLaser(selectedPage_l);
+}
+
+function NoticeDeletedAllLaser() {
+  new jBox("Notice", {
+    animation: "flip",
+    color: "red",
+    content: "All jobs deleted succesfully",
+    autoClose: 3000,
+    attributes: {
+      x: "left",
+      y: "bottom",
+    },
+    delayOnHover: !0,
+    showCountdown: !0,
+  });
+  reset_form_laser();
+}
+
+function NoticeCalculate() {
+  new jBox("Notice", {
+    animation: "flip",
+    color: "yellow",
+    content: "You have to calculate the current job",
+    autoClose: 3000,
+    attributes: {
+      x: "left",
+      y: "bottom",
+    },
+    delayOnHover: !0,
+    showCountdown: !0,
+  });
 }

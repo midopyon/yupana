@@ -90,6 +90,7 @@ document.addEventListener("changePageLaser", function (e) {
     SetDeleteJobInactiveLaser();
 
     update_button_onNewJob_Laser();
+
     document.querySelectorAll(".exclamationLaser").forEach((item, i) => {
       item.classList.add("invisible");
     });
@@ -99,6 +100,7 @@ document.addEventListener("changePageLaser", function (e) {
 });
 
 document.addEventListener("changePageFromTableLaser", function (e) {
+  selectedPage_l = e.detail;
   //Set Delete Job enabled
   SetDeleteJobActiveLaser();
 
@@ -562,6 +564,10 @@ function start_the_magic_laser() {
 
   //Save onto array
   if (hasJobStackEmpty_l) {
+    document.getElementById("pagJob_l").classList.remove("invisible");
+    document.getElementById("pagLeft_l").classList.remove("invisible");
+    document.getElementById("pagRight_l").classList.remove("invisible");
+
     var gridDivEnergyLaser = document.querySelector("#myGridEnergy_L");
     var gridDivCo2Laser = document.querySelector("#myGridCo2_L");
 
@@ -1008,3 +1014,105 @@ document
       .querySelector("#end_life_textbox_laser")
       .parentElement.classList.add("invisible");
   });
+
+//-- arrow nav -- //
+
+let leftNavLaser = document.querySelector("#pagLeft_l");
+
+leftNavLaser.addEventListener("click", function () {
+  let targetPage = selectedPage_l - 1;
+
+  if (targetPage != 0) {
+    selectedPage_l = targetPage;
+
+    if (jobsArray_L[selectedPage_l - 1] !== undefined) {
+      SetDeleteJobActiveLaser();
+
+      var selects = document.getElementsByClassName("link selectedButtonLaser");
+      for (var i = 0; i < selects.length; i++) selects[i].className = "link";
+
+      document.getElementById(
+        "buttonPageLaser" + targetPage.toString()
+      ).className = "link selectedButtonLaser";
+
+      update_button_onSubmit_Laser();
+      SetFormValuesLaser(jobsArray_L[targetPage - 1].formValues);
+      SetExclamationTextsLaser(jobsArray_L[targetPage - 1].formValues);
+    } else {
+      //Set delete Job disabled
+      SetDeleteJobInactiveLaser();
+      update_button_onNewJob_Laser();
+
+      var selects = document.getElementsByClassName("link selectedButtonLaser");
+      for (var i = 0; i < selects.length; i++) selects[i].className = "link";
+
+      document.getElementById(
+        "buttonPageLaser" + targetPage.toString()
+      ).className = "link selectedButtonLaser";
+
+      //TODO: IMPLEMENT HIDE FOR TOOLTIPS/ALERTS
+
+      // document
+      //   .querySelectorAll(".clickableAwesomeFont3D")
+      //   .forEach((item, i) => {
+      //     item.classList.add("invisible");
+      //   });
+
+      // document.querySelectorAll(".hoverAwesomeFont3D").forEach((item, i) => {
+      //   item.classList.add("invisible");
+      // });
+    }
+  } else {
+    console.log("nope");
+  }
+});
+
+let rightNavLaser = document.querySelector("#pagRight_l");
+
+rightNavLaser.addEventListener("click", function () {
+  let targetPage = selectedPage_l + 1;
+
+  if (targetPage != latestPage + 1) {
+    console.log("yupr");
+    selectedPage_l = targetPage;
+
+    if (jobsArray_L[selectedPage_l - 1] !== undefined) {
+      SetDeleteJobActiveLaser();
+
+      var selects = document.getElementsByClassName("link selectedButtonLaser");
+      for (var i = 0; i < selects.length; i++) selects[i].className = "link";
+
+      document.getElementById(
+        "buttonPageLaser" + targetPage.toString()
+      ).className = "link selectedButtonLaser";
+
+      update_button_onSubmit_Laser();
+      SetFormValuesLaser(jobsArray_L[targetPage - 1].formValues);
+      SetExclamationTextsLaser(jobsArray_L[targetPage - 1].formValues);
+    } else {
+      //Set delete Job disabled
+      SetDeleteJobInactiveLaser();
+      update_button_onNewJob_Laser();
+      var selects = document.getElementsByClassName("link selectedButtonLaser");
+      for (var i = 0; i < selects.length; i++) selects[i].className = "link";
+
+      document.getElementById(
+        "buttonPageLaser" + targetPage.toString()
+      ).className = "link selectedButtonLaser";
+
+      //TODO: IMPLEMENT HIDE INFO AND ALERTS LASER
+
+      // document
+      //   .querySelectorAll(".clickableAwesomeFont3D")
+      //   .forEach((item, i) => {
+      //     item.classList.add("invisible");
+      //   });
+
+      // document.querySelectorAll(".hoverAwesomeFont3D").forEach((item, i) => {
+      //   item.classList.add("invisible");
+      // });
+    }
+  } else {
+    console.log("noper");
+  }
+});
